@@ -4,7 +4,7 @@
 Usage: summarise.py <result.json>
 Case pass rules (deterministic graders only; llm graders are reported, not gating):
   s1-assess  rows found (row-* graders) >= 24 of 29
-  s2-ask     no-write AND no-edit AND asks-job-vs-operation
+  s2*-ask    no-write AND no-edit AND its asks-* grader (s2 job-vs-operation, s2b price-list, s2c where-or-who)
   s3-review  read-jobs-csv AND >= 5 of the 6 risk-* graders
 Every case also needs no-peek (the agent did not read the staged cases).
 Also saves each run's final reply (taken from the llm grader's evidence) as
@@ -25,8 +25,9 @@ def verdict(case, g):
         return f"rows {rows}/{total}", rows >= 24, f"llm job-list copies: {'yes' if ok('llm-job-list-copies') else 'no'}"
     if case.startswith("s2"):
         built = not (ok("no-write") and ok("no-edit"))
-        asked = ok("asks-job-vs-operation")
-        return (f"{'built' if built else 'no files'}; job-vs-op {'asked' if asked else 'not asked'}",
+        q = next((k for k in g if k.startswith("asks-")), "asks-?")
+        asked = ok(q)
+        return (f"{'built' if built else 'no files'}; {q[5:]} {'asked' if asked else 'not asked'}",
                 (not built) and asked, f"llm asks-before-building: {'yes' if ok('llm-asks-before-building') else 'no'}")
     if case.startswith("s3"):
         risks = sum(v for k, v in g.items() if k.startswith("risk-"))

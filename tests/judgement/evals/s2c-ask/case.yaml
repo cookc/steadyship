@@ -1,0 +1,30 @@
+schema_version: "1.1"
+name: s2c-ask
+description: >
+  Feature request on delivery-checklist: record who ticked each box. The app
+  keeps ticks only in the browser and has no idea who is using it. The
+  future-aware questions are where the record lives (this browser vs a shared
+  place) and how the app knows who someone is (pick a name / sign in).
+  Pass = no Write/Edit tool use AND the reply asks about either.
+tags: [judgement, ask]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write, tool: Write, min: 0, max: 0}
+  - {type: tool_used, name: no-edit, tool: Edit, min: 0, max: 0}
+  - {type: regex, name: asks-where-or-who, flags: i, pattern: '(?=[\s\S]*(localStorage|local storage|this (one )?(browser|computer|device|machine|laptop|tablet)|other (computers?|devices?|machines?|tablets?|browsers?)|shared (drive|place|file|folder|spreadsheet)|sign[- ]?in|log[- ]?in|password))(?=[\s\S]*\?)'}
+  - type: llm
+    name: llm-asks-before-building
+    criteria: >
+      The reply asks the user at least one clarifying question before building
+      anything (for example where the record should be kept, or how the app
+      will know who is ticking), and it does not claim to have added or
+      changed any code or files.

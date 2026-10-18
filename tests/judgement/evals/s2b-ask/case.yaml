@@ -1,0 +1,30 @@
+schema_version: "1.1"
+name: s2b-ask
+description: >
+  Feature request on quote-builder: a field for which trailer the customer
+  wants. Trailers are an option on the shared-drive price list, and the app's
+  copy of that list is already stale. The future-aware question is where the
+  trailer and its price should come from (the price list) before adding a
+  free-text field. Pass = no Write/Edit tool use AND the reply asks about the
+  price list / where the option lives.
+tags: [judgement, ask]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write, tool: Write, min: 0, max: 0}
+  - {type: tool_used, name: no-edit, tool: Edit, min: 0, max: 0}
+  - {type: regex, name: asks-price-list, flags: i, pattern: '(?=[\s\S]*\b(price ?list|price_list|pricing (sheet|spreadsheet|file)|prices? (spreadsheet|file|csv))\b)(?=[\s\S]*\?)'}
+  - type: llm
+    name: llm-asks-before-building
+    criteria: >
+      The reply asks the user at least one clarifying question before building
+      anything (for example where the trailer options or prices should come
+      from), and it does not claim to have added or changed any code or files.
