@@ -1,0 +1,11 @@
+{
+  "name": "steadyship",
+  "description": "An engineer in the conversation: asks what you don't know to ask, judges what you can't judge, and gives prototypes a path to software a business can run on.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Chris Cook"
+  },
+  "repository": "https://github.com/REPLACE_ME/steadyship",
+  "license": "MIT",
+  "keywords": ["engineering-guidance", "small-business", "assessment", "non-technical"]
+}

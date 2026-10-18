@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "steadyship",
+  "description": "Steadyship plugin marketplace",
+  "owner": {
+    "name": "Chris Cook"
+  },
+  "plugins": [
+    {
+      "name": "steadyship",
+      "description": "An engineer in the conversation for non-technical builders.",
+      "source": "./plugin",
+      "category": "development"
+    }
+  ]
+}

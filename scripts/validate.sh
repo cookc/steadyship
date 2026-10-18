@@ -4,4 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 echo "== validate.sh =="
 # Later tasks append checks below this line.
+echo "-- plugin manifests"
+claude plugin validate plugin --strict
+claude plugin validate . --strict
 echo "OK"
