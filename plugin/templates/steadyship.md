@@ -11,4 +11,6 @@ Plugin marketplace: {{PLUGIN_MARKETPLACE}}
 Shared drive: {{SHARED_DRIVE}}
 Template version: {{TEMPLATE_VERSION}}
 
+`.steadyship/manifest` records what the templates generated, so a future update can tell template files from ones you changed.
+
 Start with `docs/spikes/README.md`, then `docs/assessment/README.md`.

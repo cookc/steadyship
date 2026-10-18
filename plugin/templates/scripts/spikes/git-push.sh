@@ -39,7 +39,7 @@ git diff --cached --quiet || fail "you have changes staged — ask {{SETUP_OWNER
 echo "Creating a throwaway branch $BR with one marker commit ..."
 git checkout -q -b "$BR" || fail "could not create a branch"
 BR_MADE=1
-{ mkdir -p docs/spikes && date -Iseconds > docs/spikes/.git-spike-marker; } 2>/dev/null || fail "could not write the marker file"
+{ mkdir -p docs/spikes && date -u +%Y-%m-%dT%H:%M:%SZ > docs/spikes/.git-spike-marker; } 2>/dev/null || fail "could not write the marker file"
 git add docs/spikes/.git-spike-marker && git ${GIT_ID[@]+"${GIT_ID[@]}"} commit -q -m "spike: git push marker" -- docs/spikes/.git-spike-marker || fail "could not commit"
 echo "Pushing ..."
 if git push -q -u origin "$BR" 2>"$ERR"; then

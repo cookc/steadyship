@@ -23,7 +23,8 @@ minutes).
 ## Pass
 
 `RESULT: PASS`, and Claude's explanation is something the builder can
-repeat back. Paste: `| c | PASS | <date> | app: <name>; install took ~N min |`
+repeat back. Paste: `| c | PASS | <date> | app: <name>; install took <minutes> min (or "not measured") |`
+Replace every `<…>` before pasting.
 
 `RESULT: FAIL the app has errors` is **also a pass for the spike** (the
 tooling worked; the app has a real error — note it in the app's

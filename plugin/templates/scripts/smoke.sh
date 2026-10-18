@@ -8,8 +8,14 @@ if [ -z "$APP" ]; then
   echo "RESULT: FAIL no app given (expected a path to index.html or a URL)"
   exit 1
 fi
-BROWSERS="${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}"
-if [ ! -d node_modules/@playwright ] || ! ls -d "$BROWSERS"/chromium* >/dev/null 2>&1; then
+have_browser() {
+  local d
+  for d in "${PLAYWRIGHT_BROWSERS_PATH:-}" "$HOME/.cache/ms-playwright" "$HOME/Library/Caches/ms-playwright"; do
+    [ -n "$d" ] && ls -d "$d"/chromium* >/dev/null 2>&1 && return 0
+  done
+  return 1
+}
+if [ ! -d node_modules/@playwright ] || ! have_browser; then
   echo "Installing test tools (first run only)..."
   if [ ! -d node_modules/@playwright ]; then
     OUT="$(npm install --no-audit --no-fund 2>&1)" || { echo "$OUT" | tail -3 | sed 's/^/  /'; echo "RESULT: FAIL could not install test tools (npm)"; exit 1; }

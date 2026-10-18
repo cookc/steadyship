@@ -11,6 +11,9 @@ fail() { echo "RESULT: FAIL $*"; exit 1; }
 
 TARGET="${1:-}"; shift || true
 [ -n "$TARGET" ] || fail "no target directory given"
+if printf '%s' "$TARGET" | grep -Eq '^[A-Za-z]:[\\/]'; then
+  fail "Windows-style paths cannot be used here — give the folder as this environment sees it (ask Claude to run pwd)"
+fi
 BUSINESS=""; SETUP_OWNER=""; SPONSOR=""; GITHUB_OWNER=""; REPO_NAME=""; SHARED_DRIVE=""; DO_GIT=1
 need() { [ $# -ge 2 ] || fail "$1 needs a value"; case "$2" in --*) fail "$1 needs a value (got $2)";; esac; }
 while [ $# -gt 0 ]; do
@@ -40,8 +43,12 @@ fi
 mkdir -p "$TARGET" || fail "could not create $TARGET"
 TARGET="$(cd "$TARGET" && pwd)"
 
+for req in .gitignore .gitattributes .github/workflows/validate.yml; do
+  [ -f "$TEMPLATES/$req" ] || fail "template is incomplete (missing $req) — reinstall the Steadyship plugin"
+done
+
 echo "Copying templates (version $VERSION) into $TARGET ..."
-( cd "$TEMPLATES" && tar cf - . ) | ( cd "$TARGET" && tar xf - ) || fail "copy failed"
+( cd "$TEMPLATES" && tar cf - --exclude=node_modules --exclude=.git . ) | ( cd "$TARGET" && tar xf - ) || fail "copy failed"
 
 # Substitute placeholders. Values are escaped for sed's replacement side (\, &, |).
 esc() { printf '%s' "$1" | sed -e 's/[\\&|]/\\&/g'; }
@@ -69,6 +76,12 @@ if grep -rnE '\{\{[A-Z_]+\}\}' "$TARGET" --exclude-dir=.git >/dev/null 2>&1; the
   fail "unfilled placeholders remain (listed above)"
 fi
 find "$TARGET" -name '*.sh' -exec chmod +x {} +
+
+# Manifest of what the templates generated (for future upgrades).
+if command -v sha256sum >/dev/null 2>&1; then SHA="sha256sum"; else SHA="shasum -a 256"; fi
+mkdir -p "$TARGET/.steadyship" || fail "could not create .steadyship"
+( cd "$TARGET" && find . -type f ! -path './.steadyship/*' ! -path './.git/*' -print | sed 's|^\./||' | LC_ALL=C sort \
+    | while IFS= read -r f; do $SHA "$f"; done > .steadyship/manifest ) || fail "could not write manifest"
 
 if [ "$DO_GIT" = "1" ]; then
   echo "Creating the first commit ..."

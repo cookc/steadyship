@@ -8,7 +8,7 @@ DIR="${1:-}"
 MARK="$DIR/steadyship-spike-$(date +%s).txt"
 echo "Listing $DIR ..."; ls -1 "$DIR" | head -5 | sed 's/^/  /'
 echo "Writing a test file ..."
-echo "steadyship spike $(date -Iseconds)" > "$MARK" 2>/dev/null || { echo "RESULT: FAIL could read but not write: $DIR"; exit 1; }
+echo "steadyship spike $(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$MARK" 2>/dev/null || { echo "RESULT: FAIL could read but not write: $DIR"; exit 1; }
 echo "Reading it back ..."
 grep -q 'steadyship spike' "$MARK" || { echo "RESULT: FAIL wrote a file but could not read it back"; exit 1; }
 rm -f "$MARK" || { echo "RESULT: FAIL could not delete the test file (remove $MARK by hand)"; exit 1; }
