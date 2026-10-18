@@ -1,0 +1,13 @@
+item,kind,price_nzd_ex_gst,effective_from
+WB 6.2 Workboat,model,86500,2026-01-01
+WB 7.8 Workboat,model,124000,2026-01-01
+D 3.6 Dinghy,model,14800,2026-01-01
+D 4.2 Dinghy,model,18900,2026-01-01
+P 7.5 Pilot,model,139500,2026-01-01
+Bimini top,option,3450,2026-09-01
+Trailer,option,6250,2026-09-01
+Second outboard bracket,option,1250,2026-01-01
+Nav light package,option,980,2026-01-01
+Helm seat pedestal,option,1180,2026-01-01
+Anchor winch,option,2150,2026-01-01
+Custom paint colour,option,1900,2026-01-01

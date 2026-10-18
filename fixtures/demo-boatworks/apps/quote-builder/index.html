@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Boatworks - Quote Builder</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; }
+  header { background: #0b3d5c; color: #fff; padding: .6rem 1rem; }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  main { max-width: 760px; margin: 1rem auto; padding: 0 1rem; }
+  label { display: block; margin: .6rem 0 .2rem; font-weight: bold; }
+  select, input { padding: .3rem; font-size: 1rem; }
+  .opt { display: flex; justify-content: space-between; padding: .2rem 0; }
+  .total { font-size: 1.3rem; margin: 1rem 0; }
+  button { background: #0b3d5c; color: #fff; border: 0; padding: .5rem 1rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; background: #fff; }
+  td, th { border: 1px solid #ccc; padding: .3rem .5rem; text-align: left; }
+</style>
+</head>
+<body>
+<header><h1>Quote Builder</h1></header>
+<main>
+  <label for="cust">Customer</label>
+  <select id="cust"></select>
+  <label for="model">Model</label>
+  <select id="model"></select>
+  <label>Options</label>
+  <div id="opts"></div>
+  <div class="total">Subtotal <span id="sub"></span> &middot; GST <span id="gst"></span> &middot; <b>Total <span id="tot"></span></b></div>
+  <button id="save">Save quote</button>
+  <h2>Saved quotes</h2>
+  <table><thead><tr><th>Quote</th><th>Date</th><th>Customer</th><th>Model</th><th>Total</th></tr></thead><tbody id="saved"></tbody></table>
+</main>
+<script>
+  // price list - updated by Morgan, copy of the spreadsheet
+  const customers = ['Harbour Services Ltd', 'Southern Charters Ltd', 'Tasman District Council', 'Kaipara Fishing Co Ltd', 'Fiordland Eco Tours Ltd', 'Port Nelson Pilots Ltd'];
+  const models = {
+    'WB 6.2 Workboat': 86500,
+    'WB 7.8 Workboat': 124000,
+    'D 3.6 Dinghy': 14800,
+    'D 4.2 Dinghy': 18900,
+    'P 7.5 Pilot': 139500,
+  };
+  const options = {
+    'Bimini top': 3200,
+    'Trailer': 5800,
+    'Second outboard bracket': 1250,
+    'Nav light package': 980,
+    'Helm seat pedestal': 1180,
+    'Anchor winch': 2150,
+    'Custom paint colour': 1900,
+  };
+  const GST = 0.15;
+
+  function money(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  const $ = id => document.getElementById(id);
+  for (const c of customers) $('cust').add(new Option(c));
+  for (const m of Object.keys(models)) $('model').add(new Option(m));
+  for (const [name, price] of Object.entries(options)) {
+    const d = document.createElement('div');
+    d.className = 'opt';
+    d.innerHTML = `<label style="font-weight:normal;margin:0"><input type="checkbox" data-name="${name}"> ${name}</label><span>${money(price)}</span>`;
+    $('opts').appendChild(d);
+  }
+
+  function calc() {
+    let sub = models[$('model').value];
+    document.querySelectorAll('#opts input:checked').forEach(cb => { sub += options[cb.dataset.name]; });
+    const gst = sub * GST;
+    $('sub').textContent = money(sub);
+    $('gst').textContent = money(gst);
+    $('tot').textContent = money(sub + gst);
+    return sub + gst;
+  }
+
+  function showSaved() {
+    const quotes = JSON.parse(localStorage.getItem('quotes') || '[]');
+    $('saved').innerHTML = quotes.map(q =>
+      `<tr><td>${q.no}</td><td>${q.date}</td><td>${q.customer}</td><td>${q.model}</td><td>${money(q.total)}</td></tr>`).join('');
+  }
+
+  $('save').onclick = () => {
+    const quotes = JSON.parse(localStorage.getItem('quotes') || '[]');
+    quotes.push({
+      no: 'Q-2026-' + String(32 + quotes.length).padStart(3, '0'),
+      date: new Date().toISOString().slice(0, 10),
+      customer: $('cust').value,
+      model: $('model').value,
+      total: calc(),
+    });
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+    showSaved();
+  };
+
+  document.addEventListener('change', calc);
+  calc();
+  showSaved();
+</script>
+</body>
+</html>

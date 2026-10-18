@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Boatworks - Job Board</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #eef1f4; }
+  header { background: #0b3d5c; color: #fff; padding: .6rem 1rem; }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  .board { display: flex; gap: .6rem; padding: 1rem; overflow-x: auto; }
+  .col { background: #fff; min-width: 170px; border-radius: 4px; padding: .5rem; }
+  .col h2 { font-size: 1rem; margin: 0 0 .5rem; border-bottom: 2px solid #0b3d5c; }
+  .card { border: 1px solid #ccc; border-radius: 3px; padding: .3rem; margin-bottom: .4rem; font-size: .9rem; }
+  .card small { color: #555; display: block; }
+  .card button { margin-top: .2rem; font-size: .75rem; }
+  .overdue { border-color: #c0392b; }
+</style>
+</head>
+<body>
+<header><h1>Job Board</h1></header>
+<div class="board" id="board"></div>
+<script>
+  // copied from Jobs.csv - Sam
+  const stages = ['Order', 'Cut & fold', 'Weld', 'Fit out', 'Paint', 'Delivery'];
+  const jobs = [
+    { job: 'J-1038', customer: 'Southern Charters', stage: 'Delivery', due: '2026-10-23' },
+    { job: 'J-1039', customer: 'Tasman District Council', stage: 'Paint', due: '2026-10-30' },
+    { job: 'J-1040', customer: 'Kaipara Fishing Co', stage: 'Paint', due: '2026-11-06' },
+    { job: 'J-1041', customer: 'Harbour Services', stage: 'Weld', due: '2026-11-13' },
+    { job: 'J-1042', customer: 'Fiordland Eco Tours', stage: 'Weld', due: '2026-11-27' },
+    { job: '1043', customer: 'Port Nelson Pilots', stage: 'Weld', due: '2026-12-04' },
+    { job: 'J-1044', customer: 'Harbour Services', stage: 'Cut & fold', due: '2026-12-11' },
+    { job: 'J-1045', customer: 'Southern Charters', stage: 'Order', due: '2026-12-18' },
+  ];
+
+  const moved = JSON.parse(localStorage.getItem('jobboard_stages') || '{}');
+  const today = new Date().toISOString().slice(0, 10);
+
+  function draw() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+    for (const s of stages) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `<h2>${s}</h2>`;
+      for (const j of jobs.filter(j => (moved[j.job] || j.stage) === s)) {
+        const card = document.createElement('div');
+        card.className = 'card' + (j.due < today ? ' overdue' : '');
+        card.innerHTML = `<b>${j.job}</b><small>${j.customer}</small><small>Due ${j.due}</small>`;
+        const i = stages.indexOf(s);
+        if (i < stages.length - 1) {
+          const b = document.createElement('button');
+          b.textContent = 'Move to ' + stages[i + 1];
+          b.onclick = () => {
+            moved[j.job] = stages[i + 1];
+            localStorage.setItem('jobboard_stages', JSON.stringify(moved));
+            draw();
+          };
+          card.appendChild(b);
+        }
+        col.appendChild(card);
+      }
+      board.appendChild(col);
+    }
+  }
+  draw();
+</script>
+</body>
+</html>

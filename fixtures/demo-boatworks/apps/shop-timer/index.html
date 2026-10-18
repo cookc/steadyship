@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Timer</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f2f2f2; }
+  header { background: #0c3c5a; color: #fff; padding: .6rem 1rem; }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  main { max-width: 520px; margin: 1rem auto; padding: 0 1rem; }
+  .job { background: #fff; padding: .8rem; margin-bottom: .6rem; display: flex; justify-content: space-between; align-items: center; }
+  .job.running { outline: 3px solid #27ae60; }
+  .clock { font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+  button { font-size: 1rem; padding: .5rem 1rem; }
+</style>
+</head>
+<body>
+<header><h1>Shop Timer</h1></header>
+<main>
+  <p>Tap Start when you begin on a job, Stop when you finish.</p>
+  <div id="list"></div>
+</main>
+<script>
+  const jobs = [
+    { no: 'J-1040', name: 'Kaipara WB 6.2' },
+    { no: 'J-1041', name: 'Harbour WB 6.2' },
+    { no: 'J-1042', name: 'Fiordland WB 7.8' },
+  ];
+
+  // timers = { 'J-1040': seconds, running: { job, startedAt } }
+  let timers = JSON.parse(localStorage.getItem('timers') || '{}');
+
+  function save() { localStorage.setItem('timers', JSON.stringify(timers)); }
+
+  function fmt(sec) {
+    const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+    return [h, m, s].map(x => String(x).padStart(2, '0')).join(':');
+  }
+
+  function elapsed(no) {
+    let t = timers[no] || 0;
+    if (timers.running && timers.running.job === no) t += Math.floor((Date.now() - timers.running.startedAt) / 1000);
+    return t;
+  }
+
+  function toggle(no) {
+    const r = timers.running;
+    if (r) {
+      timers[r.job] = elapsed(r.job);
+      timers.running = null;
+      if (r.job === no) { save(); draw(); return; }
+    }
+    timers.running = { job: no, startedAt: Date.now() };
+    save();
+    draw();
+  }
+
+  function draw() {
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    for (const j of jobs) {
+      const on = timers.running && timers.running.job === j.no;
+      const d = document.createElement('div');
+      d.className = 'job' + (on ? ' running' : '');
+      d.innerHTML = `<div><b>${j.no}</b><br>${j.name}</div><div class="clock">${fmt(elapsed(j.no))}</div>`;
+      const b = document.createElement('button');
+      b.textContent = on ? 'Stop' : 'Start';
+      b.onclick = () => toggle(j.no);
+      d.appendChild(b);
+      list.appendChild(d);
+    }
+  }
+  setInterval(draw, 1000);
+  draw();
+</script>
+</body>
+</html>

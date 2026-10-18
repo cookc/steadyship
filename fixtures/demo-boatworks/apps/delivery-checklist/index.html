@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery Checklist</title>
+<style>
+  body { font-family: Verdana, sans-serif; margin: 0; background: #f6f6f6; }
+  header { background: #0a3d62; color: #fff; padding: .6rem 1rem; }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  main { max-width: 600px; margin: 1rem auto; padding: 0 1rem; }
+  select { font-size: 1rem; padding: .3rem; }
+  li { list-style: none; padding: .35rem 0; font-size: 1.05rem; }
+  ul { padding: 0; }
+  .done { color: #27ae60; font-weight: bold; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<header><h1>Delivery Checklist</h1></header>
+<main>
+  <select id="job"></select>
+  <p id="who"></p>
+  <ul id="items"></ul>
+  <div class="done" id="status"></div>
+</main>
+<script>
+  const jobs = [
+    { job: 'J-1038', customer: 'Southern Charters', model: 'WB 7.8 Workboat' },
+    { job: 'J-1039', customer: 'Tasman District Council', model: 'D 4.2 Dinghy' },
+    { job: 'J-1040', customer: 'Kaipara Fishing Co Ltd', model: 'WB 6.2 Workboat' },
+    { job: 'J-1041', customer: 'Harbour Svcs Ltd', model: 'WB 6.2 Workboat' },
+  ];
+  const checklist = [
+    'Hull number stamped and photographed',
+    'Welds inspected, no pinholes',
+    'Fuel system tested, no leaks',
+    'Nav lights and electrics working',
+    'Bilge pump tested',
+    'Outboard fitted and test-run',
+    'Paint and antifoul finish checked',
+    'Trailer fitted and lights tested (if ordered)',
+    'Owner manual and warranty card in the boat',
+    'Final clean done',
+  ];
+
+  const sel = document.getElementById('job');
+  for (const j of jobs) sel.add(new Option(j.job));
+
+  function draw() {
+    const j = jobs.find(x => x.job === sel.value);
+    const key = 'checklist-' + j.job;
+    const ticks = JSON.parse(localStorage.getItem(key) || '[]');
+    document.getElementById('who').textContent = j.customer + ' - ' + j.model;
+    const ul = document.getElementById('items');
+    ul.innerHTML = '';
+    checklist.forEach((text, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<label><input type="checkbox" ${ticks.includes(i) ? 'checked' : ''}> ${text}</label>`;
+      li.querySelector('input').onchange = e => {
+        const t = JSON.parse(localStorage.getItem(key) || '[]').filter(x => x !== i);
+        if (e.target.checked) t.push(i);
+        localStorage.setItem(key, JSON.stringify(t));
+        draw();
+      };
+      ul.appendChild(li);
+    });
+    document.getElementById('status').textContent =
+      ticks.length === checklist.length ? 'Ready for delivery' : ticks.length + ' of ' + checklist.length + ' done';
+  }
+  sel.onchange = draw;
+  draw();
+</script>
+</body>
+</html>

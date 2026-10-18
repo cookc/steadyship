@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Boatworks - Parts List</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; }
+  header { background: #0b3d5c; color: #fff; padding: .5rem 1rem; }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  main { max-width: 800px; margin: 1rem auto; padding: 0 1rem; }
+  select { font-size: 1rem; padding: .3rem; margin-bottom: 1rem; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  td, th { border: 1px solid #ccc; padding: .3rem .5rem; text-align: left; }
+  td.n { text-align: right; }
+  tfoot td { font-weight: bold; }
+</style>
+</head>
+<body>
+<header><h1>Parts List by Model</h1></header>
+<main>
+  <select id="model"></select>
+  <table>
+    <thead><tr><th>Code</th><th>Description</th><th>Qty</th><th>Unit</th><th>Line</th></tr></thead>
+    <tbody id="rows"></tbody>
+    <tfoot><tr><td colspan="4">Parts total</td><td class="n" id="total"></td></tr></tfoot>
+  </table>
+</main>
+<script>
+  const parts = {
+    AL50833: { desc: '5083 plate 3mm 2400x1200', cost: 312.5 },
+    AL50835: { desc: '5083 plate 5mm 2400x1200', cost: 518 },
+    AL50836: { desc: '5083 plate 6mm 2400x1200', cost: 612 },
+    SSBOLTM8: { desc: 'Stainless bolt M8x30 (box 50)', cost: 38.4 },
+    NAVLTRG: { desc: 'Nav light red/green pair', cost: 129 },
+    HELMSEAT01: { desc: 'Helm seat pedestal', cost: 486 },
+    OBBRKTWB: { desc: 'Outboard transom bracket kit', cost: 265 },
+    FUELTK120: { desc: 'Alloy fuel tank 120L', cost: 725 },
+  };
+  const bom = {
+    'WB 6.2': { AL50833: 6, AL50835: 9, AL50836: 4, SSBOLTM8: 3, NAVLTRG: 1, HELMSEAT01: 1, OBBRKTWB: 1, FUELTK120: 1 },
+    'WB 7.8': { AL50833: 8, AL50835: 12, AL50836: 6, SSBOLTM8: 4, NAVLTRG: 1, HELMSEAT01: 2, OBBRKTWB: 2, FUELTK120: 1 },
+    'D 3.6': { AL50833: 3, AL50835: 1, SSBOLTM8: 1, NAVLTRG: 1, OBBRKTWB: 1 },
+    'D 4.2': { AL50833: 4, AL50835: 2, SSBOLTM8: 1, NAVLTRG: 1, OBBRKTWB: 1 },
+    'P 7.5': { AL50833: 7, AL50835: 11, AL50836: 6, SSBOLTM8: 4, NAVLTRG: 2, HELMSEAT01: 2, OBBRKTWB: 2, FUELTK120: 1 },
+  };
+
+  function money(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  const sel = document.getElementById('model');
+  for (const m of Object.keys(bom)) sel.add(new Option(m));
+  sel.value = localStorage.getItem('pl_model') || 'WB 6.2';
+
+  function draw() {
+    localStorage.setItem('pl_model', sel.value);
+    let total = 0;
+    document.getElementById('rows').innerHTML = Object.entries(bom[sel.value]).map(([code, qty]) => {
+      const p = parts[code];
+      total += qty * p.cost;
+      return `<tr><td>${code}</td><td>${p.desc}</td><td class="n">${qty}</td><td class="n">${money(p.cost)}</td><td class="n">${money(qty * p.cost)}</td></tr>`;
+    }).join('');
+    document.getElementById('total').textContent = money(total);
+  }
+  sel.onchange = draw;
+  draw();
+</script>
+</body>
+</html>
