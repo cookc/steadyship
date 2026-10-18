@@ -13,11 +13,20 @@ local session, `steadyship` folder attached.
    repository access = only `steadyship`; permissions = Contents: Read and
    write; expiry 30 days. Copy it.
 2. In a Claude session with the folder attached, ask Claude:
-   "Set the git remote to https://github.com/<owner>/steadyship.git and
+   "Set the git remote to https://github.com/cookc/steadyship.git and
    configure `git config credential.helper store`. Then run
    `git ls-remote origin` and when it asks for a password I'll give you the
    token." Give the token when prompted. (The token now sits in the VM's
    `~/.git-credentials`. It is scoped to one repo and expires in 30 days.)
+   **The token passes through the chat** and so sits in the transcript and
+   tool logs. Tell Claude never to put it in a URL, a file or the remote
+   (a token in the remote URL lands in `.git/config` on the builder's
+   disk). Revoke the token after the spike; the 30-day expiry is only the
+   backstop.
+   **Safer alternative:** Chris opens a terminal he controls inside the VM
+   and runs `git credential approve` (or `git credential-store store`),
+   entering `protocol=https`, `host=github.com`, `username=cookc` and
+   `password=<token>`, so the token never enters the conversation.
 3. Ask: "Run `git ls-remote --heads origin`" — expected: a list of branches.
 
 ## Builder runs

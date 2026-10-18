@@ -26,9 +26,12 @@ Steadyship work in plain language for a non-technical reader.
 
    Apps assessed: N (list each as "name — stage — relied on by").
    Spikes: X passed, Y failed, Z not yet run.
-   Next step: (the first blank spike in RESULTS.md, or, if any row is
-   FAIL, 'Review the failed spike(s) with Chris: <letters>', or if all are
-   filled, "Review RESULTS.md with Chris and decide week 3.")
+   Next step: if any spike row is blank, "Run spike <first blank letter>"
+   and, if any row is FAIL, add "then review the failed spike(s) with
+   Chris: <letters>". If no rows are blank and any is FAIL: "Review the
+   failed spike(s) with Chris: <letters>". If all rows are PASS: "Review
+   RESULTS.md with Chris and decide week 3." (If RESULTS.md is missing,
+   see step 3.)
 
 ## Rules
 

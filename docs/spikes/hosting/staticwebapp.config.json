@@ -2,16 +2,12 @@
   "routes": [
     { "route": "/.auth/login/aad", "allowedRoles": ["anonymous", "authenticated"] },
     { "route": "/.auth/logout", "allowedRoles": ["anonymous", "authenticated"] },
+    { "route": "/.auth/login/github", "statusCode": 404 },
+    { "route": "/.auth/login/twitter", "statusCode": 404 },
     { "route": "/*", "allowedRoles": ["staff"] }
   ],
   "responseOverrides": {
     "401": { "redirect": "/.auth/login/aad", "statusCode": 302 }
-  },
-  "auth": {
-    "identityProviders": {
-      "github": { "enabled": false },
-      "twitter": { "enabled": false }
-    }
   },
   "navigationFallback": { "rewrite": "/index.html" }
 }
