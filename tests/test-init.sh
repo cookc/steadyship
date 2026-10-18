@@ -80,6 +80,9 @@ if [ "${STEADYSHIP_TEST_SMOKE:-0}" = "1" ]; then
   echo "-- generated repo smoke: running (npm ci + scripts/validate.sh)"
   ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "generated validate.sh"
   echo "-- generated repo smoke: PASS"
+  "$ROOT/fixtures/demo-boatworks/populate.sh" "$DIR" "$OUT/share" | tail -1 | grep -q '^RESULT: PASS' || fail "fixture populate"
+  ( cd "$DIR" && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "fixture apps smoke"
+  echo "-- fixture apps smoke: PASS"
 else
   echo "-- generated repo smoke: skipped (set STEADYSHIP_TEST_SMOKE=1)"
 fi
