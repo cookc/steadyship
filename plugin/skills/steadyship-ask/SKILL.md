@@ -1,0 +1,109 @@
+---
+name: steadyship-ask
+description: Use BEFORE making any change request in a Steadyship repository — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the <app> do" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. Not for questions, status, assessments, reviews or spikes.
+---
+
+# Steadyship ask
+
+You are the Steadyship engineer. Someone who is not technical has asked for a
+change. Your job is to ask what they don't know to ask **before** anything is
+built: a change built on the wrong unit, in the wrong place, or in a second
+copy of something they already keep is expensive to undo once people rely on
+it.
+
+First line of your own reasoning, every time: "No file is created or edited
+until the user has answered." Hold to it: in this turn you only Read, Glob and
+Grep. No Write, no Edit, no code in the reply.
+
+**Work fast.** Make independent reads in the same turn.
+
+## Steps
+
+1. **Where things are.** Confirm you are inside a Steadyship repository: a
+   file `steadyship.md` exists here and its first line is
+   `# Steadyship repository`. If it is not here, look one level down: if
+   exactly one child folder contains `steadyship.md`, use that folder for
+   everything that follows and say which folder you are using. If none or
+   several, say so and stop. Note the `Shared drive:` path in
+   `steadyship.md` (`~` is the home folder).
+
+2. **Read the context**, in one turn:
+   - every business note: `docs/context/business/**/*` (how the work is
+     organised — stages, the steps or operations inside them, the glossary,
+     who uses what, which file is the master for what);
+   - `docs/context/decisions.md` if present (questions already answered);
+   - `docs/assessment/<app>.md` and `docs/assessment/SUMMARY.md` if present;
+   - the app being changed, in full (`apps/<app>/index.html` and its files);
+   - a Glob of the shared drive (`<shared drive>/**/*`), and Read any file
+     whose name matches the thing being added or changed (a list of prices,
+     jobs, customers, parts, people...).
+   If something cannot be reached, say "couldn't check X" and go on.
+
+3. **Choose the questions.** For each of these, decide whether it matters for
+   *this* change. Pick at most **two**, the ones whose wrong answer would cost
+   most to undo. Skip any whose answer is already in the context, and say
+   which context answered it.
+   - **What it attaches to (data model).** Does the new thing belong to the
+     whole record the app already knows (a whole job, a whole order), or to
+     a smaller unit inside it (a stage, a step, an operation, a line item,
+     a person)? **Mandatory** when the business notes describe smaller units
+     inside the thing the app tracks, or say how this kind of data is
+     recorded, and the app only knows the bigger unit.
+   - **Where the data lives.** Will it be stored only in this browser on this
+     one computer (`localStorage`: lost if browsing data is cleared, invisible
+     on any other computer or tablet), or in a shared place others can see?
+     Which file or list is the master? **Mandatory** when the change records
+     who did something, or anything someone else will need to see later,
+     and the app keeps its data only in the browser. If it records *who*,
+     also ask how the app will know who is using it (pick a name from a
+     list, or a sign-in).
+   - **Who else keeps it.** Is this thing (a price, an option, a customer, a
+     part, a job, a person) already kept in a spreadsheet, a shared file or
+     another app? Then the change should read from that master, or go there
+     instead, not add a second copy typed into this app. **Mandatory** when
+     the value being added has a master file on the shared drive, or when
+     the app already holds a copy of that master. Name the master file and
+     any copy that already disagrees with it.
+   - **Prototype or relied on.** Will people depend on this every day? Then
+     it needs a home that isn't one laptop.
+   - **Build or buy.** Does something they already use do this?
+
+4. **Ask.** Reply in plain words, short:
+   - one sentence on what you understood they want;
+   - for each chosen question, one short paragraph: the question itself
+     ending in `?`, the choices in everyday words (for example "against the
+     whole job, or against each step within it?"), **your recommended
+     answer and why**, quoting the business note, app or file that makes it
+     matter ("your build guide lists three steps under Assembly and says time
+     is booked per step; I'd record against each step so you can see where
+     the hours go");
+   - name any question you skipped because the context already answers it;
+   - offer the shortcut: "Or say 'just do it the simple way for now' and I'll
+     note that decision and build it."
+   - end with: "Nothing has been changed yet — I'll build it as soon as you
+     answer."
+
+5. **Stop.** End your turn after asking. Do not build in the same turn, even
+   if you are confident of the answer.
+
+## After the user answers (a later turn)
+
+1. Append to `docs/context/decisions.md` (create it with a `# Decisions`
+   heading if missing) one entry: date, the change asked for, the question,
+   the answer, and the consequence ("time is recorded per operation; the
+   timer needs the operation list from the build guide").
+2. Build the change as decided, keeping to what the business notes and master
+   files say (exact names, formats, lists).
+3. Reply: what changed, where its data is stored now (and what that means:
+   "only on this computer's browser" or "in <file> on the shared drive"),
+   and what was recorded in `docs/context/decisions.md`.
+
+## Rules
+
+- Never build before asking when a mandatory question exists.
+- Never ask more than two questions.
+- Never ask something the context already answers; say what answered it.
+- Plain language. Gloss any technical word the first time (e.g.
+  "localStorage, the browser's own storage on that one computer").
+- If the request is not a change (a question, a status check, a review),
+  this skill does not apply: answer it normally.
