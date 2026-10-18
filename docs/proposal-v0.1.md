@@ -193,6 +193,10 @@ artefact if it follows that advice away from Steadyship.
 - Anthropic routes "run tests, open a PR" to the Code tab and is merging
   Cowork into plain Claude. Expect UI churn; keep enforcement in scripts
   and CI.
+- The product repository (plugin, templates, init skill) and each
+  business's repository are separate. `steadyship-init` generates the
+  latter from the former; the business owns it; it works with the plugin
+  uninstalled. A standing demo customer repository exercises the same path.
 
 ## 7. Architecture: staged, and the coach decides when
 
@@ -277,6 +281,9 @@ On the partner's real Windows machine and Team account:
   behind Entra sign-in, opened by a second staff member.
 - **(e) Plugin:** a private-marketplace plugin set to "Installed by
   default" appears for a second Team member without their action.
+
+Before going on-site, rehearse per `docs/rehearsal.md` (Linux, then a Mac
+with Claude desktop); only Windows-specific items remain for the visit.
 
 Alongside, Chris assesses every app by hand: what it is, who relies on it,
 where its data is, what it duplicates, what's exposed. This is the ground

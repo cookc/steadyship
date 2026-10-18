@@ -63,6 +63,10 @@ git init -q --bare "$OUT/bare.git"
 ( cd "$DIR" && git remote add origin "$OUT/bare.git" && scripts/spikes/git-push.sh | tail -1 | grep -q '^RESULT: PASS' ) || fail "git-push in generated repo"
 
 if [ "${STEADYSHIP_TEST_SMOKE:-0}" = "1" ]; then
+  echo "-- generated repo smoke: running (npm ci + scripts/validate.sh)"
   ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "generated validate.sh"
+  echo "-- generated repo smoke: PASS"
+else
+  echo "-- generated repo smoke: skipped (set STEADYSHIP_TEST_SMOKE=1)"
 fi
 echo "test-init: OK"
