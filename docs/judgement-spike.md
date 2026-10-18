@@ -114,6 +114,8 @@ per arm. Later skill iterations append a row.
 |---|---|---|---|---|---|---|---|
 | 2026-10-19 baseline | 0.2.0 (no assess/ask/review skills) | with | 23 (ran as 22) — fail | built (Edit) / no — fail | 5 / no — fail | 0 | 192 s, $0.65 both arms |
 | 2026-10-19 baseline | — | without | 20 (ran as 19) — fail | built (Edit) / no — fail | 5 / no — fail | 0 | (same run) |
+| 2026-10-19 assess iter 1 (S1 only, `--runs 2 --ablation none`) | 0.3.0 (steadyship-assess v0) | with | 25, 26 — pass both; no-peek ✓ | — | — | S1 2/2 | 302 s, $0.82 |
+| 2026-10-19 assess iter 1, S3 check (`--runs 1 --ablation none`) | 0.3.0 | with | — | — | 6 / no — fail | — | 25 s, $0.08 |
 
 Notes on the baseline (run `20261018T230900Z`, Claude Code 2.1.303, sonnet, 1 run per case per arm):
 
@@ -138,3 +140,27 @@ Notes on the baseline (run `20261018T230900Z`, Claude Code 2.1.303, sonnet, 1 ru
 - **Arms are indistinguishable**, as expected: v0.2.0 has no judgement skills.
   One run each is noise-level. Use `--runs 3` before you call a skill
   iteration a win.
+
+Notes on assess iteration 1 (runs `20261018T232012Z` S1, `20261018T232538Z` S3; without arm unchanged from the baseline, 20):
+
+- **What changed:** new skill `steadyship-assess` v0: a nine-step procedure.
+  It reads every app, business note and shared-drive file (sub-folders too).
+  Then it cross-references each concept against a checklist of difference
+  kinds, checks values item by item (including saved quotes against the
+  current price list), looks for copied code (functions, `toISOString`, header
+  CSS) and writes `docs/assessment/`. The reply has a fixed shape, and every
+  bullet must stand on its own line. Target met on the first iteration, so I
+  stopped there.
+- **S1 misses:** `c3`, `c9` and `d20` in both runs, plus `d16` in run 1. The
+  replies contain all four findings, but the regexes miss them. The quote
+  findings sit in sub-bullets under a "Quote Q-2026-031" heading. The hull
+  number is written as "nothing stores it" or "doesn't store the number". The
+  model short name is on a line of its own, away from "in full". These are
+  phrasing misses, not missing knowledge.
+- **Workspace:** both runs wrote all six `docs/assessment/<app>.md` files and
+  filled in `SUMMARY.md` (checked with `--keep-temp`). They left the
+  `_sample` stand-in app out as not real.
+- **S3:** risks 6/6 (up from 5; sign-in now named). The agent still did not
+  open `Jobs.csv` or name J-1039/J-1041, the same as the baseline. The assess
+  skill did not trigger on the review question. A review skill is what would
+  move this.
