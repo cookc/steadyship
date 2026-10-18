@@ -16,7 +16,10 @@ me, then delete it."
 
 Part 2 — type: `run spike b` and when asked for the path, give the folder
 name as you attached it (Claude will work out how the VM sees it; if it
-can't, that is the finding).
+can't, that is the finding). Without the plugin: "Run
+`bash scripts/spikes/nas-rw.sh <the folder path>` and tell me in plain
+language whether it passed." The script lists the first five file names in
+the folder, which will appear in the chat.
 
 ## What Claude does
 

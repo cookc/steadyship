@@ -9,8 +9,13 @@ different accounts, ideally two machines.
 
 ## Steps (owner)
 
-1. Install the Claude GitHub App on the private `steadyship` repo
-   (GitHub → Settings → Applications → Claude → repository access).
+1. **Chris** (the repo is under `cookc`): install the Claude GitHub App on
+   the private `steadyship` repo (GitHub → Settings → Applications →
+   Claude → repository access). Alternative: move the repo to a
+   partner-owned GitHub organisation later, so the Team owner can do this.
+
+Then the **Team owner**:
+
 2. Claude desktop → Customize → Plugins → **Add marketplace** → paste the
    GitHub repo URL. The marketplace named `steadyship` should appear.
 3. Find plugin `steadyship` → Default access → **Installed by default**.

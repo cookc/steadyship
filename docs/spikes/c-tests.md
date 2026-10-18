@@ -25,9 +25,12 @@ minutes).
 `RESULT: PASS`, and Claude's explanation is something the builder can
 repeat back. Paste: `| c | PASS | <date> | app: <name>; install took ~N min |`
 
-A `RESULT: FAIL the app did not load cleanly` is **also a pass for the
-spike** (the tooling worked; the app has a real error — note it in the
-app's assessment).
+`RESULT: FAIL the app has errors` is **also a pass for the spike** (the
+tooling worked; the app has a real error — note it in the app's
+assessment). Paste: `| c | PASS | <date> | tooling ok; app has real errors — note in its assessment |`
+
+Only `the app has errors` counts as a spike pass. `could not start` (test
+browser) and `could not find` (app path) are spike FAILs.
 
 ## If it fails
 

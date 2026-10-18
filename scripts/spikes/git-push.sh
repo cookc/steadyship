@@ -8,8 +8,11 @@ git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "RESULT: FAIL not 
 REMOTE="$(git remote get-url origin 2>/dev/null)" || { echo "RESULT: FAIL no 'origin' remote configured"; exit 1; }
 # Never print credentials that may be embedded in the URL.
 echo "Remote: $(printf '%s' "$REMOTE" | sed -E 's#//[^/@]*@#//#')"
+# Per-command identity only when none is configured (never persisted).
 if [ -z "$(git config user.email)" ]; then
-  git config user.email "steadyship-spike@example.invalid"; git config user.name "Steadyship spike"
+  GIT_ID=(-c user.name="Steadyship spike" -c user.email="steadyship-spike@example.invalid")
+else
+  GIT_ID=()
 fi
 BR="spike/git-$(date +%Y%m%d-%H%M%S)"
 ERR="$(mktemp)" || { echo "RESULT: FAIL could not create a temporary file"; exit 1; }
@@ -32,11 +35,12 @@ fail() { cleanup; echo "RESULT: FAIL $1"; exit 1; }
 
 echo "Checking we can read the remote ..."
 git ls-remote --heads origin >/dev/null 2>&1 || fail "cannot read the remote (no credentials or no network)"
+git diff --cached --quiet || fail "you have changes staged — ask Chris before running this spike"
 echo "Creating a throwaway branch $BR with one marker commit ..."
 git checkout -q -b "$BR" || fail "could not create a branch"
 BR_MADE=1
 { mkdir -p docs/spikes && date -Iseconds > docs/spikes/.git-spike-marker; } 2>/dev/null || fail "could not write the marker file"
-git add docs/spikes/.git-spike-marker && git commit -q -m "spike: git push marker" || fail "could not commit"
+git add docs/spikes/.git-spike-marker && git ${GIT_ID[@]+"${GIT_ID[@]}"} commit -q -m "spike: git push marker" -- docs/spikes/.git-spike-marker || fail "could not commit"
 echo "Pushing ..."
 if git push -q -u origin "$BR" 2>"$ERR"; then
   echo "Push worked. Cleaning up ..."

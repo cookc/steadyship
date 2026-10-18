@@ -12,22 +12,34 @@ local session, `steadyship` folder attached.
 1. GitHub → Settings → Developer settings → Fine-grained tokens → Generate:
    repository access = only `steadyship`; permissions = Contents: Read and
    write; expiry 30 days. Copy it.
-2. In a Claude session with the folder attached, ask Claude:
-   "Set the git remote to https://github.com/cookc/steadyship.git and
-   configure `git config credential.helper store`. Then run
-   `git ls-remote origin` and when it asks for a password I'll give you the
-   token." Give the token when prompted. (The token now sits in the VM's
-   `~/.git-credentials`. It is scoped to one repo and expires in 30 days.)
-   **The token passes through the chat** and so sits in the transcript and
-   tool logs. Tell Claude never to put it in a URL, a file or the remote
-   (a token in the remote URL lands in `.git/config` on the builder's
-   disk). Revoke the token after the spike; the 30-day expiry is only the
-   backstop.
-   **Safer alternative:** Chris opens a terminal he controls inside the VM
-   and runs `git credential approve` (or `git credential-store store`),
-   entering `protocol=https`, `host=github.com`, `username=cookc` and
-   `password=<token>`, so the token never enters the conversation.
-3. Ask: "Run `git ls-remote --heads origin`" — expected: a list of branches.
+2. In a Claude session with the folder attached, paste the token into the
+   chat once and ask Claude: "Run `git config credential.helper store`, then
+   run `git credential approve` with the details below on stdin, then run
+   `git ls-remote --heads origin`." Claude runs (its Bash tool has no
+   terminal, so it cannot be prompted for a password):
+
+   ```bash
+   git config credential.helper store
+   git credential approve <<'EOF'
+   protocol=https
+   host=github.com
+   username=cookc
+   password=<token>
+   EOF
+   git ls-remote --heads origin
+   ```
+
+   The token now sits in the VM's `~/.git-credentials`, scoped to one repo
+   and expiring in 30 days. **The token passes through the chat** and so
+   sits in the transcript and tool logs. Tell Claude never to put it in a
+   URL, a file or the remote (a token in the remote URL lands in
+   `.git/config` on the builder's disk). Revoke the token after the spike;
+   the 30-day expiry is only the backstop. V0 uses Chris's token, not the
+   builder's — a recorded deviation from proposal §11(a).
+   **Alternative, if available (unverified):** Chris opens a terminal he
+   controls inside the VM and runs `git credential approve`, entering the
+   same four lines, so the token never enters the conversation.
+The last command should list branches; if it does, setup is done.
 
 ## Builder runs
 

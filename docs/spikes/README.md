@@ -17,10 +17,15 @@ prompt to paste instead.
 
 1. Confirm the Claude desktop app is the MSIX install and Windows has
    "Virtual Machine Platform" enabled (Settings → Optional features).
-2. In Claude: Organization settings → Cowork → check "Run Cowork in the
-   cloud". Note the setting. For spikes a–c use a **local** session.
+2. In Claude: Organization settings → Cowork → make sure local sessions are
+   still allowed (the "Run Cowork in the cloud" toggle may be on, but it must
+   not force cloud-only). Spikes a–c must run in a local session; if only
+   cloud is offered, stop and tell Chris.
 3. Clone the repo onto the machine into `C:\Users\<builder>\steadyship`
-   (Chris does this once; builders never do).
+   (Chris does this once; builders never do). Prefer cloning from inside a
+   Claude session (Linux git in the VM). If cloning with Git for Windows,
+   run `git config --global core.autocrlf false` first, or the spike
+   scripts will fail with `$'\r': command not found`.
 4. Attach that folder in Claude desktop via the folder picker.
 5. Also map the NAS share to a drive letter (e.g. `Z:`) if it isn't already,
    and attach it too.

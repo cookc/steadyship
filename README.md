@@ -23,7 +23,7 @@ Weeks 1–2: spikes and hand assessment. See `docs/spikes/README.md` and
 ## Clone
 
 ```
-git clone git@github.com:cookc/steadyship.git
+git clone https://github.com/cookc/steadyship.git
 ```
 
 Install the plugin in Claude: `/plugin install steadyship --marketplace cookc/steadyship`

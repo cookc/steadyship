@@ -2,6 +2,11 @@
 
 Owner: Chris. Time box: 30 minutes per app, 1 hour for the summary.
 
+**Reviewer:** Chris
+
+0. Sponsor confirms, in writing (one line in `SUMMARY.md`), that real
+   business data may sit in the private GitHub repo under Chris's personal
+   account, and for spike d on Azure.
 1. **[ON-SITE]** With the builder, list every app they have. Include the
    half-finished ones. Write names into `SUMMARY.md` first so nothing is lost.
 2. For each app, copy its folder **unmodified** into `apps/<name>/`
@@ -14,7 +19,10 @@ Owner: Chris. Time box: 30 minutes per app, 1 hour for the summary.
    Verdict.
 5. When all apps are done, fill `SUMMARY.md`. This is the page the sponsor
    reads. No jargon.
-6. Commit: `git add apps docs/assessment && git commit -m "docs(assessment): <name>"`.
+6. If the Exposure section found anything that looks like a key, password
+   or customer PII in the code, do NOT commit that app — record it in the
+   assessment and tell the sponsor.
+7. Commit after each app, and once more after `SUMMARY.md`: `git add apps docs/assessment && git commit -m "docs(assessment): <name>"`.
 
 What a good assessment is for: the *assess* skill (week 3) must rediscover
 what you found here. Be specific about duplication and data locations;

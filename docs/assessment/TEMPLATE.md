@@ -3,8 +3,11 @@
 Copy this file to `docs/assessment/<app-name>.md`. Fill every line. If
 you don't know, write "unknown" — that is a finding.
 
-**Stage:** Prototype
-<!-- One of: Prototype | Owned tool | Proper app | Platform. See proposal §7. -->
+**Stage:** <Prototype | Owned tool | Proper app | Platform>
+<!-- Prototype = works for its builder, data inside it.
+     Owned tool = in the repo, data in an owned shared file with one writer, smoke test, named owner, hosted with sign-in.
+     Proper app = framework, build and CI.
+     Platform = shared packages/database, release process. See proposal §7. -->
 
 **Relied on by:** <who uses it, how often; "only the builder" is a valid answer>
 
@@ -26,12 +29,13 @@ you don't know, write "unknown" — that is a finding.
 
 Which of these does the app use, and does it match the glossary (if one exists yet)?
 customer / job / product / part / revision / operation / release / exception / other: ___
+For each: what does this app call it (local name)? Where is it stored (hardcoded / localStorage / file)?
 
 ## Duplication spotted
 
 Screens, logic or data that also exist in another app:
 
-- 
+- <concept or screen> — also in <app> — same data / same logic / differs how: …
 
 ## Exposure
 

@@ -20,11 +20,11 @@ Shows a list of jobs with the customer and the stage each job is at.
 
 | What | Where it lives | Who else can see it | Backed up? | Also exists in |
 |---|---|---|---|---|
-| Jobs | hardcoded in index.html | nobody | no (only in the file) | would also be in a quoting app and Jobs.xlsx |
+| Jobs | hardcoded in index.html | nobody | no (only in the file) | nowhere (single sample app) |
 
 ## Shared concepts
 
-job, customer. No glossary exists yet.
+job (local name: "job", hardcoded in index.html); customer (local name: "customer", hardcoded in index.html). No glossary exists yet.
 
 ## Duplication spotted
 
