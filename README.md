@@ -19,3 +19,11 @@ Weeks 1–2: spikes and hand assessment. See `docs/spikes/README.md` and
 ## Checks
 
 `scripts/validate.sh` runs every check CI runs.
+
+## Clone
+
+```
+git clone git@github.com:cookc/steadyship.git
+```
+
+Install the plugin in Claude: `/plugin install steadyship --marketplace cookc/steadyship`
