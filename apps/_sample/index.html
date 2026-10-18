@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sample job list</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid #999; padding: .25rem .5rem; }
+  </style>
+</head>
+<body>
+  <h1>Sample job list</h1>
+  <p>A stand-in for a partner app. Data is hardcoded, exactly like the real ones.</p>
+  <table id="jobs">
+    <thead><tr><th>Job</th><th>Customer</th><th>Stage</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    const jobs = [
+      { job: 'J-1041', customer: 'Sample Marine', stage: 'Lamination' },
+      { job: 'J-1042', customer: 'Sample Marine', stage: 'Fit-out' },
+    ];
+    const tbody = document.querySelector('#jobs tbody');
+    for (const j of jobs) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${j.job}</td><td>${j.customer}</td><td>${j.stage}</td>`;
+      tbody.appendChild(tr);
+    }
+  </script>
+</body>
+</html>

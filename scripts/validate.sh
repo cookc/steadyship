@@ -7,4 +7,6 @@ echo "== validate.sh =="
 echo "-- plugin manifests"
 claude plugin validate plugin --strict
 claude plugin validate . --strict
+echo "-- smoke test on sample app"
+scripts/smoke.sh apps/_sample/index.html
 echo "OK"
