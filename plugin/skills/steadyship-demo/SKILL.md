@@ -60,6 +60,10 @@ order, for the person to say (work from the demo folder):
 4. "run spike c, the app is job-board"
 5. "What apps do we have and where is the same information kept twice?"
 
+Then say: "From now on I'll work inside `<folder>/demo-boatworks` for this conversation; if a later answer says a folder isn't a Steadyship repository, tell me and I'll point it there."
+
+Also say: "I'm skipping spike e (plugin install across a team) and spike a (uploading to GitHub) in the demo, because the demo has no GitHub repository. If status suggests them, ignore that here." And: "The first `run spike c` installs a test browser inside this environment and can take a few minutes — that's normal."
+
 ## Rules
 
 - Never overwrite or delete existing files.

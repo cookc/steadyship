@@ -7,11 +7,23 @@ business can run on. See `docs/proposal-v0.1.md`.
 
 ## Try it in 10 minutes
 
-1. In Claude, run `/plugin marketplace add cookc/steadyship` then
-   `/plugin install steadyship@steadyship`. (The repo is private: your GitHub
-   connection needs access to it.)
-2. Attach or open a folder, then say: **"Try Steadyship with the demo business"**
-3. Then say, in order: "Run steadyship status" -> "run spike 0" -> "What apps do we have and where is the same information kept twice?"
+1. Add the Steadyship plugin. In **Claude desktop**: Customize → Plugins →
+   Add marketplace → enter `cookc/steadyship` (from GitHub) → install
+   **steadyship**. In **Claude Code**: `/plugin marketplace add cookc/steadyship`
+   then `/plugin install steadyship@steadyship`. The repository is private: the
+   GitHub account Claude is connected to must have access, or adding it fails
+   with 'not found'.
+2. Choose a folder to work in (any empty or scratch folder), then say:
+   **"Try Steadyship with the demo business"**
+3. Then say, one message at a time, in order:
+   1. "Run steadyship status"
+   2. "run spike 0"
+   3. "run spike b"
+   4. "What apps do we have and where is the same information kept twice?"
+
+The last question is answered by Claude reading the demo with Steadyship's
+context — Steadyship's own assessment skill is being built; today's baseline is
+in `docs/judgement-spike.md`.
 
 That is the whole quick start. No terminal needed.
 
@@ -26,7 +38,7 @@ happens if you say yes.
 - A repository of your own, self-contained (it works without the plugin).
 - A status check: what apps you have, what each is for, what is at risk.
 - Go/no-go "spikes": short checks of what your environment can really do.
-- An assessment path for each app, from prototype to something runnable.
+- An assessment path for each app, from prototype to something runnable (assessment skill: in progress).
 - Plain-language answers, such as where the same information is kept twice.
 
 ## Layout

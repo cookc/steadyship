@@ -11,7 +11,7 @@ Steadyship work in plain language for a non-technical reader.
 ## Steps
 
 1. Confirm you are inside a Steadyship repository: a file `steadyship.md`
-   exists here and its first line is `# Steadyship repository`. If not,
+   exists here and its first line is `# Steadyship repository`. If it is not here, look one level down: if exactly one child folder contains `steadyship.md`, use that folder for everything that follows and say which folder you are using. If none or several, say so and stop. Otherwise, if it is there but is not a Steadyship repository,
    say "This folder isn't a Steadyship repository — ask me to set one up
    (steadyship-init)" and stop.
    Then read `docs/assessment/README.md`; if it has a line starting

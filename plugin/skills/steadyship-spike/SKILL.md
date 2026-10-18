@@ -1,6 +1,6 @@
 ---
 name: steadyship-spike
-description: Use when asked to "run spike a/b/c/d/e" or "run the steadyship spike". Runs the named spike script from scripts/spikes, reports PASS or FAIL in plain language, and tells the user what to paste into docs/spikes/RESULTS.md.
+description: Use when asked to "run spike 0/a/b/c/d/e" (for example "run spike 0") or "run the steadyship spike". Runs the named spike script from scripts/spikes, reports PASS or FAIL in plain language, and tells the user what to paste into docs/spikes/RESULTS.md.
 ---
 
 # Steadyship spike runner
@@ -16,7 +16,7 @@ e (plugin), a (git), b (shared drive), c (tests), d (hosting)?" and stop.
 ## Steps
 
 0. Confirm you are inside a Steadyship repository: a file `steadyship.md`
-   exists here and its first line is `# Steadyship repository`. If not,
+   exists here and its first line is `# Steadyship repository`. If it is not here, look one level down: if exactly one child folder contains `steadyship.md`, use that folder for everything that follows and say which folder you are using. If none or several, say so and stop. Otherwise, if it is there but is not a Steadyship repository,
    say "This folder isn't a Steadyship repository" and stop.
 1. Open `docs/spikes/<letter>-*.md` and follow its "What Claude does"
    section exactly. It names the script and the inputs it needs.
@@ -41,6 +41,10 @@ e (plugin), a (git), b (shared drive), c (tests), d (hosting)?" and stop.
 
    Then: "Paste this into docs/spikes/RESULTS.md row <letter>:"
    followed by `| <letter> | PASS/FAIL | <today's date> | <one-line note> |`
+
+   Then ask: 'Shall I record that in docs/spikes/RESULTS.md for you?' If they
+   say yes, replace that spike's row (and only that row) in the table and say
+   it is recorded. Never record without a yes. The Note cell must hold no secrets.
 
 ## Rules
 
