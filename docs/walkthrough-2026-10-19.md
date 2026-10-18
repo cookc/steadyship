@@ -111,7 +111,7 @@ The plugin arm's only process-aware line was "First, run the assessment and the 
 
 **What weeks 3–5 must beat:**
 
-- **Assess.** Vanilla-opus finds 23/29 unprompted in under a minute, and vanilla-sonnet finds 20–23. The skill must hit ≥24 reliably on sonnet and write the result to `docs/assessment/`. The gap is concrete: no run compared code across apps (items 13–16), noticed "WB 6.2", or linked Q-2026-031 to the stale prices.
+- **Assess.** Vanilla-opus finds 23/29 unprompted in under a minute, and vanilla-sonnet finds 20–23. With all skills disabled ("true vanilla", below), sonnet scored 22.5 and opus 21. The skill must hit ≥24 reliably on sonnet and write the result to `docs/assessment/`. The gap is concrete: no run compared code across apps (items 13–16), noticed "WB 6.2", or linked Q-2026-031 to the stale prices.
 - **Ask.** No arm asked job-vs-operation, or mentioned browser-only storage, before building a timer feature. The ask skill's value is consulting the business docs and the assessment at request time.
 - **Review.** Both arms already say "no, keep the spreadsheet". Review must add three things: always reading the shared drive, a named stage and single writer, and sign-in.
 
@@ -124,6 +124,45 @@ The plugin arm's only process-aware line was "First, run the assessment and the 
 5. Rows are offered, never written. Pasting into a markdown table is the hardest S0 step for the target user.
 6. In S3 the plugin arm didn't read the shared drive named in `steadyship.md`. Future skills should read `Shared drive:` and look there.
 7. The baseline isn't bare. S2's identical question in both arms shows the other plugins shape behaviour. A cleaner baseline would use `--setting-sources` or a bare profile.
+
+## True vanilla (all skills disabled)
+
+Bug 7 says the vanilla arm wasn't bare. So S1–S3 were re-run with Steadyship disabled and `--disable-slash-commands`, which left every session with zero skills (`skills: []` at init). Transcripts are `true-vanilla-*.md`. The other plugins were still installed: superpowers' SessionStart hook still injected its "using-superpowers" text, but no skill could be invoked.
+
+| Scenario | Model | Time | Files changed |
+|---|---|---|---|
+| S1 | sonnet | 52 s | none |
+| S1 | opus | 58 s | none |
+| S2 | sonnet | 72 s | `apps/shop-timer/index.html` (+38 −12), plus `/tmp/t.mjs` outside the repo |
+| S3 | sonnet | 26 s | none |
+
+No run timed out. The demo repo was restored after each run.
+
+**S1** (per-row marks in the appendix):
+
+| | vanilla-sonnet | vanilla-opus | plugin-sonnet | true-vanilla-sonnet | true-vanilla-opus |
+|---|---|---|---|---|---|
+| Concepts (/9) | 7 | 8 | 8 | 8 | 7.5 |
+| Duplications (/20) | 13.5 | 15 | 15.5 | 14.5 | 13.5 |
+| **Total (/29)** | **20.5** | **23** | **23.5** | **22.5** | **21** |
+| Strict, no partials | 20 | 23 | 23 | 22 | 20 |
+| Key §4 risks (/9, full + partial) | 6 + 3½ | 6 + 1½ | 6 + 2½ | 6 + 2½ | 5 + 2½ |
+
+Neither run reached 24. Both missed the same items as before: 13–16, "WB 6.2" and Q-2026-031. Opus also missed `1043`. Both again found the duplicate next-quote-number problem. I found no untrue claims; I checked the hull-number glossary line, the "apps live on the shared drive" note and opus's "$805 (including GST)".
+
+**S2: built without asking.** "I added paint time tracking to the shop timer, in `apps/shop-timer/index.html`. I haven't committed it." It added a "Start paint" button and a paint clock per job, then checked them with a Playwright script and `scripts/validate.sh` (PASS). It raised storage and operations only after building:
+
+- "Times are still stored only in each device's browser, as before. Painters on separate tablets or phones won't see each other's times."
+- "If you also want prime, topcoat and antifoul tracked separately, that's a small extension. The business notes list those as the three steps of the paint stage."
+
+**S3: did not open the shared drive,** even though it read `steadyship.md`, which names it: "I haven't seen `Jobs.csv`. It isn't in the repo."
+
+- **Risks named:** localStorage per machine, job-number format and stage drift. The stale copy was named only generically ("copied from Jobs.csv - Sam… won't show up here"). It missed no backup and no sign-in.
+- **Verdict:** "No, it isn't good enough yet… I'd keep the spreadsheet as the source of truth for now."
+- **Next step:** "A shared place to store the data" and "A decision on whether the board or the spreadsheet is the master."
+- **Accuracy:** one citation is wrong. `index.html:46-50` should be lines 37 and 57. The UTC point ("about 1pm") is correct.
+
+**What changed versus the confounded arm.** In S1 and S3, nothing material changed. Scores sit within the earlier 20.5–23.5 spread, and S3 gives the same verdict as before, missing the shared drive like the plugin arm did. S2 changed completely. The earlier "If you'd rather skip the questions…" interview came from superpowers' brainstorming skill, not from Claude. Bare Claude simply built the painting timer, in 72 s, without asking job vs operation or where the data should live. It did mention localStorage and the paint operations, but only afterwards, as caveats on a finished change. So the ask skill must beat a baseline of zero questions.
 
 ## To promote the regenerated demo
 
@@ -139,51 +178,53 @@ Or set `boatworks` as the default branch on GitHub.
 
 ## Appendix: S1 per-row marks
 
-F = FOUND, P = PARTIAL (½), N = NOT FOUND. Columns: vanilla-sonnet (VS), vanilla-opus (VO), plugin-sonnet (PS).
+F = FOUND, P = PARTIAL (½), N = NOT FOUND. Columns: vanilla-sonnet (VS), vanilla-opus (VO), plugin-sonnet (PS), true-vanilla-sonnet (TVS), true-vanilla-opus (TVO).
 
 **Section 2: shared concepts**
 
-| # | Concept | VS | VO | PS | Note |
-|---|---|---|---|---|---|
-| 1 | Customer (3 spellings) | F | F | F | all name "Harbour Svcs Ltd" and the glossary rule |
-| 2 | Job (2 number formats) | F | F | F | VS gives `1043` only; VO, PS also give `1040` in purchase requests |
-| 3 | Model ("WB 6.2" short in parts-list) | N | N | N | |
-| 4 | Part (2 code formats) | F | F | F | |
-| 5 | Operation (no app records it) | N | F | F | VO: "Your notes say time is booked to each *operation*… The timer only records time per *job*" |
-| 6 | Price (2 values differ) | F | F | F | |
-| 7 | Stage (6 vs 9, "Fit out") | F | F | F | |
-| 8 | Quote validity (14 vs 30) | F | F | F | |
-| 9 | Hull number never recorded | F | F | F | |
-| | **Subtotal** | **7** | **8** | **8** | |
+| # | Concept | VS | VO | PS | TVS | TVO | Note |
+|---|---|---|---|---|---|---|---|
+| 1 | Customer (3 spellings) | F | F | F | F | F | all name "Harbour Svcs Ltd" and the glossary rule |
+| 2 | Job (2 number formats) | F | F | F | F | P | VS gives `1043` only; VO, PS also give `1040` in purchase requests; TVO: "job numbers are typed in any format", no example |
+| 3 | Model ("WB 6.2" short in parts-list) | N | N | N | N | N | |
+| 4 | Part (2 code formats) | F | F | F | F | F | |
+| 5 | Operation (no app records it) | N | F | F | F | F | VO: "Your notes say time is booked to each *operation*… The timer only records time per *job*" |
+| 6 | Price (2 values differ) | F | F | F | F | F | |
+| 7 | Stage (6 vs 9, "Fit out") | F | F | F | F | F | |
+| 8 | Quote validity (14 vs 30) | F | F | F | F | F | |
+| 9 | Hull number never recorded | F | F | F | F | F | |
+| | **Subtotal** | **7** | **8** | **8** | **8** | **7.5** | |
 
 **Section 3: planted duplications**
 
-| # | Item | VS | VO | PS | Note |
-|---|---|---|---|---|---|
-| 1 | Job list stale on board | F | F | F | |
-| 2 | `1043` vs `J-1043` | F | F | F | |
-| 3 | Shop-timer own 3 jobs | F | F | F | PS also quotes the "Harbour WB 6.2" label |
-| 4 | Delivery-checklist own 4 jobs | F | F | F | |
-| 5 | Purchase-requests free-text job ref | P | F | F | VS lists it as holding jobs but gives no format |
-| 6 | Stage names on board | F | F | F | |
-| 7 | Customer name variants | F | F | F | |
-| 8 | Quote-builder customer list copy | F | F | P | PS says "every app has its own typed-in copy" but doesn't name quote-builder's customer list |
-| 9 | Quote-builder stale prices | F | F | F | |
-| 10 | Part codes lose hyphens | F | F | F | PS also notes the two parts missing |
-| 11 | Fuel tank 725 vs 740 | F | F | F | |
-| 12 | Purchase-request item code free text | F | F | F | |
-| 13 | `money` copied | N | N | N | |
-| 14 | `fmtMoney` differs/buggy | N | N | N | |
-| 15 | Header CSS drift | N | N | N | |
-| 16 | UTC date logic copied | N | N | N | (both S3 replies noticed it in job-board alone) |
-| 17 | Board stage moves never reach Jobs.csv | F | F | F | |
-| 18 | Time per job vs per operation | N | F | F | |
-| 19 | Quote validity 14 vs 30 | F | F | F | |
-| 20 | Q-2026-031 quoted on stale prices | N | N | N | VO: "Check any quotes sent since 1 September", not tied to Q-031 |
-| | **Subtotal** | **13.5** | **15** | **15.5** | |
+| # | Item | VS | VO | PS | TVS | TVO | Note |
+|---|---|---|---|---|---|---|---|
+| 1 | Job list stale on board | F | F | F | F | F | |
+| 2 | `1043` vs `J-1043` | F | F | F | F | N | TVO doesn't mention `1043` |
+| 3 | Shop-timer own 3 jobs | F | F | F | F | F | PS also quotes the "Harbour WB 6.2" label |
+| 4 | Delivery-checklist own 4 jobs | F | F | F | F | F | |
+| 5 | Purchase-requests free-text job ref | P | F | F | F | P | VS lists it as holding jobs but gives no format; TVS names `1040`; TVO is generic |
+| 6 | Stage names on board | F | F | F | F | F | |
+| 7 | Customer name variants | F | F | F | F | F | |
+| 8 | Quote-builder customer list copy | F | F | P | P | F | PS says "every app has its own typed-in copy" but doesn't name quote-builder's customer list; TVS: "Customers.csv and the Quote Builder use the full legal name", not that it's a copy |
+| 9 | Quote-builder stale prices | F | F | F | F | F | |
+| 10 | Part codes lose hyphens | F | F | F | F | F | PS also notes the two parts missing |
+| 11 | Fuel tank 725 vs 740 | F | F | F | F | F | |
+| 12 | Purchase-request item code free text | F | F | F | F | F | |
+| 13 | `money` copied | N | N | N | N | N | |
+| 14 | `fmtMoney` differs/buggy | N | N | N | N | N | |
+| 15 | Header CSS drift | N | N | N | N | N | |
+| 16 | UTC date logic copied | N | N | N | N | N | (both S3 replies noticed it in job-board alone) |
+| 17 | Board stage moves never reach Jobs.csv | F | F | F | F | F | |
+| 18 | Time per job vs per operation | N | F | F | F | F | |
+| 19 | Quote validity 14 vs 30 | F | F | F | F | F | |
+| 20 | Q-2026-031 quoted on stale prices | N | N | N | N | N | VO: "Check any quotes sent since 1 September", not tied to Q-031 |
+| | **Subtotal** | **13.5** | **15** | **15.5** | **14.5** | **13.5** | |
 
 **Section 4 risks** (F/P/N for risks 1–9):
 
 - VS: F F F P F F F P P
 - VO: F F F N F F F N P
 - PS: F F F P F F F N P
+- TVS: F F F F P F F N P
+- TVO: F F F P P F F N N
