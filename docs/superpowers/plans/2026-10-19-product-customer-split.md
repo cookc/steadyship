@@ -530,7 +530,7 @@ rm -rf /tmp/sd-demo && plugin/scripts/init.sh /tmp/sd-demo --business "Demo Boat
 cd /tmp/sd-demo && claude -p "Run steadyship status" --model haiku 2>&1 | tee /tmp/status-demo.txt
 cd ~/steadyship && claude -p "Run steadyship status" --model haiku 2>&1 | tee /tmp/status-product.txt
 ```
-Expected: `SKILLS_OK`; in `/tmp/sd-demo` the reply starts `**Steadyship is installed and working.**`, reports 1 app assessed, 5 spikes not yet run, next step spike e, setup owner "Sam Setup"; in `~/steadyship` (the product repo, which has no `steadyship.md`) the reply says it isn't a Steadyship repository and mentions steadyship-init. Paste both replies in the report. Then run `cd /tmp/sd-demo && claude -p "run spike b, the directory is /tmp" --model haiku` and confirm it runs `scripts/spikes/nas-rw.sh` and reports PASS.
+Expected: `SKILLS_OK`; in `/tmp/sd-demo` the reply starts `**Steadyship is installed and working.**`, reports 1 app assessed, 5 spikes not yet run, next step spike e, setup owner "Sam Setup"; in `~/steadyship` (the product repo, which has no `steadyship.md`) the reply says it isn't a Steadyship repository and mentions steadyship-init. Paste both replies in the report. Then run `cd /tmp/sd-demo && claude -p "run spike b. The shared folder path is /tmp — go ahead and run the script on it." --model haiku` and confirm it runs `scripts/spikes/nas-rw.sh` and reports PASS.
 
 - [ ] **Step 5: Commit**
 
@@ -572,7 +572,7 @@ echo "-- no customer facts in plugin/"
 if grep -rnI "Chris\|cookc\|boat" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json'; then
   echo "customer-specific text found in plugin/ (above)"; exit 1
 fi
-echo "-- placeholders are the allowed seven"
+echo "-- placeholders are the allowed eight"
 ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'
 for p in $(grep -rhoE '\{\{[A-Za-z_]+\}\}' plugin/templates | sort -u); do
   case " $ALLOWED " in *" $p "*) ;; *) echo "unexpected placeholder $p"; exit 1;; esac
@@ -766,7 +766,7 @@ Expected: repo created, `main` pushed; after ~3 min the customer CI (`validate` 
 ```bash
 cd ~/steadyship-demo
 claude -p "Run steadyship status" --model haiku 2>&1 | tail -8
-claude -p "run spike b, the directory is /tmp/demo-share" --model haiku 2>&1 | tail -6
+claude -p "run spike b. The shared folder path is /tmp/demo-share — go ahead and run the script on it." --model haiku 2>&1 | tail -6
 claude -p "run spike c, the app is _sample" --model haiku 2>&1 | tail -6
 git status --short
 ```

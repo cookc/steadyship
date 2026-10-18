@@ -1,0 +1,16 @@
+name: validate
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright browser (for the generated repo's smoke test)
+        run: npx --yes playwright@1.64.1 install --with-deps chromium
+      - name: Product checks (full)
+        run: STEADYSHIP_FULL=1 scripts/validate.sh

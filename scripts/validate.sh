@@ -1,12 +1,25 @@
 #!/usr/bin/env bash
-# Runs every check CI runs. Exit non-zero on first failure.
+# Product checks for the Steadyship plugin repository. Exit non-zero on first failure.
+# STEADYSHIP_FULL=1 also runs the generated repo's smoke test (needs Node + Chromium).
 set -euo pipefail
 cd "$(dirname "$0")/.."
-echo "== validate.sh =="
-# Later tasks append checks below this line.
-echo "-- plugin manifests"
-claude plugin validate plugin --strict
-claude plugin validate . --strict
-echo "-- smoke test on sample app"
-scripts/smoke.sh apps/_sample/index.html
+echo "== validate.sh (product) =="
+if command -v claude >/dev/null 2>&1; then
+  echo "-- plugin manifests"
+  claude plugin validate plugin --strict
+  claude plugin validate . --strict
+else
+  echo "-- plugin manifests: skipped (claude CLI not installed)"
+fi
+echo "-- no customer facts in plugin/"
+if grep -rnI "Chris\|cookc\|boat" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json'; then
+  echo "customer-specific text found in plugin/ (above)"; exit 1
+fi
+echo "-- placeholders are the allowed eight"
+ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'
+for p in $(grep -rhoE '\{\{[A-Za-z_]+\}\}' plugin/templates | sort -u); do
+  case " $ALLOWED " in *" $p "*) ;; *) echo "unexpected placeholder $p"; exit 1;; esac
+done
+echo "-- generate a customer repo and test it"
+if [ "${STEADYSHIP_FULL:-0}" = "1" ]; then STEADYSHIP_TEST_SMOKE=1 tests/test-init.sh; else tests/test-init.sh; fi
 echo "OK"
