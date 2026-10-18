@@ -44,6 +44,19 @@ git -C "$DIR" ls-files --eol scripts | grep -q 'w/crlf' && fail "CRLF in scripts
 set +e; "$ROOT/plugin/scripts/init.sh" "$DIR" --business x --setup-owner x --sponsor x --github-owner x --repo-name x --shared-drive x >"$OUT/again.log" 2>&1; rc=$?; set -e
 [ "$rc" = "1" ] && tail -1 "$OUT/again.log" | grep -q '^RESULT: FAIL' || fail "re-init into non-empty dir should FAIL"
 
+# special characters survive substitution
+SP="$OUT/special"
+"$ROOT/plugin/scripts/init.sh" "$SP" --business "A & B's \"Boats\" | x" --setup-owner "O'Neil" --sponsor S \
+  --github-owner g --repo-name r --shared-drive '\\nas\share' --no-git >/dev/null || fail "special-char init"
+grep -qF "Business: A & B's \"Boats\" | x" "$SP/steadyship.md" || fail "special business"
+grep -qF "Setup owner: O'Neil" "$SP/steadyship.md" || fail "special setup owner"
+grep -qF 'Shared drive: \\nas\share' "$SP/steadyship.md" || fail "special shared drive"
+grep -rqE '\{\{[A-Z_]+\}\}' "$SP" && fail "placeholders remain in special run" || true
+
+# flag with no value must fail fast, not hang
+set +e; timeout 5 "$ROOT/plugin/scripts/init.sh" "$OUT/hang" --business >/dev/null 2>&1; rc=$?; set -e
+[ "$rc" = "1" ] || fail "dangling flag should exit 1 (got $rc)"
+
 # the generated repo's own spike scripts work on this machine
 ( cd "$DIR" && scripts/spikes/nas-rw.sh "$OUT" | tail -1 | grep -q '^RESULT: PASS' ) || fail "nas-rw in generated repo"
 git init -q --bare "$OUT/bare.git"

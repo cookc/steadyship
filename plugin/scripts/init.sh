@@ -12,14 +12,15 @@ fail() { echo "RESULT: FAIL $*"; exit 1; }
 TARGET="${1:-}"; shift || true
 [ -n "$TARGET" ] || fail "no target directory given"
 BUSINESS=""; SETUP_OWNER=""; SPONSOR=""; GITHUB_OWNER=""; REPO_NAME=""; SHARED_DRIVE=""; DO_GIT=1
+need() { [ $# -ge 2 ] || fail "$1 needs a value"; case "$2" in --*) fail "$1 needs a value (got $2)";; esac; }
 while [ $# -gt 0 ]; do
   case "$1" in
-    --business) BUSINESS="${2:-}"; shift 2;;
-    --setup-owner) SETUP_OWNER="${2:-}"; shift 2;;
-    --sponsor) SPONSOR="${2:-}"; shift 2;;
-    --github-owner) GITHUB_OWNER="${2:-}"; shift 2;;
-    --repo-name) REPO_NAME="${2:-}"; shift 2;;
-    --shared-drive) SHARED_DRIVE="${2:-}"; shift 2;;
+    --business) need "$@"; BUSINESS="$2"; shift 2;;
+    --setup-owner) need "$@"; SETUP_OWNER="$2"; shift 2;;
+    --sponsor) need "$@"; SPONSOR="$2"; shift 2;;
+    --github-owner) need "$@"; GITHUB_OWNER="$2"; shift 2;;
+    --repo-name) need "$@"; REPO_NAME="$2"; shift 2;;
+    --shared-drive) need "$@"; SHARED_DRIVE="$2"; shift 2;;
     --no-git) DO_GIT=0; shift;;
     *) fail "unknown option: $1";;
   esac
@@ -57,7 +58,8 @@ SUBS=(
 echo "Filling in business details ..."
 while IFS= read -r -d '' f; do
   for s in "${SUBS[@]}"; do
-    sed -i "s|${s%%|*}|${s#*|}|g" "$f" || fail "substitution failed in $f"
+    # -i.suffix + rm works on both GNU and BSD (macOS) sed
+    sed -i.steadyship-bak "s|${s%%|*}|${s#*|}|g" "$f" && rm -f "$f.steadyship-bak" || fail "substitution failed in $f"
   done
 done < <(find "$TARGET" -type f ! -path "$TARGET/.git/*" -print0)
 
