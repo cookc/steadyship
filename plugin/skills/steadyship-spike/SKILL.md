@@ -17,6 +17,9 @@ b (shared drive), c (tests), d (hosting), e (plugin)?" and stop.
 
 1. Open `docs/spikes/<letter>-*.md` and follow its "What Claude does"
    section exactly. It names the script and the inputs it needs.
+   If that section names no script (spikes d and e), do not run anything
+   and do not report FAIL. Follow that section, ask the user which outcome
+   occurred, then give the RESULTS row for the outcome they state.
 2. If the script needs a path or value the runbook says to ask for, ask
    once, then continue.
 3. Run the script with `bash`. Capture all output.
