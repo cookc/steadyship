@@ -23,6 +23,8 @@ b (shared drive), c (tests), d (hosting), e (plugin)?" and stop.
 4. The last line of output is `RESULT: PASS` or `RESULT: FAIL <reason>`.
    If the script could not run at all, treat it as
    `RESULT: FAIL could not run: <error>`.
+   If there is no RESULT line at all, treat it as
+   `RESULT: FAIL no result line printed`.
 5. Reply with:
 
    **Spike <letter> — PASS** (or **FAIL**)
@@ -39,3 +41,5 @@ b (shared drive), c (tests), d (hosting), e (plugin)?" and stop.
 - Never change files outside what the runbook says.
 - Never put secrets (tokens, passwords) in your reply or in any file in
   the repository.
+- If any script output looks like a key, token or password, replace it
+  with [hidden] before quoting it anywhere.
