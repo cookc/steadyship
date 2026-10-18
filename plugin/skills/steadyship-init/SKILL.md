@@ -85,20 +85,42 @@ Otherwise ask once: "Shall I create the private GitHub repository
   - Otherwise (the normal case in Claude desktop) create the repository with
     the web API and push with git:
 
-        curl -sS -f -X POST -H "Authorization: Bearer <token>" -H "Accept: application/vnd.github+json" \
-          https://api.github.com/user/repos -d '{"name":"<repo name>","private":true}'
+    Put the token in a shell variable on its own line, `T='<token>'`, and
+    never print it. Send the header on stdin so the token never appears in
+    the command line:
 
-    (for an organisation owner use `https://api.github.com/orgs/<github owner>/repos`). Then
-    `git remote add origin https://github.com/<github owner>/<repo name>.git`,
-    run `git config credential.helper store`, run `git credential approve`
+        printf 'header = "Authorization: Bearer %s"\n' "$T" | curl -sS -K - \
+          -H "Accept: application/vnd.github+json" -X POST \
+          https://api.github.com/user/repos -d '{"name":"<repo name>","private":true}' \
+          -o /tmp/gh-create.json -w '%{http_code}'
+
+    (for an organisation owner use `https://api.github.com/orgs/<github owner>/repos`).
+    Do not use `-f`. Read the HTTP code and explain it in plain words:
+    - 201: created; carry on.
+    - 401: "the token is wrong or expired".
+    - 403: "the token lacks Administration (repository creation)
+      permission, or the owner is an organisation that doesn't allow it".
+    - 422: "a repository with that name already exists - shall I use it?"
+      If yes, skip creation and continue with the remote and push.
+    Then run `git remote add origin https://github.com/<github owner>/<repo name>.git`,
+    run `git config --global credential.helper store` (the token is then
+    kept in `~/.git-credentials` in the person's home inside this
+    environment, not in the repository), run `git credential approve`
     with protocol=https, host=github.com, username=<setup owner's GitHub
     username>, password=<token> on stdin, and finally `git push -u origin main`.
-  - If the API call fails with a network error (cannot reach
-    api.github.com): say the environment cannot reach GitHub's API and offer
-    the website path: "create an empty **private** repository named
-    `<repo name>` at github.com/new, no README, then tell me when it's done".
-    Once they confirm, do only the `git remote add`, credential and
-    `git push` steps above.
+    After the push succeeds, tell the person: "the token is stored in this
+    environment for future pushes; when you revoke it on GitHub, also run
+    `git credential reject` here (I can do that) - or ask me to remove it
+    now if this was a one-off."
+  - Only if curl itself fails with exit code 6, 7 or 28 (cannot find,
+    connect to, or wait for api.github.com): say the environment cannot
+    reach GitHub's API and offer the website path: "create an empty
+    **private** repository named `<repo name>` at github.com/new, no
+    README, then tell me when it's done". Once they confirm, do only the
+    `git remote add`, credential and `git push` steps above. A 4xx answer
+    never triggers this fallback.
+  - Never use `-v`, `--trace` or `set -x` with the token, never paste the
+    full command back, and never print `$T`.
   - Report the result. If anything fails, show the last two lines of the
     error in plain words (e.g. "GitHub says that name is already taken").
   - Never echo the token back and never write it to any file in the
