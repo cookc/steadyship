@@ -12,8 +12,8 @@ is also the calibration ground truth for the *assess* skill and the
 escalation path; both are temporary.)
 
 0. Sponsor confirms, in writing (one line in `SUMMARY.md`), that real
-   business data may sit in the private GitHub repo under the {{GITHUB_OWNER}} GitHub
-   account, and for spike d on Azure.
+   business data may sit in the private GitHub repository `{{GITHUB_OWNER}}/{{REPO_NAME}}`,
+   and for spike d on Azure.
 1. **[ON-SITE]** With the builder, list every app they have. Include the
    half-finished ones. Write names into `SUMMARY.md` first so nothing is lost.
 2. For each app, copy its folder **unmodified** into `apps/<name>/`

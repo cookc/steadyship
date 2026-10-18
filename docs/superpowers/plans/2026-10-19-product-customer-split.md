@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - `plugin/` must contain **no** business-specific fact: no person's name except the plugin author in `plugin.json`, no GitHub owner except in `plugin.json`'s `repository`, no drive letter, no business name. Verified by grep in Task 1 and in product CI.
-- Placeholders are exactly: `{{BUSINESS_NAME}}`, `{{SETUP_OWNER}}`, `{{SPONSOR}}`, `{{GITHUB_OWNER}}`, `{{REPO_NAME}}`, `{{SHARED_DRIVE}}`, `{{TEMPLATE_VERSION}}`. No other `{{…}}` token may exist in templates; a generated repo must contain no `{{` at all.
+- Placeholders are exactly: `{{BUSINESS_NAME}}`, `{{SETUP_OWNER}}`, `{{SPONSOR}}`, `{{GITHUB_OWNER}}`, `{{REPO_NAME}}`, `{{SHARED_DRIVE}}`, `{{TEMPLATE_VERSION}}`, `{{PLUGIN_MARKETPLACE}}` (the last two are derived by `init.sh` from `plugin.json`, never asked of the user). No other `{{…}}` token may exist in templates; a generated repo must contain no `{{` at all.
 - A generated customer repo is self-contained: it works with the plugin uninstalled (its own `scripts/validate.sh`, smoke test, CI, runbooks). It references the product only in `steadyship.md`.
 - Contracts preserved: `RESULT: PASS|FAIL <reason>` last line + exit 0/1 for `smoke.sh`, `git-push.sh`, `nas-rw.sh`; `**Stage:**` / `**Relied on by:**` lines; `RESULTS.md` columns `| Spike | Result | Date | Note |`.
 - Side effects outside this machine (creating/pushing GitHub repos) happen only in the steps that say so (Task 6), which the user approved in conversation.
@@ -268,6 +268,8 @@ grep -q '^Setup owner: Sam Setup$' "$DIR/steadyship.md" || fail "setup owner not
 grep -q 'Z:\\' "$DIR/steadyship.md" || fail "shared drive with backslash not substituted"
 VER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/plugin.json")"
 grep -q "^Template version: $VER\$" "$DIR/steadyship.md" || fail "template version $VER not written"
+MP="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p' "$ROOT/plugin/.claude-plugin/plugin.json")"
+grep -q "^Plugin marketplace: $MP\$" "$DIR/steadyship.md" || fail "plugin marketplace $MP not written"
 grep -q 'Setup owner:\*\* Sam Setup' "$DIR/docs/assessment/README.md" || fail "README role line"
 [ "$(git -C "$DIR" rev-list --count HEAD)" = "1" ] || fail "expected exactly one commit"
 [ "$(git -C "$DIR" branch --show-current)" = "main" ] || fail "branch is not main"
@@ -330,6 +332,8 @@ done
 [ -d "$TEMPLATES" ] || fail "templates not found at $TEMPLATES"
 VERSION="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$MANIFEST")"
 [ -n "$VERSION" ] || fail "could not read plugin version from $MANIFEST"
+MARKETPLACE="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p' "$MANIFEST")"
+[ -n "$MARKETPLACE" ] || fail "could not read plugin repository (marketplace) from $MANIFEST"
 
 if [ -e "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
   fail "target directory exists and is not empty: $TARGET"
@@ -350,6 +354,7 @@ SUBS=(
   "{{REPO_NAME}}|$(esc "$REPO_NAME")"
   "{{SHARED_DRIVE}}|$(esc "$SHARED_DRIVE")"
   "{{TEMPLATE_VERSION}}|$(esc "$VERSION")"
+  "{{PLUGIN_MARKETPLACE}}|$(esc "$MARKETPLACE")"
 )
 echo "Filling in business details ..."
 while IFS= read -r -d '' f; do
@@ -568,7 +573,7 @@ if grep -rnI "Chris\|cookc\|boat" plugin/ | grep -v 'plugin/.claude-plugin/plugi
   echo "customer-specific text found in plugin/ (above)"; exit 1
 fi
 echo "-- placeholders are the allowed seven"
-ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'
+ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'
 for p in $(grep -rhoE '\{\{[A-Za-z_]+\}\}' plugin/templates | sort -u); do
   case " $ALLOWED " in *" $p "*) ;; *) echo "unexpected placeholder $p"; exit 1;; esac
 done

@@ -9,15 +9,14 @@ different accounts, ideally two machines.
 
 ## Steps (owner)
 
-1. **{{SETUP_OWNER}}** (the repo is `{{GITHUB_OWNER}}/{{REPO_NAME}}`): install the Claude GitHub App on
-   the private `{{REPO_NAME}}` repo (GitHub → Settings → Applications →
-   Claude → repository access). Alternative: move the repo to a
-   partner-owned GitHub organisation later, so the Team owner can do this.
+1. **{{SETUP_OWNER}}**: arrange with Steadyship that the Claude GitHub App
+   has access to the repository `{{PLUGIN_MARKETPLACE}}` (where the
+   Steadyship plugin is published), so the Team owner can add it.
 
 Then the **Team owner**:
 
-2. Claude desktop → Customize → Plugins → **Add marketplace** → paste the
-   GitHub repo URL. The marketplace named `steadyship` should appear.
+2. Claude desktop → Customize → Plugins → **Add marketplace** → paste
+   `https://github.com/{{PLUGIN_MARKETPLACE}}`. The marketplace named `steadyship` should appear.
 3. Find plugin `steadyship` → Default access → **Installed by default**.
 
 ## Steps (builder)
@@ -39,10 +38,11 @@ The reply starts with that sentence and reports at least 1 app assessed
 ## If it fails
 
 - Plugin not listed for the builder → check the GitHub App has access to
-  the repo; check Default access saved; wait 10 minutes and restart.
-- Listed but "steadyship status" does nothing → run
-  `claude plugin validate plugin --strict` on the setup owner's machine; fix; push.
+  `{{PLUGIN_MARKETPLACE}}`; check Default access saved; wait 10 minutes and
+  restart.
+- Listed but "steadyship status" does nothing → wait 10 minutes and restart;
+  then ask Steadyship to check that the plugin validates.
 - Still failing → fallback: each builder installs via Customize → Plugins →
-  Upload zip ({{SETUP_OWNER}} zips `plugin/`). Record `FAIL` and the fallback.
+  Upload zip (Steadyship supplies a zip of the plugin). Record `FAIL` and the fallback.
   **Meaning:** the plugin still works, but every update needs a manual
   re-upload per builder.

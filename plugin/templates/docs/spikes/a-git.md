@@ -23,11 +23,14 @@ local session, `{{REPO_NAME}}` folder attached.
    git credential approve <<'EOF'
    protocol=https
    host=github.com
-   username={{GITHUB_OWNER}}
+   username=<the setup owner's GitHub username>
    password=<token>
    EOF
    git ls-remote --heads origin
    ```
+
+   GitHub ignores the username for token authentication, but write the token
+   owner's login here.
 
    The token now sits in the VM's `~/.git-credentials`, scoped to one repo
    and expiring in 30 days. **The token passes through the chat** and so

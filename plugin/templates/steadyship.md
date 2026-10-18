@@ -7,6 +7,7 @@ Business: {{BUSINESS_NAME}}
 Setup owner: {{SETUP_OWNER}}
 Sponsor: {{SPONSOR}}
 GitHub: {{GITHUB_OWNER}}/{{REPO_NAME}}
+Plugin marketplace: {{PLUGIN_MARKETPLACE}}
 Shared drive: {{SHARED_DRIVE}}
 Template version: {{TEMPLATE_VERSION}}
 
