@@ -85,6 +85,36 @@ business-critical), what would break, what data is at risk, what would be
 needed to rely on it, and what to do next. Give them an opinion they can
 act on and a vocabulary for the risks. This is the piece nobody sells.
 
+**The skills create the reviewer; no standing human engineer is assumed.**
+A model reviewing its own output shares its blind spots, so the reviewer
+is independent by construction, in three layers, strongest first:
+
+1. **A different vendor's model** (e.g. a Codex/ChatGPT reviewer) —
+   decorrelated blind spots, which a same-vendor second opinion cannot
+   give. Needs a second subscription and a vendor-neutral review brief.
+   Recommended as the most robust setup for a serious business; never
+   required.
+2. **A separate, sandboxed session** — a different model where possible,
+   read-only on the repository, with no access to the builder's
+   conversation; it receives a written brief and the diff, and returns a
+   written verdict. Always available.
+3. **Non-model verification** — tests and CI. Always on.
+
+The pull request is the convergence point: a brief and a diff in a PR can
+be consumed by any vendor's reviewer (Codex cloud review, Copilot review,
+a Claude reviewer) without the builder touching a terminal, and it is
+sandboxed by construction. "Sandboxed reviewer" and "any vendor" are one
+mechanism, not two features.
+
+Verdicts cite evidence (smoke test passed, data file has one writer,
+sign-in enforced); anything the reviewer cannot verify is labelled
+unverified, never approved. The **sponsor** makes the "we rely on this"
+decision from that verdict. When the reviewer genuinely cannot verify
+something — a platform bug, a security question beyond its evidence — it
+says so and names what a human engineer should be asked. Escalation is a
+skill output, not a role, and the number of escalations is tracked and
+expected to fall.
+
 ### Job 3 — Give them a path, and make the roads converge
 
 - **Assessment:** inventory every app, what it does, who relies on it,
@@ -120,9 +150,15 @@ artefact if it follows that advice away from Steadyship.
   acceptable; daily terminal use is not.
 - **Business sponsor:** owner/manager; owns the glossary, priorities and
   the "can we rely on this" decision.
-- **Engineer reviewer:** in V0, Chris, 5–10 hours/week. Reviews
-  consequential changes. The tool's job is to make that review cheap and
-  rare, and over time to do more of it itself.
+- **Setup owner:** whoever holds the accounts (GitHub, Azure, the Claude
+  Team org). One-time plumbing — repo, tokens, hosting, plugin install —
+  done by hand or by following a setup skill. Hands, not judgement.
+- **No standing engineer reviewer.** Judgement comes from the skills and
+  the independent reviewer they dispatch (§3, Job 2). In V0 only, Chris
+  (5–10 hours/week) is the setup owner, the calibration ground truth for
+  the *assess* skill, and the escalation path when a verdict says "needs a
+  human engineer" — all three labelled temporary, with §12 criterion 9
+  measuring how much judgement still reaches him.
 
 ## 5. Experience: Explore → Develop → Promote
 
@@ -210,7 +246,10 @@ datasets never enter Git; prototypes use sample data unless authorised.
 
 **In:** the repository; three skills — *assess* (Job 3 inventory + Job 2
 verdict per app), *ask-before-building* (Job 1), *review-after-building*
-(Job 2); hidden-git commit flow; smoke-test scaffold; hosting decision;
+(Job 2, designed from the start as a skill that dispatches an independent
+sandboxed reviewer and renders an evidence-cited verdict; cross-vendor
+review via PR is a documented option, not a V0 dependency); hidden-git
+commit flow; smoke-test scaffold; hosting decision;
 **assess all apps, graduate one, converge one concept**; handoff test;
 plugin-uninstalled test.
 
@@ -281,6 +320,10 @@ the system from the repository alone.
    recorded; one shared concept has one definition used by two apps.
 7. A second builder on another machine makes a change that merges cleanly.
 8. The plugin-uninstalled test passes.
+9. Every judgement call that reached Chris during V0 is listed; each is
+   either now handled by a skill or the independent reviewer, or has a
+   written reason it cannot be. The list is expected to be short and
+   shrinking.
 
 ## 13. Risks
 

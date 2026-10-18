@@ -2,7 +2,14 @@
 
 Owner: Chris. Time box: 30 minutes per app, 1 hour for the summary.
 
-**Reviewer:** Chris
+**Setup owner:** Chris
+**Sponsor:** <name>
+
+(The setup owner holds the accounts and does the one-time plumbing. There
+is no standing engineer reviewer: judgement comes from the skills and the
+independent reviewer they dispatch — see proposal §3, Job 2. In V0 Chris
+is also the calibration ground truth for the *assess* skill and the
+escalation path; both are temporary.)
 
 0. Sponsor confirms, in writing (one line in `SUMMARY.md`), that real
    business data may sit in the private GitHub repo under Chris's personal
