@@ -14,15 +14,15 @@ tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
          tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh \
-         scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh apps/_sample/index.html \
+         scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
          docs/assessment/_sample.md docs/spikes/README.md docs/spikes/RESULTS.md \
-         docs/spikes/a-git.md docs/spikes/b-nas.md docs/spikes/c-tests.md docs/spikes/d-hosting.md \
+         docs/spikes/0-env.md docs/spikes/a-git.md docs/spikes/b-nas.md docs/spikes/c-tests.md docs/spikes/d-hosting.md \
          docs/spikes/e-plugin.md docs/spikes/hosting/staticwebapp.config.json \
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
   [ -f "$DIR/$f" ] || fail "missing $f"
 done
-for s in scripts/validate.sh scripts/smoke.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh; do
+for s in scripts/validate.sh scripts/smoke.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
   [ -x "$DIR/$s" ] || fail "$s not executable"
 done
 # GitHub Actions "${{ secrets.X }}" is legitimate; only {{UPPER_CASE}} placeholders count.
@@ -72,6 +72,7 @@ set +e; "$ROOT/plugin/scripts/init.sh" 'C:\Users\x\repo' --business b --setup-ow
 
 # the generated repo's own spike scripts work on this machine
 ( cd "$DIR" && scripts/spikes/nas-rw.sh "$OUT" | tail -1 | grep -q '^RESULT: PASS' ) || fail "nas-rw in generated repo"
+( cd "$DIR" && scripts/spikes/env.sh | tail -1 | grep -q '^RESULT: PASS' ) || fail "env.sh in generated repo"
 git init -q --bare "$OUT/bare.git"
 ( cd "$DIR" && git remote add origin "$OUT/bare.git" && scripts/spikes/git-push.sh | tail -1 | grep -q '^RESULT: PASS' ) || fail "git-push in generated repo"
 

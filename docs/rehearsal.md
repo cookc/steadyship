@@ -10,7 +10,8 @@ there.
 - `steadyship-init` generates a repo into an empty folder; `steadyship-status`
   in that folder reports 1 app and 5 spikes not run; in the product repo it
   says "not a Steadyship repository".
-- In the generated repo: `run spike b` against a local folder → PASS;
+- In the generated repo: `run spike 0` → PASS, all tools ok;
+  `run spike b` against a local folder → PASS;
   `run spike c` on `_sample` → PASS (first run installs Chromium);
   `scripts/spikes/git-push.sh` against a bare repo → PASS.
 
@@ -21,6 +22,8 @@ there.
   folder attached (spike e, minus the Team-admin "installed by default" step).
 - Run `steadyship-init` in Claude desktop with a folder attached: the repo must appear in that folder on the Mac; then exercise both the GitHub **yes** path (against a throwaway name) and the **decline** path, and the non-empty-folder retry.
 - Confirm `${CLAUDE_PLUGIN_ROOT}` resolves in desktop (if not, the skill stops with 'not properly installed').
+- `run spike 0` twice in Claude desktop local sessions (persistence answer;
+  gh installability); then spike e (above), then:
 - Spike a end to end against `steadyship-demo` with a 30-day fine-grained
   token, including the second-session re-run.
 - Spike b against an SMB share mounted under `/Volumes/…` (macOS treats it as
