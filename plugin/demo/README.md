@@ -1,14 +1,14 @@
 # Demo Boatworks (mock customer fixture)
 
 A made-up small NZ aluminium workboat builder, used to test Steadyship end to
-end. Its situation copies the real design partner: six vanilla HTML+JS apps
+end. Its situation mirrors a real small business: six vanilla HTML+JS apps
 built by non-technical staff with Claude, data hardcoded or in `localStorage`,
 spreadsheets on a shared drive, and the same concepts (customer, job, model,
 part, operation) defined differently in different places. No tests, no
 hosting, no sign-in.
 
 **Persona:** Morgan Reid owns Demo Boatworks (Nelson, about 18 people). The
-setup owner is Chris Cook.
+setup owner is the persona Sam Setup.
 
 ## Contents
 
@@ -27,7 +27,7 @@ setup owner is Chris Cook.
 Populate an existing customer repo (made by `plugin/scripts/init.sh`) and a
 shared-drive folder:
 
-    fixtures/demo-boatworks/populate.sh <customer-repo-dir> <shared-drive-dir>
+    plugin/demo/populate.sh <customer-repo-dir> <shared-drive-dir>
 
 Rebuild the whole demo repo from scratch (never pushes unless asked):
 

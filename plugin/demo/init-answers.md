@@ -3,9 +3,9 @@
 Read these aloud (or paste them) when `steadyship-init` asks.
 
 1. **Business name:** Demo Boatworks.
-2. **Who is setting this up (setup owner):** Chris Cook.
+2. **Who is setting this up (setup owner):** Sam Setup.
 3. **Who is the sponsor:** Morgan Reid, the owner.
-4. **GitHub owner and repository name:** owner `cookc`, repository `steadyship-demo`.
+4. **GitHub owner and repository name:** owner `TBC` (no GitHub step for the demo), repository `demo-boatworks`.
 5. **Where is the shared drive:** it depends on the machine.
    - Linux: `~/steadyship-demo-shared-drive`
    - Mac: `/Volumes/DemoBoatworks-Shared`

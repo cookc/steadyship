@@ -11,9 +11,15 @@ if command -v claude >/dev/null 2>&1; then
 else
   echo "-- plugin manifests: skipped (claude CLI not installed)"
 fi
-echo "-- no customer facts in plugin/"
-if grep -rnI "Chris\|cookc\|boat" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json'; then
-  echo "customer-specific text found in plugin/ (above)"; exit 1
+echo "-- no real names in plugin/"
+if grep -rnI "Chris\|cookc" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json'; then
+  echo "real-person or account names found in plugin/ (above)"; exit 1
+fi
+echo "-- templates carry no customer apps"
+[ "$(ls plugin/templates/apps)" = "_sample" ] || { echo "plugin/templates/apps must contain only _sample"; exit 1; }
+echo "-- template steadyship.md names no business"
+if grep '^Business: ' plugin/templates/steadyship.md | grep -v '^Business: {{BUSINESS_NAME}}$'; then
+  echo "plugin/templates/steadyship.md names a business (above)"; exit 1
 fi
 echo "-- placeholders are the allowed eight"
 ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'

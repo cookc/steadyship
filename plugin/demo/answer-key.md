@@ -2,7 +2,7 @@
 
 Ground truth for scoring the `assess` skill (and later `ask` / `review`). Every
 row can be checked by reading the named file. Do not show this file to the
-skill under test. Paths are relative to `fixtures/demo-boatworks/`.
+skill under test. Paths are relative to `plugin/demo/`.
 
 ## 1. Apps, stage, and who relies on them
 

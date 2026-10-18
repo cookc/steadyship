@@ -16,10 +16,14 @@ for a in "$@"; do
   esac
 done
 [ -n "$TARGET" ] || TARGET="$HOME/steadyship-demo"
-FX="$ROOT/fixtures/demo-boatworks"
+FX="$ROOT/plugin/demo"
 [ -f "$FX/init.env" ] || fail "fixture not found at $FX"
 # shellcheck disable=SC1091
 . "$FX/init.env"
+# The maintainers' demo repo lives under their own GitHub account and setup owner.
+SETUP_OWNER="${SETUP_OWNER_OVERRIDE:-$SETUP_OWNER}"
+GITHUB_OWNER="${GITHUB_OWNER_OVERRIDE:-cookc}"
+REPO_NAME="${REPO_NAME_OVERRIDE:-steadyship-demo}"
 
 if [ -e "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
   [ "$REPLACE" = "1" ] || fail "target exists and is not empty: $TARGET (use --replace to remove it first)"
