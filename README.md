@@ -44,7 +44,7 @@ happens if you say yes.
 ## Layout
 
 - `plugin/` — the Claude plugin: skills (`steadyship-init`, `steadyship-demo`,
-  `steadyship-status`, `steadyship-spike`), the scaffolder `scripts/init.sh`, `templates/`, and
+  `steadyship-status`, `steadyship-spike`, `steadyship-assess`), the scaffolder `scripts/init.sh`, `templates/`, and
   `demo/` (the mock customer).
 - `.claude-plugin/marketplace.json` — this repo is also the plugin marketplace.
 - `tests/test-init.sh` — generates a customer repository and checks it works.
