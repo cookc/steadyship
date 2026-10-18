@@ -35,6 +35,10 @@ grep -q "^Template version: $VER\$" "$DIR/steadyship.md" || fail "template versi
 MP="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p' "$ROOT/plugin/.claude-plugin/plugin.json")"
 grep -q "^Plugin marketplace: $MP\$" "$DIR/steadyship.md" || fail "plugin marketplace $MP not written"
 grep -q 'Setup owner:\*\* Sam Setup' "$DIR/docs/assessment/README.md" || fail "README role line"
+for f in .gitignore .gitattributes .github/workflows/validate.yml; do [ -f "$DIR/$f" ] || fail "missing $f"; done
+[ -f "$DIR/.steadyship/manifest" ] || fail "manifest missing"
+grep -qE '^[0-9a-f]{64}  steadyship\.md$' "$DIR/.steadyship/manifest" || fail "manifest lacks steadyship.md"
+git -C "$DIR" ls-files --error-unmatch .steadyship/manifest >/dev/null || fail "manifest not committed"
 [ "$(git -C "$DIR" rev-list --count HEAD)" = "1" ] || fail "expected exactly one commit"
 [ "$(git -C "$DIR" branch --show-current)" = "main" ] || fail "branch is not main"
 [ -z "$(git -C "$DIR" status --short)" ] || fail "tree not clean after init"
@@ -54,8 +58,17 @@ grep -qF 'Shared drive: \\nas\share' "$SP/steadyship.md" || fail "special shared
 grep -rqE '\{\{[A-Z_]+\}\}' "$SP" && fail "placeholders remain in special run" || true
 
 # flag with no value must fail fast, not hang
-set +e; timeout 5 "$ROOT/plugin/scripts/init.sh" "$OUT/hang" --business >/dev/null 2>&1; rc=$?; set -e
-[ "$rc" = "1" ] || fail "dangling flag should exit 1 (got $rc)"
+TO=""; command -v timeout >/dev/null 2>&1 && TO=timeout || { command -v gtimeout >/dev/null 2>&1 && TO=gtimeout; }
+if [ -n "$TO" ]; then
+  set +e; "$TO" 5 "$ROOT/plugin/scripts/init.sh" "$OUT/hang" --business >/dev/null 2>&1; rc=$?; set -e
+  [ "$rc" = "1" ] || fail "dangling flag should exit 1 (got $rc)"
+else
+  echo "-- dangling-flag check skipped (no timeout command)"
+fi
+
+# Windows-style target is rejected
+set +e; "$ROOT/plugin/scripts/init.sh" 'C:\Users\x\repo' --business b --setup-owner s --sponsor p --github-owner g --repo-name r --shared-drive d --no-git >"$OUT/win.log" 2>&1; rc=$?; set -e
+[ "$rc" = "1" ] && tail -1 "$OUT/win.log" | grep -q 'Windows-style paths' || fail "Windows-style path should FAIL"
 
 # the generated repo's own spike scripts work on this machine
 ( cd "$DIR" && scripts/spikes/nas-rw.sh "$OUT" | tail -1 | grep -q '^RESULT: PASS' ) || fail "nas-rw in generated repo"

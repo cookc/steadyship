@@ -16,9 +16,11 @@ there.
 
 ## On a Mac, with Claude desktop (closest to the partner's experience)
 
-- Install Claude desktop; install the plugin from the marketplace; confirm
+- Install Claude desktop; give the Claude GitHub App access to `cookc/steadyship` (it is private); install the plugin from the marketplace; confirm
   `run steadyship status` works in a local session with the demo repo
   folder attached (spike e, minus the Team-admin "installed by default" step).
+- Run `steadyship-init` in Claude desktop with a folder attached: the repo must appear in that folder on the Mac; then exercise both the GitHub **yes** path (against a throwaway name) and the **decline** path, and the non-empty-folder retry.
+- Confirm `${CLAUDE_PLUGIN_ROOT}` resolves in desktop (if not, the skill stops with 'not properly installed').
 - Spike a end to end against `steadyship-demo` with a 30-day fine-grained
   token, including the second-session re-run.
 - Spike b against an SMB share mounted under `/Volumes/…` (macOS treats it as

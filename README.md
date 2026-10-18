@@ -18,7 +18,10 @@ uses to set up a business's own repository. Business data never lives here.
 
 ## Install the plugin
 
-    /plugin install steadyship --marketplace cookc/steadyship
+    /plugin marketplace add cookc/steadyship
+    /plugin install steadyship@steadyship
+
+The marketplace repository is private: your Claude GitHub connection (or the Claude GitHub App) must have access to it.
 
 Then, in a conversation: "set up Steadyship for <business>".
 
