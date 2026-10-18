@@ -35,7 +35,7 @@ fail() { cleanup; echo "RESULT: FAIL $1"; exit 1; }
 
 echo "Checking we can read the remote ..."
 git ls-remote --heads origin >/dev/null 2>&1 || fail "cannot read the remote (no credentials or no network)"
-git diff --cached --quiet || fail "you have changes staged — ask Chris before running this spike"
+git diff --cached --quiet || fail "you have changes staged — ask {{SETUP_OWNER}} before running this spike"
 echo "Creating a throwaway branch $BR with one marker commit ..."
 git checkout -q -b "$BR" || fail "could not create a branch"
 BR_MADE=1

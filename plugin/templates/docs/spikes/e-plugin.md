@@ -4,13 +4,13 @@
 by default", does it appear for a second member without them doing anything,
 and does it work?
 
-**Who:** Team owner (sponsor or Chris) + one builder. **Where:** two
+**Who:** Team owner (sponsor or {{SETUP_OWNER}}) + one builder. **Where:** two
 different accounts, ideally two machines.
 
 ## Steps (owner)
 
-1. **Chris** (the repo is under `cookc`): install the Claude GitHub App on
-   the private `steadyship` repo (GitHub → Settings → Applications →
+1. **{{SETUP_OWNER}}** (the repo is `{{GITHUB_OWNER}}/{{REPO_NAME}}`): install the Claude GitHub App on
+   the private `{{REPO_NAME}}` repo (GitHub → Settings → Applications →
    Claude → repository access). Alternative: move the repo to a
    partner-owned GitHub organisation later, so the Team owner can do this.
 
@@ -23,7 +23,7 @@ Then the **Team owner**:
 ## Steps (builder)
 
 1. Quit and reopen Claude desktop. Open any folder-attached task on the
-   `steadyship` repo clone.
+   `{{REPO_NAME}}` repo clone.
 2. Type: `run steadyship status`
 
 ## What Claude does
@@ -41,8 +41,8 @@ The reply starts with that sentence and reports at least 1 app assessed
 - Plugin not listed for the builder → check the GitHub App has access to
   the repo; check Default access saved; wait 10 minutes and restart.
 - Listed but "steadyship status" does nothing → run
-  `claude plugin validate plugin --strict` on Chris's machine; fix; push.
+  `claude plugin validate plugin --strict` on the setup owner's machine; fix; push.
 - Still failing → fallback: each builder installs via Customize → Plugins →
-  Upload zip (Chris zips `plugin/`). Record `FAIL` and the fallback.
+  Upload zip ({{SETUP_OWNER}} zips `plugin/`). Record `FAIL` and the fallback.
   **Meaning:** the plugin still works, but every update needs a manual
   re-upload per builder.

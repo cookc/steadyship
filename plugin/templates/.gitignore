@@ -1,0 +1,25 @@
+node_modules/
+test-results/
+playwright-report/
+.env
+.env.*
+*.local
+# partner data never enters git
+apps/**/data/
+apps/**/*.xlsx
+apps/**/*.csv
+apps/**/*.json
+!apps/_sample/**
+# native CAD
+*.dwg
+*.dxf
+*.step
+*.stp
+*.iges
+*.igs
+*.sldprt
+*.sldasm
+*.f3d
+.DS_Store
+Thumbs.db
+.git-credentials

@@ -4,9 +4,9 @@
 test tools, run the smoke test against one real app, and report the result
 in plain language?
 
-**Who:** builder. **Where:** builder's machine, local session, `steadyship`
+**Who:** builder. **Where:** builder's machine, local session, `{{REPO_NAME}}`
 folder attached, with at least one real app copied to `apps/<name>/` by
-Chris (see `docs/assessment/README.md` step 2).
+{{SETUP_OWNER}} (see `docs/assessment/README.md` step 2).
 
 ## Builder runs
 

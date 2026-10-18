@@ -3,7 +3,7 @@
 **Question:** can one existing app be served from somewhere that isn't a
 laptop, require a Microsoft sign-in, and be opened by a second staff member?
 
-**Who:** Chris (setup, ~1 hour), then a second staff member. **Where:**
+**Who:** {{SETUP_OWNER}} (setup, ~1 hour), then a second staff member. **Where:**
 Azure portal + GitHub + any browser.
 
 ## Why Azure Static Web Apps (Free)
@@ -11,13 +11,13 @@ Azure portal + GitHub + any browser.
 SharePoint will not serve HTML+JS (strict file handling). SWA Free costs
 $0, deploys from the GitHub repo, and has built-in Microsoft sign-in with
 "invitation" roles (up to 25 invited users on Free) — so only invited staff
-can open it, without paying for the Standard tier. See proposal §6.
+can open it, without paying for the Standard tier. See the Steadyship proposal §6.
 
-## Steps (Chris)
+## Steps ({{SETUP_OWNER}})
 
 1. Pick the app: the simplest one that passed spike c. Call it `<name>`.
 2. Azure portal → Create → Static Web App: Plan **Free**; Source **GitHub**;
-   repo `steadyship`, branch `main`; Build preset **Custom**; app location
+   repo `{{REPO_NAME}}`, branch `main`; Build preset **Custom**; app location
    `apps/<name>`; output location empty. Create. (Azure adds a workflow
    file and a repo secret `AZURE_STATIC_WEB_APPS_API_TOKEN_...`.)
 3. Delete the Azure-generated workflow, copy
@@ -39,7 +39,7 @@ the app URL. The app should load.
 
 ## What Claude does
 
-Nothing to run. This spike is done by Chris in the Azure portal and GitHub. If asked to run spike d, reply with the Pass criteria and the 'If it fails' options from this runbook, and ask which outcome occurred.
+Nothing to run. This spike is done by {{SETUP_OWNER}} in the Azure portal and GitHub. If asked to run spike d, reply with the Pass criteria and the 'If it fails' options from this runbook, and ask which outcome occurred.
 
 ## Pass
 

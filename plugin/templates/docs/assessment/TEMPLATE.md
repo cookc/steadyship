@@ -7,7 +7,7 @@ you don't know, write "unknown" — that is a finding.
 <!-- Prototype = works for its builder, data inside it.
      Owned tool = in the repo, data in an owned shared file with one writer, smoke test, named owner, hosted with sign-in.
      Proper app = framework, build and CI.
-     Platform = shared packages/database, release process. See proposal §7. -->
+     Platform = shared packages/database, release process. See the Steadyship proposal §7. -->
 
 **Relied on by:** <who uses it, how often; "only the builder" is a valid answer>
 
@@ -47,7 +47,7 @@ Screens, logic or data that also exist in another app:
 
 What would the business lose, and how long to recover?
 
-## Verdict (Chris, one paragraph in plain language)
+## Verdict ({{SETUP_OWNER}}, one paragraph in plain language)
 
 What this is, what would break, what it would take to rely on it.
 

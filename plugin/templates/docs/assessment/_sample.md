@@ -40,7 +40,7 @@ job (local name: "job", hardcoded in index.html); customer (local name: "custome
 
 Nothing — data is two example rows.
 
-## Verdict (Chris, one paragraph in plain language)
+## Verdict ({{SETUP_OWNER}}, one paragraph in plain language)
 
 A prototype. It works, but every job lives inside the page itself, so a
 second person can't see the same list and a change to the file loses the

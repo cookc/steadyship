@@ -1,18 +1,18 @@
 # Hand assessment — how to run it (weeks 1–2)
 
-Owner: Chris. Time box: 30 minutes per app, 1 hour for the summary.
+Owner: {{SETUP_OWNER}}. Time box: 30 minutes per app, 1 hour for the summary.
 
-**Setup owner:** Chris
-**Sponsor:** <name>
+**Setup owner:** {{SETUP_OWNER}}
+**Sponsor:** {{SPONSOR}}
 
 (The setup owner holds the accounts and does the one-time plumbing. There
 is no standing engineer reviewer: judgement comes from the skills and the
-independent reviewer they dispatch — see proposal §3, Job 2. In V0 Chris
+independent reviewer they dispatch — see the Steadyship proposal §3, Job 2. In V0 {{SETUP_OWNER}}
 is also the calibration ground truth for the *assess* skill and the
 escalation path; both are temporary.)
 
 0. Sponsor confirms, in writing (one line in `SUMMARY.md`), that real
-   business data may sit in the private GitHub repo under Chris's personal
+   business data may sit in the private GitHub repo under the {{GITHUB_OWNER}} GitHub
    account, and for spike d on Azure.
 1. **[ON-SITE]** With the builder, list every app they have. Include the
    half-finished ones. Write names into `SUMMARY.md` first so nothing is lost.

@@ -1,6 +1,6 @@
 # What you've built, and what it would take to rely on it
 
-Prepared by Chris for <sponsor name>, <date>. Plain language on purpose.
+Prepared by {{SETUP_OWNER}} for {{SPONSOR}}, <date>. Plain language on purpose.
 
 ## The apps
 

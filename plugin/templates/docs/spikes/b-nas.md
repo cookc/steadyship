@@ -6,11 +6,11 @@ script inside the VM? Both matter: (1) for the coach to read data, (2) for
 tests and data moves to be automated.
 
 **Who:** builder. **Where:** builder's machine, local session, with the
-mapped drive (e.g. `Z:\`) attached via the folder picker.
+mapped drive (e.g. `{{SHARED_DRIVE}}`) attached via the folder picker.
 
 ## Builder runs
 
-Part 1 — type: "In the attached Z: folder, list the first five files, create
+Part 1 — type: "In the attached {{SHARED_DRIVE}} folder, list the first five files, create
 a file called steadyship-spike.txt containing today's date, read it back to
 me, then delete it."
 
@@ -39,4 +39,4 @@ If Part 1 passes and Part 2 fails, record `| b | FAIL | <date> | file tools: ok;
   file tools, not scripts; or the shared data folder is a OneDrive-synced
   SharePoint library (local path, no mapped drive) — retry Part 2 with that
   path. **Meaning:** automation that touches the NAS runs in CI or on
-  Chris's machine, not in the builder's session, until the bug is fixed.
+  the setup owner's machine, not in the builder's session, until the bug is fixed.

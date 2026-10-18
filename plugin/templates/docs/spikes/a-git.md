@@ -4,13 +4,13 @@
 private GitHub repo using credentials set up once, and do those credentials
 survive a new session?
 
-**Who:** Chris sets up once; builder runs. **Where:** builder's machine,
-local session, `steadyship` folder attached.
+**Who:** {{SETUP_OWNER}} sets up once; builder runs. **Where:** builder's machine,
+local session, `{{REPO_NAME}}` folder attached.
 
-## One-time setup (Chris, ~15 min) — do NOT put the token in any file in the repo
+## One-time setup ({{SETUP_OWNER}}, ~15 min) — do NOT put the token in any file in the repo
 
 1. GitHub → Settings → Developer settings → Fine-grained tokens → Generate:
-   repository access = only `steadyship`; permissions = Contents: Read and
+   repository access = only `{{REPO_NAME}}`; permissions = Contents: Read and
    write; expiry 30 days. Copy it.
 2. In a Claude session with the folder attached, paste the token into the
    chat once and ask Claude: "Run `git config credential.helper store`, then
@@ -23,7 +23,7 @@ local session, `steadyship` folder attached.
    git credential approve <<'EOF'
    protocol=https
    host=github.com
-   username=cookc
+   username={{GITHUB_OWNER}}
    password=<token>
    EOF
    git ls-remote --heads origin
@@ -34,10 +34,10 @@ local session, `steadyship` folder attached.
    sits in the transcript and tool logs. Tell Claude never to put it in a
    URL, a file or the remote (a token in the remote URL lands in
    `.git/config` on the builder's disk). Revoke the token after the spike;
-   the 30-day expiry is only the backstop. V0 uses Chris's token, not the
-   builder's — a recorded deviation from proposal §11(a).
-   **Alternative, if available (unverified):** Chris opens a terminal he
-   controls inside the VM and runs `git credential approve`, entering the
+   the 30-day expiry is only the backstop. V0 uses {{SETUP_OWNER}}'s token, not the
+   builder's — a recorded deviation from the Steadyship proposal §11(a).
+   **Alternative, if available (unverified):** {{SETUP_OWNER}} opens a terminal they
+   control inside the VM and runs `git credential approve`, entering the
    same four lines, so the token never enters the conversation.
 The last command should list branches; if it does, setup is done.
 
@@ -64,8 +64,8 @@ Paste: `| a | PASS | <date> | persisted across sessions: yes/no |`
   `curl -sI https://github.com | head -1`).
 - Passes first time, fails after a new session → VM home is not persistent.
   Record it. **Fallback:** the plugin asks for the token at the start of each
-  session (worse), or commits land in the attached folder and Chris pushes
-  from his machine weekly (acceptable for V0), or builders use Claude Code
-  after a one-time `gh auth login` (proposal §11 fallback).
+  session (worse), or commits land in the attached folder and {{SETUP_OWNER}} pushes
+  from their machine weekly (acceptable for V0), or builders use Claude Code
+  after a one-time `gh auth login` (the Steadyship proposal §11 fallback).
   **Meaning:** "no terminal ever" becomes "one setup session, then
   conversational."
