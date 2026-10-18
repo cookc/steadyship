@@ -15,6 +15,9 @@ b (shared drive), c (tests), d (hosting), e (plugin)?" and stop.
 
 ## Steps
 
+0. Confirm you are inside a Steadyship repository: a file `steadyship.md`
+   exists here and its first line is `# Steadyship repository`. If not,
+   say "This folder isn't a Steadyship repository" and stop.
 1. Open `docs/spikes/<letter>-*.md` and follow its "What Claude does"
    section exactly. It names the script and the inputs it needs.
    If that section names no script (spikes d and e), do not run anything

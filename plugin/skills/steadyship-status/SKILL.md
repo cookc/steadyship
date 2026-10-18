@@ -10,9 +10,10 @@ Steadyship work in plain language for a non-technical reader.
 
 ## Steps
 
-1. Confirm you are inside a Steadyship repository: `docs/proposal-v0.1.md`
-   and `.claude-plugin/marketplace.json` both exist. If not, say
-   "This folder isn't a Steadyship repository" and stop.
+1. Confirm you are inside a Steadyship repository: a file `steadyship.md`
+   exists here and its first line is `# Steadyship repository`. If not,
+   say "This folder isn't a Steadyship repository — ask me to set one up
+   (steadyship-init)" and stop.
    Then read `docs/assessment/README.md`; if it has a line starting
    `**Setup owner:**`, use that name wherever this skill says "the setup
    owner"; otherwise say "whoever set Steadyship up". (The setup owner
