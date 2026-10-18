@@ -3,3 +3,4 @@ node_modules/
 /tmp-init-*/
 .DS_Store
 Thumbs.db
+tests/judgement/results/

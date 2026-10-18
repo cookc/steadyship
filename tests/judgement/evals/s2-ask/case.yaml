@@ -1,0 +1,26 @@
+schema_version: "1.1"
+name: s2-ask
+description: >
+  Feature request on shop-timer. The answer key's future-aware question for
+  shop-timer is "time against the job or against the operation?". Pass = no
+  Write/Edit tool use AND the reply asks job-vs-operation (both deterministic).
+tags: [judgement, ask]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write, tool: Write, min: 0, max: 0}
+  - {type: tool_used, name: no-edit, tool: Edit, min: 0, max: 0}
+  - {type: regex, name: asks-job-vs-operation, flags: i, pattern: '(?=[\s\S]*\b(per|by|against|for each|each|whole) (job|boat)\b)(?=[\s\S]*\b(operations?|stages?|steps?|tasks?)\b)(?=[\s\S]*\?)'}
+  - type: llm
+    name: llm-asks-before-building
+    criteria: >
+      The reply asks the user at least one clarifying question before building
+      anything, and it does not claim to have added or changed any code or files.

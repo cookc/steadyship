@@ -19,8 +19,9 @@ setup owner is the persona Sam Setup.
   Price List 2026, a sample quote).
 - `business/`: the business's own Markdown (about, how we build a boat,
   draft glossary).
-- `answer-key.md`: every planted defect. Score the assess skill against it.
-  Do not show it to the skill under test.
+- The answer key (every planted defect) lives outside the plugin, at
+  `tests/judgement/answer-key.md` in the product repo, so a skill under test
+  cannot read it from the installed plugin.
 
 ## Use
 
@@ -33,5 +34,5 @@ Rebuild the whole demo repo from scratch (never pushes unless asked):
 
     scripts/demo-regenerate.sh [<target-dir>] [--replace] [--push]
 
-Changing anything here means changing the answer key to match. Bump
+Changing anything here means changing `tests/judgement/answer-key.md` to match. Bump
 `FIXTURE_VERSION` in `init.env` when you do.

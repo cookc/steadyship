@@ -2,7 +2,8 @@
 
 Ground truth for scoring the `assess` skill (and later `ask` / `review`). Every
 row can be checked by reading the named file. Do not show this file to the
-skill under test. Paths are relative to `plugin/demo/`.
+skill under test (it lives here, outside `plugin/`, so an installed plugin
+cannot read it). Paths are relative to `plugin/demo/`.
 
 ## 1. Apps, stage, and who relies on them
 

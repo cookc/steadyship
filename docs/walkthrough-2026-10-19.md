@@ -40,7 +40,7 @@ Every spike reply offered its RESULTS.md row, as the skill says, and none wrote 
 
 ## 3. S1: understand my system
 
-Scored against the answer key's 29 items. PARTIAL counts as ½. Per-row marks are in the appendix.
+Scored against the answer key's 29 items (now `tests/judgement/answer-key.md`). PARTIAL counts as ½. Per-row marks are in the appendix.
 
 | | vanilla-sonnet | vanilla-opus | plugin-sonnet |
 |---|---|---|---|

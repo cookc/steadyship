@@ -1,0 +1,56 @@
+schema_version: "1.1"
+name: s1-assess
+description: >
+  "Understand my system" on Demo Boatworks. One regex grader per answer-key row
+  (tests/judgement/answer-key.md sections 2 and 3: c1-c9, d1-d20); the harness
+  summary reports "S1 rows found: N/29" from the row-* graders. Pass >= 24/29.
+tags: [judgement, assess]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  # --- Section 2: shared concepts (9) ---
+  - {type: regex, name: row-c1-customer-spellings, pattern: 'Svcs|(?=[\s\S]*Harbour Services(?! Ltd))(?=[\s\S]*Harbour Services Ltd)'}
+  - {type: regex, name: row-c2-job-number-formats, pattern: '(?=[\s\S]*(?<![-\w])10(43|40)\b)(?=[\s\S]*J-10\d\d)'}
+  - {type: regex, name: row-c3-model-short-name, flags: i, pattern: '\bWB 6\.2\b(?! workboat)[^\n]{0,80}(workboat|in full|full name|short|abbrev)|model names?[^\n]{0,60}(shortened|abbreviat|written in full|spelled)'}
+  - {type: regex, name: row-c4-part-code-formats, pattern: '(?=[\s\S]*AL-5083)(?=[\s\S]*AL5083)|(?=[\s\S]*FUEL-TK)(?=[\s\S]*FUELTK)'}
+  - {type: regex, name: row-c5-operation-not-recorded, flags: i, pattern: '(timer|time)[^\n]{0,300}\boperations?\b|\boperations?\b[^\n]{0,300}(timer|time)'}
+  - {type: regex, name: row-c6-price-differs, flags: i, pattern: '(?=[\s\S]*bimini)(?=[\s\S]*3,?450)(?=[\s\S]*3,?200)|(?=[\s\S]*trailer)(?=[\s\S]*6,?250)(?=[\s\S]*5,?800)'}
+  - {type: regex, name: row-c7-stage-count-spelling, flags: i, pattern: '\b(six|6) of (your |the |its )?(nine|9)\b|(six|6)[^\n]{0,40}(stages|columns)[^\n]{0,200}(nine|9)|(nine|9)[^\n]{0,40}stages[^\n]{0,200}(six|6)|(?=[\s\S]*fit out)(?=[\s\S]*fit-out)'}
+  - {type: regex, name: row-c8-quote-validity, pattern: '(?=[\s\S]*\b14[- ]days?)(?=[\s\S]*(\b30[- ]days?|\b14[- ]days?[^\n]{0,120}\b30\b))'}
+  - {type: regex, name: row-c9-hull-number, flags: i, pattern: 'hull numbers?[^\n]{0,200}(never|not |nowhere|no |nobody|isn.t|aren.t|wasn.t)|(never|not |nowhere|no |nobody|isn.t|aren.t)[^\n]{0,200}hull numbers?'}
+  # --- Section 3: planted duplications (20) ---
+  - {type: regex, name: row-d01-job-board-stale, pattern: '(?=[\s\S]*J-1039)(?=[\s\S]*J-1041)(?=[\s\S]*([Ss]ea trial|Weld))'}
+  - {type: regex, name: row-d02-1043-format, pattern: '(?<![-\w])1043\b'}
+  - {type: regex, name: row-d03-shop-timer-own-jobs, flags: i, pattern: '(?=[\s\S]*timer)(?=[\s\S]*(only (has |holds |knows |lists )?(3|three)\b|\b(3|three) jobs|J-1040[^\n]{0,40}J-1042|timer (has |holds )?(only )?(3|three)\b))'}
+  - {type: regex, name: row-d04-checklist-own-jobs, flags: i, pattern: '(?=[\s\S]*checklist)(?=[\s\S]*(only (has |holds |knows |lists )?(4|four)\b|\b(4|four) jobs|J-1038[^\n]{0,40}J-1041|checklist (has |holds )?(only )?(4|four)\b))'}
+  - {type: regex, name: row-d05-pr-free-text-job, pattern: '(?<![-\w])1040\b'}
+  - {type: regex, name: row-d06-board-stage-names, flags: i, pattern: '(?=[\s\S]*fit out)(?=[\s\S]*fit-out)|(no|missing|lacks|without|doesn.t have|has no)[^\n]{0,80}sea trial'}
+  - {type: regex, name: row-d07-customer-ltd-variants, pattern: '(?=[\s\S]*Svcs)(?=[\s\S]*(Southern Charters(?! Ltd)|"Harbour Services"|(drop|without|no |missing|remov|leav|left off)[^\n]{0,40}Ltd|Ltd[^\n]{0,40}(dropped|missing|removed|left off)))'}
+  - {type: regex, name: row-d08-quote-builder-customer-copy, flags: i, pattern: 'quote[- ]?builder[^\n]{0,200}customers?|customers?[^\n]{0,200}quote[- ]?builder'}
+  - {type: regex, name: row-d09-quote-builder-stale-prices, pattern: '(?=[\s\S]*3,?450)(?=[\s\S]*3,?200)(?=[\s\S]*6,?250)(?=[\s\S]*5,?800)'}
+  - {type: regex, name: row-d10-part-codes-hyphens, flags: i, pattern: 'hyphen|dashes|AL5083\d|FUELTK'}
+  - {type: regex, name: row-d11-fuel-tank-price, pattern: '(?=[\s\S]*\b725\b)(?=[\s\S]*\b740\b)'}
+  - {type: regex, name: row-d12-pr-item-code-free-text, flags: i, pattern: '(?=[\s\S]*purchase)(?=[\s\S]*(nav lights|SS BOLT|free[- ]?text|typed (freely|in by hand|any way|however)|any (format|style|way)|(four|4|different) (different )?(styles|ways|formats)))'}
+  - {type: regex, name: row-d13-money-format-copied, flags: i, pattern: '(fmtMoney|money\(|money[- ]formatt|currency formatt|format(s|ting)? (of )?(money|prices|dollar))[^\n]{0,200}(cop|duplicat|same code|each app|three|both)'}
+  - {type: regex, name: row-d14-fmtmoney-rounds, flags: i, pattern: 'whole dollars?|rounds?(ing|ed)? (it |them |prices )?(off )?to (the nearest |whole )?dollar|\$2072|without (the )?(cents|decimals)|no (thousands )?(separators|commas)'}
+  - {type: regex, name: row-d15-header-css-drift, flags: i, pattern: '#0b3d5c|#0c3c5a|#0a3d62|header (colou?r|style|css|block)|verdana|different (shades?|blues?) '}
+  - {type: regex, name: row-d16-utc-date-copied, flags: i, pattern: '(UTC|toISOString|time ?zone)[^\n]{0,300}(quote|purchase|three|several|each|copied|same)'}
+  - {type: regex, name: row-d17-board-moves-never-reach-csv, flags: i, pattern: '\bmov(e|es|ed)\b[^\n]{0,100}(only|saved|stored|kept|live)[^\n]{0,60}(browser|device|machine|computer)|(never|don.t|doesn.t|does not|won.t|not|nothing)[^\n]{0,80}(update|reach|change|sync|written back|write back|flow|feed)[^\n]{0,120}(spreadsheet|jobs(\.csv)?|csv)'}
+  - {type: regex, name: row-d18-time-per-job-vs-operation, flags: i, pattern: '(?=[\s\S]*\boperations?\b)(?=[\s\S]*(per job|each job|against the job|by job|to the job|whole job|to a job|on a job|per \*job))'}
+  - {type: regex, name: row-d19-quote-validity-q031, pattern: '(?=[\s\S]*\b14[- ]days?)(?=[\s\S]*(\b30[- ]days?|\b14[- ]days?[^\n]{0,120}\b30\b))(?=[\s\S]*(Q-2026-031|\b031\b|[Tt]he (actual |saved |sample )?quote))'}
+  - {type: regex, name: row-d20-q031-stale-prices, flags: i, pattern: '(Q-2026-031|Q-031|\b031\b)[^\n]{0,300}(3,?200|5,?800|stale|old price|out of date|under-?quot|too low|cheap)|(3,?200|5,?800|stale|old price|under-?quot)[^\n]{0,300}(Q-2026-031|Q-031|\b031\b)'}
+  # --- LLM check (not a row) ---
+  - type: llm
+    name: llm-job-list-copies
+    criteria: >
+      The reply names at least three different apps that each hold their own
+      copy of the job list (for example the job board, the shop timer and the
+      delivery checklist), rather than only saying data is duplicated in general.
