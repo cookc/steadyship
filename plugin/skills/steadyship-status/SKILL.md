@@ -32,7 +32,7 @@ Steadyship work in plain language for a non-technical reader.
 
    Apps assessed: N (list each as "name — stage — relied on by").
    Spikes: X passed, Y failed, Z not yet run.
-   Next step: if any spike row is blank, "Run spike <letter of the first blank row, reading RESULTS.md top to bottom (the table starts with e)>"
+   Next step: if any spike row is blank, "Run spike <letter of the first blank row, reading RESULTS.md top to bottom (the table starts with 0)>"
    and, if any row is FAIL, add "then go through the failed spike(s) with
    the setup owner: <letters>". If no rows are blank and any is FAIL: "Go through the
    failed spike(s) with the setup owner: <letters>". If all rows are PASS: "Review

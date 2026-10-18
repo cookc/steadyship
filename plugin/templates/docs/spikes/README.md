@@ -1,12 +1,13 @@
 # Spikes — weeks 1–2 go/no-go
 
-Five checks, run **on the partner's Windows machine, on their Claude Team
-account, in a local (on-device) session**. Order matters: (e) first, so the
+Six checks, run **on the partner's Windows machine, on their Claude Team
+account, in a local (on-device) session**. Order matters: (0) first, then (e), so the
 others can use the plugin; if (e) fails, every runbook also gives the plain
 prompt to paste instead.
 
 | Spike | Question | Runbook | Needs |
 |---|---|---|---|
+| 0 | What can this environment do (tools, network, does it remember files)? | `0-env.md` | Nothing |
 | e | Does the plugin reach a second Team member without their action? | `e-plugin.md` | Team owner, 2 members |
 | a | Can a session commit and push to the private repo, no terminal? | `a-git.md` | GitHub token (one-time, {{SETUP_OWNER}}) |
 | b | Can a session read/write the real shared drive — from file tools *and* from a script? | `b-nas.md` | The mapped drive letter |

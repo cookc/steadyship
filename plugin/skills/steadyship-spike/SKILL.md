@@ -10,8 +10,8 @@ technical. Do the work; report plainly.
 
 ## Arguments
 
-One letter: a, b, c, d or e. If none is given, ask "Which spike: a (git),
-b (shared drive), c (tests), d (hosting), e (plugin)?" and stop.
+One letter or 0: 0, a, b, c, d or e. If none is given, ask "Which spike: 0 (environment),
+e (plugin), a (git), b (shared drive), c (tests), d (hosting)?" and stop.
 
 ## Steps
 

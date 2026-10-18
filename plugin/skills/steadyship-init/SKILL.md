@@ -65,25 +65,47 @@ matter now: `docs/spikes/README.md` (the go/no-go checks), `docs/assessment/READ
 If the GitHub owner is "TBC", skip the GitHub offer entirely and say the
 repository is local only for now.
 
-Otherwise, check whether the GitHub CLI is available and logged in:
-`gh auth status >/dev/null 2>&1 && echo yes || echo no`.
+Otherwise ask once: "Shall I create the private GitHub repository
+`<github owner>/<repo name>` now and upload this folder to it?"
 
-- If **yes**: ask "Shall I create the private GitHub repository
-  `<github owner>/<repo name>` now and upload this folder to it?" Only
-  if they say yes, run:
-  `cd "<dir>" && gh repo create "<github owner>/<repo name>" --private --source=. --remote=origin --push`
-  and report the result. If it fails, show the last two lines of the error
-  in plain words (e.g. "GitHub says that name is already taken").
-- If **no**, or if they decline when asked: say the repository is local only for now, and give the setup
-  owner these two lines to run later from a terminal where `gh` is logged
-  in, or to hand to whoever manages their GitHub:
+- If they **decline**: say the repository is local only for now, and that
+  the setup owner can ask again later ("set up GitHub for this
+  repository"). Do not print any commands.
+- If they say **yes**, you need a GitHub token for the setup owner. Say
+  plainly: "I need a GitHub access token to do this. It passes through this
+  chat, so make it a fine-grained token limited to this one repository
+  (Contents: read/write; for creating the repository, Administration:
+  read/write), 30-day expiry, and revoke it after setup." Give the clicks:
+  github.com -> your picture (top right) -> Settings -> Developer settings
+  -> Personal access tokens -> Fine-grained tokens -> Generate new token.
+  Then, with the token:
+  - If `command -v gh` succeeds, `gh` is an optional shortcut:
+    `printf '%s' "<token>" | gh auth login --with-token` then
+    `cd "<dir>" && gh repo create "<github owner>/<repo name>" --private --source=. --remote=origin --push`
+  - Otherwise (the normal case in Claude desktop) create the repository with
+    the web API and push with git:
 
-      cd "<dir>"
-      gh repo create "<github owner>/<repo name>" --private --source=. --remote=origin --push
+        curl -sS -f -X POST -H "Authorization: Bearer <token>" -H "Accept: application/vnd.github+json" \
+          https://api.github.com/user/repos -d '{"name":"<repo name>","private":true}'
 
-In Claude desktop, `gh` is usually not available; in that case print the two commands for the setup owner to run from a terminal on their own computer, in the folder they attached.
+    (for an organisation owner use `https://api.github.com/orgs/<github owner>/repos`). Then
+    `git remote add origin https://github.com/<github owner>/<repo name>.git`,
+    run `git config credential.helper store`, run `git credential approve`
+    with protocol=https, host=github.com, username=<setup owner's GitHub
+    username>, password=<token> on stdin, and finally `git push -u origin main`.
+  - If the API call fails with a network error (cannot reach
+    api.github.com): say the environment cannot reach GitHub's API and offer
+    the website path: "create an empty **private** repository named
+    `<repo name>` at github.com/new, no README, then tell me when it's done".
+    Once they confirm, do only the `git remote add`, credential and
+    `git push` steps above.
+  - Report the result. If anything fails, show the last two lines of the
+    error in plain words (e.g. "GitHub says that name is already taken").
+  - Never echo the token back and never write it to any file in the
+    repository; the stored credential (`~/.git-credentials`) lives outside
+    the repository.
 
-Then: "Next step: open `docs/spikes/README.md` and run spike e (a short check that the plugin works on your computer)."
+Then: "Next step: open `docs/spikes/README.md` and run spike 0 (a short check of what this environment can do), then spike e."
 
 ## Rules
 

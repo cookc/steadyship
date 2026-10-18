@@ -5,6 +5,7 @@ FAIL, or blank (not run). The `steadyship-status` skill reads this table.
 
 | Spike | Result | Date | Note |
 |---|---|---|---|
+| 0 | | | |
 | e | | | |
 | a | | | |
 | b | | | |
