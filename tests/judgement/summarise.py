@@ -71,6 +71,27 @@ def main():
                 cost = (r.get("costUsd") or 0) + (r.get("judgeCostUsd") or 0)
                 print(f"| {c['name']} | {arm} | {i} | {res} | {'PASS' if ok else 'fail'} | {also} | "
                       f"{r.get('turns')} | {r.get('durationSeconds')} | {cost:.2f} |")
+    print("\nPer case and arm (pass count / N; score mean, min-max; graders missed in failing runs):\n")
+    print("| Case | Arm | Pass | Score mean | Min-max | Cost ($) | Graders missed in failing runs |")
+    print("|---|---|---|---|---|---|---|")
+    for c in d["cases"]:
+        for arm, runs in c.get("arms", {}).items():
+            passes, scores, miss, cost = 0, [], {}, 0.0
+            for r in runs:
+                g = {x["name"]: x["passed"] for x in r.get("graders", [])}
+                ok = (not r.get("error")) and verdict(c["name"], g)[1]
+                passes += ok
+                if r.get("score") is not None:
+                    scores.append(r["score"])
+                cost += (r.get("costUsd") or 0) + (r.get("judgeCostUsd") or 0)
+                if not ok:
+                    for x in r.get("graders", []):
+                        if not x["passed"]:
+                            miss[x["name"]] = miss.get(x["name"], 0) + 1
+            ms = ", ".join(f"{k} x{v}" for k, v in sorted(miss.items(), key=lambda kv: -kv[1])) or "-"
+            mean = f"{sum(scores)/len(scores):.2f}" if scores else "-"
+            rng = f"{min(scores):.2f}-{max(scores):.2f}" if scores else "-"
+            print(f"| {c['name']} | {arm} | {passes}/{len(runs)} | {mean} | {rng} | {cost:.2f} | {ms} |")
     print("\nPer-grader detail (✓/✗ per run, arms in order):\n")
     for c in d["cases"]:
         names = [g["name"] for g in c.get("graders", [])]

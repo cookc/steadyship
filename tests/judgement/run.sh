@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Judgement eval harness: assess / ask / review cases on mock businesses (s* = Demo Boatworks,
 # r* = Rimu Joinery), with and without the Steadyship plugin (claude plugin eval --ablation with-without).
-# Usage: tests/judgement/run.sh [--runs N] [--case GLOB] [--model M] [--max-cost-usd USD]
-#                              [--ablation with-without|none]   (defaults: 1, all, sonnet, 8, with-without)
+# Usage: tests/judgement/run.sh [--runs N] [--cases GLOB] [--model M] [--max-cost-usd USD]
+#                              [--arms with|both] [-j N]   (defaults: 1, all, sonnet, 8, both, 1)
+#   --case is an alias of --cases; --ablation with-without|none is the raw form of --arms both|with.
 # Costs money and takes minutes: NOT part of scripts/validate.sh or CI.
 # Output: tests/judgement/results/<UTC timestamp>/{result.json,report.html,summary.md,eval.log}
 #
@@ -13,11 +14,15 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 J="$ROOT/tests/judgement"
-RUNS=1; CASE=""; MODEL=sonnet; MAXCOST=8; ABLATION=with-without; EXTRA=()
+RUNS=1; CASE=""; MODEL=sonnet; MAXCOST=8; ABLATION=with-without; JOBS=1; EXTRA=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --runs) RUNS="$2"; shift 2;;
-    --case) CASE="$2"; shift 2;;
+    --case|--cases) CASE="$2"; shift 2;;
+    --arms) case "$2" in with) ABLATION=none;; both) ABLATION=with-without;;
+              without) echo "--arms without is not supported by the runner (use with or both)" >&2; exit 2;;
+              *) echo "--arms: with|without|both" >&2; exit 2;; esac; shift 2;;
+    -j|--jobs) JOBS="$2"; shift 2;;
     --model) MODEL="$2"; shift 2;;
     --max-cost-usd) MAXCOST="$2"; shift 2;;
     --ablation) ABLATION="$2"; shift 2;;
@@ -28,6 +33,7 @@ done
 command -v claude >/dev/null || { echo "claude CLI not found" >&2; exit 2; }
 OUT="$J/results/$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir -p "$OUT"
+ln -sfn "$(basename "$OUT")" "$J/results/latest"
 STAGE="$(mktemp -d "${TMPDIR:-/tmp}/steadyship-judgement-XXXXXX")"
 trap 'rm -rf "$STAGE"' EXIT
 ( cd "$ROOT" && tar cf - --exclude=node_modules --exclude=evals plugin ) | ( cd "$STAGE" && tar xf - )
@@ -47,7 +53,7 @@ done
 
 ARGS=(--scaffold --allow-tools Write Edit --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
       --trust-plugin --no-publish --threshold 0 --max-cost-usd "$MAXCOST"
-      --output-dir "$OUT" --report "$OUT/report.html" --json "$OUT/result.json")
+      --concurrency "$JOBS" --output-dir "$OUT" --report "$OUT/report.html" --json "$OUT/result.json")
 [ -z "$CASE" ] || ARGS+=(--case "$CASE")
 [ ${#EXTRA[@]} -eq 0 ] || ARGS+=("${EXTRA[@]}")
 echo "Staged plugin: $STAGE/plugin  ->  results: $OUT"
@@ -59,3 +65,4 @@ set -e
 echo "claude plugin eval exit $rc after $(( $(date +%s) - start ))s" | tee -a "$OUT/eval.log"
 [ -f "$OUT/result.json" ] || { echo "no result.json written" >&2; exit 1; }
 python3 "$J/summarise.py" "$OUT/result.json" | tee "$OUT/summary.md"
+ln -sfn "$(basename "$OUT")/summary.md" "$J/results/latest.md"
