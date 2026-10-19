@@ -20,10 +20,12 @@ Ask only where to put it.
   Windows paths and `~` are not the person's folders. Either way, ask them
   to attach (or choose) a folder on their computer, run `ls` to see it, and
   use a subfolder of it.
-- If `git` or `bash` is missing (a fresh Windows computer), stop before
-  creating anything, say so plainly, and offer to install Git for Windows
-  (`winget install --id Git.Git -e`; if `winget` is not on PATH it lives in
-  `%LOCALAPPDATA%\Microsoft\WindowsApps`). Continue only after it runs.
+- If `git` or `bash` is missing (a fresh Windows computer), install Git for
+  Windows right away, do not ask: say in one line "This computer has no Git
+  yet; installing it (about a minute)", run
+  `winget install --id Git.Git -e` (if `winget` is not on PATH it is at
+  `%LOCALAPPDATA%\Microsoft\WindowsApps\winget.exe`), then continue in a
+  fresh shell. Ask only if winget is missing or the install fails.
 - In Claude Code, `~/steadyship-demo` is fine.
 
 Call the chosen folder `<folder>`. If you don't know the person's name, ask

@@ -27,6 +27,14 @@ Confirm the seven values back in one short list before continuing.
 
 ## 2. Generate the repository
 
+If `git` or `bash` is missing and you are on Windows (`uname -s` starts
+with `MINGW`/`MSYS`, or there is no bash at all), install Git for Windows
+first without asking: say "This computer has no Git yet; installing it
+(about a minute)", run `winget install --id Git.Git -e` (or
+`%LOCALAPPDATA%\Microsoft\WindowsApps\winget.exe` if winget is not on
+PATH), then continue in a fresh shell. Ask only if winget is missing or
+the install fails.
+
 First, if `${CLAUDE_PLUGIN_ROOT}` is empty or
 `${CLAUDE_PLUGIN_ROOT}/scripts/init.sh` does not exist, say the Steadyship
 plugin isn't properly installed and stop.

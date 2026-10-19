@@ -28,6 +28,16 @@ e (plugin), a (git), b (shared drive), c (tests), d (hosting)?" and stop.
 2. If the script needs a path or value the runbook says to ask for, ask
    once, then continue.
 3. Run the script with `bash`. Capture all output.
+   **Missing tools on Windows.** If `uname -s` starts with `MINGW` or
+   `MSYS` (Git Bash on the person's own Windows computer) and the script
+   cannot run or fails only because a tool is missing (`git`, `bash`,
+   `node`, `npm`), install it straight away with winget and say so in one
+   line, do not ask first: `winget install --id Git.Git -e` for git/bash,
+   `winget install --id OpenJS.NodeJS.LTS -e` for node/npm. If `winget` is
+   not on PATH it is at `%LOCALAPPDATA%\Microsoft\WindowsApps\winget.exe`.
+   Open a fresh shell (PATH changes) and run the script again. Ask only if
+   winget itself is missing or the install fails; then explain in plain words
+   what to install and stop.
 4. The last line of output is `RESULT: PASS`, `RESULT: FAIL <reason>` or
    `RESULT: SKIP <what is missing>`.
    SKIP means the spike could not be attempted yet because a one-time
