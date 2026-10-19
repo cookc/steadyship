@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Spike 0: what can this environment do? Reports findings; only a missing git fails it.
 set -uo pipefail
+cd "$(dirname "$0")/../.." || { echo "RESULT: FAIL could not find the repository folder"; exit 1; }
 
 if ! command -v git >/dev/null 2>&1; then
   echo "missing: git"

@@ -77,6 +77,8 @@ set +e; "$ROOT/plugin/scripts/init.sh" 'C:\Users\x\repo' --business b --setup-ow
 ( cd "$DIR" && export HOME="$OUT/home" && scripts/spikes/env.sh | grep -q 'persistence yes' ) || fail "env.sh second run should report persistence yes"
 ( cd "$DIR" && export HOME="$OUT/home2" && mkdir -p "$HOME" && scripts/spikes/env.sh | grep -q 'persistence no' ) || fail "env.sh with a wiped home should report persistence no"
 [ -f "$DIR/.steadyship/env-spike.ran" ] || fail "env.sh should leave a repo-side marker"
+# run from the parent folder (as the skill does with the one-level-down rule): marker still found in the repo
+( cd "$OUT" && export HOME="$OUT/home3" && mkdir -p "$HOME" && bash "$DIR/scripts/spikes/env.sh" | grep -q 'persistence no' ) || fail "env.sh run from another folder should still find the repo marker"
 ( cd "$DIR" && git status --porcelain | grep -q 'env-spike.ran' ) && fail "repo-side marker should be git-ignored"
 # spike a without a GitHub link is SKIP (not set up), never FAIL
 ( cd "$DIR" && { scripts/spikes/git-push.sh || true; } | tail -1 | grep -q '^RESULT: SKIP' ) || fail "git-push without a remote should SKIP"

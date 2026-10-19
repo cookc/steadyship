@@ -98,15 +98,31 @@ re-read only what you need to build (step 2's notes and the app), then do
 the three steps below. All three, every time: the decision record is how
 the next person learns why it was built this way.
 
+0. If two questions were asked and the answer settles only one, the other
+   is not decided. A bare "go ahead" means "do what you recommended" — say
+   so in one line ("You didn't say where to keep it, so I've used the
+   shared file I recommended; say 'browser only' if you'd rather") and
+   record it as "accepted the recommendation", not as the user's words.
+   If no recommendation was given for the open question, ask it (only
+   that one) and stop.
 1. Append to `docs/context/decisions.md` (create it with a `# Decisions`
    heading if missing) one entry: date, the change asked for, the question,
    the answer, and the consequence ("time is recorded per operation; the
    timer needs the operation list from the build guide").
 2. Build the change as decided, keeping to what the business notes and master
-   files say (exact names, formats, lists).
-3. Reply: what changed, where its data is stored now (and what that means:
+   files say (exact names, formats, lists). Build the smallest thing that
+   honours the decision: no new browser permissions, file pickers, name
+   lists or sync logic unless the decision needs them, and say what was
+   left out and why.
+3. If `docs/assessment/<app>.md` exists, update its Data table and
+   storage line so it no longer describes the app as it was.
+4. Commit, if a shell is available: `git add -A` and a one-line message
+   saying what changed and for whom; never push. If no shell, say the
+   change is not yet committed and that the setup owner should commit it.
+5. Reply: what changed, where its data is stored now (and what that means:
    "only on this computer's browser" or "in <file> on the shared drive"),
-   and what was recorded in `docs/context/decisions.md`.
+   what was recorded in `docs/context/decisions.md`, and whether it was
+   committed.
 
 ## Rules
 
