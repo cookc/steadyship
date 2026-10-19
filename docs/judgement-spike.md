@@ -132,6 +132,8 @@ per arm. Later skill iterations append a row.
 | 2026-10-19 review iter 1 (S3, `--runs 3 --ablation none`) | 0.4.0 (steadyship-review v0) | with | — | — | 6, 6, 6 / yes ×3; J-1039/J-1041 named ×3; llm 3/3 | S3 3/3 | 135 s, $0.48 |
 | **2026-10-19 v0 complete** (full run, 1 run each) | 0.4.0 (assess, ask, review v0) | with | 28 — pass | S2 / S2b / S2c: no files, asked — pass ×3 | 6 / yes, stale rows named — pass | **5 of 5** | 376 s, $1.16 both arms |
 | **2026-10-19 v0 complete** | — | without | 21 — fail | S2 / S2b / S2c: built (Edit), not asked — fail ×3 | 5 / no — fail | 0 of 5 | (same run) |
+| 2026-10-19 Rimu Joinery (r1, r2, r3, `--runs 2`) | 0.4.0 (unchanged) | with | r1: 28, 23 live → 29, 29 regraded — pass 2/2 (1/2 live) | r2: no files, asked per job vs per operation ×2 — pass 2/2 | r3: 6, 6 / yes ×2; RJ-2061/RJ-2063 and RJ-2066 named ×2 — pass 2/2 | **6 of 6** (5 of 6 live) | 668 s, $1.92 both arms |
+| 2026-10-19 Rimu Joinery | — | without | r1: 18, 17 — fail ×2 | r2: built (Write) ×2; asked 1/2 — fail ×2 | r3: 4, 4 / no — fail ×2 | 0 of 6 | (same run) |
 
 Notes on the baseline (run `20261018T230900Z`, Claude Code 2.1.303, sonnet, 1 run per case per arm):
 
@@ -214,3 +216,70 @@ review, `20261018T233656Z` v0 complete):
   llm judge voted FAIL, PASS, FAIL on a reply that asks two questions and
   changes nothing, so treat that as haiku judge noise. It doesn't gate.
 
+
+## Second business: Rimu Joinery
+
+The s* cases all run on Demo Boatworks, so a skill could be quietly tuned to
+it. The r* cases ask the same three kinds of question about a different
+business, to test whether the skills generalise.
+
+- **Fixture:** `tests/judgement/fixtures/rimu-joinery/` (eval-only, never
+  shipped). A joinery workshop in Hamilton with five apps (quote-calc,
+  job-tracker, job-clock, cut-list, install-calendar), the business notes
+  (About, How we make a kitchen with 9 stages and their operations, Glossary)
+  and a shared drive (Jobs, Clients, Materials, Price List, quote Q-0417).
+  All five apps pass the smoke test.
+- **Answer key:** `fixtures/rimu-joinery/answer-key.md`. It has the same
+  sections and scoring as the first key and 29 rows (8 concepts, 21
+  planted items), each with a grep that verifies it. The defect mix is
+  deliberately different. The job clock is keyed by client name, so the two
+  Ngata jobs share one timer. The labour rate is hardcoded in two apps, 78
+  in one and 85 in the other. Board codes lose their thickness suffix, which
+  makes them ambiguous. The tracker writes install dates as DD/MM, so its
+  "Next installs" panel sorts December first. Its stage list has "Fit" for
+  "Install". A date helper is copied into three apps and always puts the
+  panel date a day early in NZ. The `.btn` CSS drifts. The quote calculator
+  takes a 40% deposit against the business rule of 50%. Quote Q-0417 used
+  the old rate after the change.
+- **Cases:** `r1-assess` uses the S1 prompt with the Rimu shared-drive path,
+  and one regex per row; it passes at ≥ 24/29. `r2-ask` asks "Can you add a
+  way for the fitters to log how long each kitchen takes to assemble?" Like
+  S2, it passes only with no Write, no Edit and a per-job-vs-per-operation
+  question. `r3-review` asks "Can the office rely on the job tracker instead
+  of the Jobs spreadsheet from next week?" It passes with a Read of
+  `Jobs.csv` and ≥ 5 of 6 risks. Of those risks, the install-date format
+  replaces S3's job-number format, and Fit/Install replaces S3's stage names.
+  `stale-jobs-named` (RJ-2061, RJ-2063) and `missing-job-named` (RJ-2066)
+  are reported but don't decide the pass.
+- **Harness:** a case folder can hold a `FIXTURE` file. `run.sh` then stages
+  that fixture without its answer key, and `scaffold.sh` builds the repo
+  from the fixture's `init.env`. `summarise.py` now scores by case-name
+  ending (`-assess`, `-ask`, `-review`) and grader prefix, not by `s1`/`s2`/`s3`.
+  Old results summarise to the same verdicts. `tests/judgement/README.md`
+  explains how to add a third business.
+
+Notes on the Rimu run (`20261019T015314Z`, Claude Code 2.1.303, sonnet, 2
+runs per case per arm, 668 s, $1.92):
+
+- **No skill change was needed.** The with arm passed r2 and r3 in 2/2
+  runs. Run 1 of r1 scored 28 live. Run 2 scored 23 live, but its reply
+  contains every finding, and five graders missed it on phrasing. It wrote
+  "the clock 4" and "the calendar 5" with no "jobs" after them, and "the
+  calculator" rather than "quote calculator". It gave the panel date as
+  "would show 2026-10-19 instead of 2026-10-20". Run 1 put Q-0417's stale
+  labour in a sub-bullet under a "Q-0417" heading, which is the same
+  sub-bullet miss as Boatworks `d20`. I widened those patterns after the
+  run. `regrade.py` then gives 29 and 29 for the with arm and still 18 and 17
+  for the without arm. Over the four Boatworks S1 replies the Rimu graders
+  score 3 or 4 of 29, all on generic rows (operation, UTC copy, browser-only
+  moves). So the graders separate the two businesses.
+- **Discrimination:** the with arm passed 6 of 6 after regrading (5 of 6 by
+  the live graders); the without arm passed 0 of 6. On r1, the without arm
+  missed the code-level rows: the material-code suffix, the copied
+  `nzd`/`isoDate`, the panel date, `.btn` drift, the Next-installs sort and
+  the per-app job counts. On r2 the without arm wrote code both times. In
+  one run it asked per job vs per operation, but only after building. On r3
+  the without arm never opened `Jobs.csv`, and it missed sign-in both times.
+- **Not planted:** both with-arm r1 replies noted that page widths differ
+  (520–820px). That is true, but it is layout, not a copy. The key now says
+  so and does not score it.
