@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Steadyship" style="color:#11314F">
+  <g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="48" cy="48" r="38"/>
+    <path d="M12 48 H84"/>
+    <path d="M30 48 L36 62 Q48 68 60 62 L66 48"/>
+    <path d="M48 48 V28"/>
+  </g>
+</svg>
