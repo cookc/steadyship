@@ -117,5 +117,14 @@ spike e stays a question for them.
   script looked for the browser only in the Linux and Mac cache folders, so
   Windows would have re-downloaded it every run; it now also checks
   `%LOCALAPPDATA%\ms-playwright`.
+- **The assessment question** ran the assess skill: it read all six apps,
+  the business notes and the spreadsheets, wrote `docs/assessment/` (SUMMARY
+  plus one file per app) and answered with the duplicated code (money and
+  date helpers, a drifted rounding copy, header colours and fonts), seven
+  risks led by under-quoting from stale prices and browser-only storage, and
+  three first moves (Quote Builder reads the price list, Jobs.csv becomes the
+  single job list, agree the spelling rules). Same shape as the Mac result.
+- **Every step of the README quick start passed on Windows** with plugin
+  0.4.2, with the skill recovering twice (Git, Node) on a bare machine.
 - **Plugin updates**: "Check for updates" failed on a device without GitHub
   connected, so the VM ran 0.4.2 while 0.4.3 was published.
