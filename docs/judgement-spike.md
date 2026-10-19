@@ -343,3 +343,62 @@ Reading:
 - Caveats: n=3 for haiku and opus is small; one failing run moves the rate
   by 33 points. Haiku and opus were run with the with-arm only, so the
   plugin's lift on those models is not measured here.
+
+## Multi-turn cases
+
+Two Boatworks cases, sonnet, both arms, 3 runs each. Claude Code 2.1.303.
+
+**History mechanism: `context.history_file` works.** It names a Claude Code
+session transcript (JSONL, one `user`/`assistant` message object per line)
+that the runner passes to `claude --resume`; `prompt.md` is the next turn. A
+haiku probe ("my favourite colour is teal" in history, then "what is it?")
+recalled it. With an explicit `--ablation with-without` both arms run on
+the same history (with `--ablation auto` the runner makes a history case
+single-arm, assuming the history carries the plugin). So the history holds
+plain text only: the S2 request and the with-arm reply from
+`20261019T021756Z` `s2-ask-with-3` (asks per job vs per operation, and where
+times are kept). No skill call is replayed, or it would leak into the
+without arm. No fallback to a quoted conversation was needed.
+
+**`Agent` can be granted.** A haiku probe with `allowed_tools: [Read, Glob,
+Agent]` called Agent once, so `s3-review-second-opinion` runs in the
+harness; no outside `claude -p` run was needed.
+
+| Case | Run | Arm | Pass | Score mean (min) | Notes |
+|---|---|---|---|---|---|
+| s2-ask-answered (before fix) | `20261019T025834Z` | with | 0/3 | 0.43 (0.43) | built per operation (Edit ×4–9), said where stored; **no decisions.md** |
+| | | without | 0/3 | 0.43 (0.43) | same: built, no decisions.md |
+| s2-ask-answered (after fix) | `20261019T030135Z` | with | **3/3** | 0.81 (0.71) | skill fired on the answer ×3; decisions.md has question + answer ×3 |
+| | | without | 0/3 | 0.43 (0.43) | built, stated storage, no decision record |
+| s3-review-second-opinion | `20261019T025839Z` | with | **3/3** | 0.97 (0.91) | risks 6/6 ×3; Agent dispatched ×3; llm reconciles 3/3 |
+| | | without | 0/3 | 0.58 (0.45) | never opened Jobs.csv; no sign-in risk; Agent never used |
+
+Cost and time: before-fix run 122 s, $1.04; after-fix run 96 s, $0.80;
+second-opinion run 95 s, $0.80; regression check of s2/s2b/s2c (with, 2
+runs each, after the fix) 47 s, $0.51, 6/6 pass; probes $0.01. Total about
+$3.15.
+
+- **Skill change (generic).** Before the fix both arms built the change and
+  said where the data lives, but neither wrote `docs/context/decisions.md`:
+  on the answer turn the ask skill was not in context (the history, like a
+  resumed or compacted session, does not carry it), and nothing loaded its
+  "After the user answers" steps. The description now also triggers on the
+  user's answer to such a question, and that section says to skip the
+  asking steps and do all three closing steps. No business words were
+  added; the examples are "the second one", "against each step", "go ahead".
+- **Storage statement.** All 12 runs said where the times are kept. After
+  the fix, run 1 stored them in the browser with an Export button and said
+  so plainly ("saved only in that computer's browser (localStorage)") — it
+  noticed the user had not answered the storage question and recorded that
+  as open in decisions.md. Before the fix, one with-arm run wrote to a
+  `Timesheet.csv` on the shared drive through the browser's folder-picker
+  API (Chrome/Edge only).
+- **Second opinion.** Every with-arm run dispatched one reviewer and wrote a
+  reconciliation, e.g. "a separate read-only reviewer found the same
+  differences. It also found the Sea trial gap, the overdue flag on
+  delivered jobs and the UTC date problem, which I had not flagged." The
+  reconciliations are all "agreed, plus additions"; none reported a
+  disagreement, so whether the skill handles a real conflict is untested.
+- `llm-built-and-recorded` failed once after the fix (run 1) because the
+  build was partial by design (storage left open); the deterministic
+  graders passed. `used-skill` and `used-agent` are with-only indicators.
