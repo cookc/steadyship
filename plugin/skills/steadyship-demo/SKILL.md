@@ -13,10 +13,17 @@ mirroring a real small business. I'll set it up so you can try Steadyship on it.
 
 Ask only where to put it.
 
-- In Claude desktop, bash runs in a separate Linux environment, so Windows
-  paths and `~` are not the person's folders. Ask them to attach a folder on
-  their computer, run `pwd` and `ls` to see how it appears here, and use a
-  subfolder of it.
+- Run `pwd` and `uname -s` first. `MINGW…`/`MSYS…` means Git Bash on the
+  person's own Windows computer (Claude desktop "This computer" mode): their
+  folders are real, and `C:\Users\…` paths work as they are. A `pwd` like
+  `/sessions/…/mnt/…` means Claude desktop's separate Linux environment:
+  Windows paths and `~` are not the person's folders. Either way, ask them
+  to attach (or choose) a folder on their computer, run `ls` to see it, and
+  use a subfolder of it.
+- If `git` or `bash` is missing (a fresh Windows computer), stop before
+  creating anything, say so plainly, and offer to install Git for Windows
+  (`winget install --id Git.Git -e`; if `winget` is not on PATH it lives in
+  `%LOCALAPPDATA%\Microsoft\WindowsApps`). Continue only after it runs.
 - In Claude Code, `~/steadyship-demo` is fine.
 
 Call the chosen folder `<folder>`. If you don't know the person's name, ask

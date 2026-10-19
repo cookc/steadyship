@@ -12,9 +12,13 @@ fi
 echo "== Tools =="
 tools=0
 for t in git node npm curl gh python3; do
-  if command -v "$t" >/dev/null 2>&1; then
+  # "--version" must actually succeed: Windows ships placeholder python3/python
+  # shortcuts that only open the Microsoft Store, and they must not count as present.
+  if command -v "$t" >/dev/null 2>&1 && "$t" --version >/dev/null 2>&1; then
     v=$("$t" --version 2>&1 | head -1)
     echo "ok: $t ($v)"; tools=$((tools+1))
+  elif command -v "$t" >/dev/null 2>&1; then
+    echo "missing: $t (a shortcut exists but it does not run)"
   else
     echo "missing: $t"
   fi
@@ -69,8 +73,12 @@ if command -v gh >/dev/null 2>&1; then
   echo "ok: gh already present"; gh=present
 elif [ "$github_ok" = 1 ] && [ "$api_ok" = 1 ]; then
   arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+  exe=""
   case "$(uname -s)" in
     Darwin) pat="macOS_${arch}\.zip"; unpack() { unzip -q -o "$1" -d "$2"; } ;;
+    MINGW*|MSYS*|CYGWIN*)  # Git Bash on Windows: no unzip, so let PowerShell expand the archive
+      pat="windows_${arch}\.zip"; exe=".exe"
+      unpack() { powershell.exe -NoProfile -Command "Expand-Archive -Force -LiteralPath '$(cygpath -w "$1")' -DestinationPath '$(cygpath -w "$2")'" >/dev/null 2>&1; } ;;
     *)      pat="linux_${arch}\.tar\.gz"; unpack() { tar -xzf "$1" -C "$2"; } ;;
   esac
   tmp=$(mktemp -d)
@@ -81,12 +89,12 @@ elif [ "$github_ok" = 1 ] && [ "$api_ok" = 1 ]; then
   elif curl -sSL -m 60 -o "$tmp/gh.pkg" "$url" 2>/dev/null \
     && unpack "$tmp/gh.pkg" "$tmp" 2>/dev/null \
     && mkdir -p "$HOME/.local/bin" \
-    && cp "$tmp"/gh_*/bin/gh "$HOME/.local/bin/gh" 2>/dev/null \
-    && chmod +x "$HOME/.local/bin/gh"; then
-    if "$HOME/.local/bin/gh" --version >/dev/null 2>&1; then
+    && cp "$tmp"/gh_*/bin/gh$exe "$HOME/.local/bin/gh$exe" 2>/dev/null \
+    && chmod +x "$HOME/.local/bin/gh$exe"; then
+    if "$HOME/.local/bin/gh$exe" --version >/dev/null 2>&1; then
       echo "ok: gh installed to ~/.local/bin (add to PATH)"; gh=installed
     else
-      rm -f "$HOME/.local/bin/gh"
+      rm -f "$HOME/.local/bin/gh$exe"
       echo "blocked: could not install gh (the downloaded copy does not run on this machine)"
     fi
   else

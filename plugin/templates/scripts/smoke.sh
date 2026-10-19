@@ -9,8 +9,10 @@ if [ -z "$APP" ]; then
   exit 1
 fi
 have_browser() {
-  local d
-  for d in "${PLAYWRIGHT_BROWSERS_PATH:-}" "$HOME/.cache/ms-playwright" "$HOME/Library/Caches/ms-playwright"; do
+  local d win=""
+  # Windows (Git Bash) keeps the browsers under %LOCALAPPDATA%\ms-playwright
+  if [ -n "${LOCALAPPDATA:-}" ] && command -v cygpath >/dev/null 2>&1; then win="$(cygpath -u "$LOCALAPPDATA")/ms-playwright"; fi
+  for d in "${PLAYWRIGHT_BROWSERS_PATH:-}" "$HOME/.cache/ms-playwright" "$HOME/Library/Caches/ms-playwright" "$win"; do
     [ -n "$d" ] && ls -d "$d"/chromium* >/dev/null 2>&1 && return 0
   done
   return 1

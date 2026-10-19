@@ -80,6 +80,9 @@ set +e; "$ROOT/plugin/scripts/init.sh" 'C:\Users\x\repo' --business b --setup-ow
 # run from the parent folder (as the skill does with the one-level-down rule): marker still found in the repo
 ( cd "$OUT" && export HOME="$OUT/home3" && mkdir -p "$HOME" && bash "$DIR/scripts/spikes/env.sh" | grep -q 'persistence no' ) || fail "env.sh run from another folder should still find the repo marker"
 ( cd "$DIR" && git status --porcelain | grep -q 'env-spike.ran' ) && fail "repo-side marker should be git-ignored"
+# a tool whose --version fails (Windows' Store placeholder python3) must count as missing, not ok
+FAKE="$OUT/fakebin"; mkdir -p "$FAKE"; printf '#!/bin/sh\necho "Python was not found; run without arguments to install from the Microsoft Store"; exit 9009\n' > "$FAKE/python3"; chmod +x "$FAKE/python3"
+( cd "$DIR" && export HOME="$OUT/home4" && mkdir -p "$HOME" && PATH="$FAKE:$PATH" scripts/spikes/env.sh | grep '^missing: python3 (a shortcut exists' >/dev/null ) || fail "env.sh should treat a non-running python3 shortcut as missing"
 # spike a without a GitHub link is SKIP (not set up), never FAIL
 ( cd "$DIR" && { scripts/spikes/git-push.sh || true; } | tail -1 | grep -q '^RESULT: SKIP' ) || fail "git-push without a remote should SKIP"
 git init -q --bare "$OUT/bare.git"

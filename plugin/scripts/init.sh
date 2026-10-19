@@ -12,7 +12,12 @@ fail() { echo "RESULT: FAIL $*"; exit 1; }
 TARGET="${1:-}"; shift || true
 [ -n "$TARGET" ] || fail "no target directory given"
 if printf '%s' "$TARGET" | grep -Eq '^[A-Za-z]:[\\/]'; then
-  fail "Windows-style paths cannot be used here — give the folder as this environment sees it (ask Claude to run pwd)"
+  # Git Bash on Windows (MSYS) can translate C:\... itself; elsewhere a Windows path means the wrong environment.
+  if command -v cygpath >/dev/null 2>&1; then
+    TARGET="$(cygpath -u "$TARGET")"
+  else
+    fail "Windows-style paths cannot be used here — give the folder as this environment sees it (ask Claude to run pwd)"
+  fi
 fi
 BUSINESS=""; SETUP_OWNER=""; SPONSOR=""; GITHUB_OWNER=""; REPO_NAME=""; SHARED_DRIVE=""; DO_GIT=1
 need() { [ $# -ge 2 ] || fail "$1 needs a value"; case "$2" in --*) fail "$1 needs a value (got $2)";; esac; }
