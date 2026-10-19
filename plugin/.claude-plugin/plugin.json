@@ -1,7 +1,7 @@
 {
   "name": "steadyship",
   "description": "An engineer in the conversation: asks what you don't know to ask, judges what you can't judge, and gives prototypes a path to software a business can run on.",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "author": {
     "name": "Chris Cook"
   },

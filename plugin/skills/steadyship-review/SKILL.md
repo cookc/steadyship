@@ -1,6 +1,6 @@
 ---
 name: steadyship-review
-description: Use when asked whether an app can be trusted or relied on in a Steadyship repository — "is <app> good enough", "can we rely on", "is it safe to use", "review <app>", "ready for the workshop/office/team", "should we switch to <app>", "use it instead of the spreadsheet", "be straight with me". Reads the app and the authoritative master files on the shared drive, compares them row by row, checks storage, backup, sign-in, formats and tests with evidence, and gives a plain Yes / No / Not yet verdict with the stage and one concrete next step.
+description: Use when asked whether an app can be trusted or relied on in a Steadyship repository — "is the job board good enough", "can we rely on", "is it safe to use", "review the quote builder", "ready for the workshop/office/team", "should we switch to the parts list", "use it instead of the spreadsheet", "be straight with me". Reads the app and the authoritative master files on the shared drive, compares them row by row, checks storage, backup, sign-in, formats and tests with evidence, and gives a plain Yes / No / Not yet verdict with the stage and one concrete next step.
 ---
 
 # Steadyship review
