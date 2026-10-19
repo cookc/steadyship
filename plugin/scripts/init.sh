@@ -40,14 +40,19 @@ MARKETPLACE="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p'
 if [ -e "$TARGET" ] && [ -n "$(ls -A "$TARGET" 2>/dev/null)" ]; then
   fail "target directory exists and is not empty: $TARGET"
 fi
-mkdir -p "$TARGET" || fail "could not create $TARGET"
-TARGET="$(cd "$TARGET" && pwd)"
-
 for req in .gitignore .gitattributes .github/workflows/validate.yml; do
   [ -f "$TEMPLATES/$req" ] || fail "template is incomplete (missing $req) — reinstall the Steadyship plugin"
 done
 
-echo "Copying templates (version $VERSION) into $TARGET ..."
+# Build in a staging folder outside the target, then copy in at the end: the
+# target may be a folder attached to Claude desktop, where creating files is
+# allowed but deleting (sed backups, git lock files) needs a separate
+# permission, and a half-built repository must never be left behind.
+STAGE="$(mktemp -d)" || fail "could not create a temporary folder"
+trap 'rm -rf "$STAGE"' EXIT
+FINAL="$TARGET"; TARGET="$STAGE/repo"; mkdir -p "$TARGET"
+
+echo "Copying templates (version $VERSION) ..."
 ( cd "$TEMPLATES" && tar cf - --exclude=node_modules --exclude=.git . ) | ( cd "$TARGET" && tar xf - ) || fail "copy failed"
 
 # Substitute placeholders. Values are escaped for sed's replacement side (\, &, |).
@@ -92,5 +97,11 @@ if [ "$DO_GIT" = "1" ]; then
          commit -q -m "chore: initialise Steadyship repository (template v$VERSION)" ) \
     || fail "git initialisation failed"
 fi
-echo "Done. Next: open docs/spikes/README.md in $TARGET."
-echo "RESULT: PASS created $TARGET"
+
+echo "Placing the repository in $FINAL ..."
+mkdir -p "$FINAL" || fail "could not create $FINAL"
+FINAL="$(cd "$FINAL" && pwd)"
+( cd "$TARGET" && tar cf - . ) | ( cd "$FINAL" && tar xf - ) || fail "could not write into $FINAL"
+[ -f "$FINAL/steadyship.md" ] || fail "copy into $FINAL is incomplete"
+echo "Done. Next: open docs/spikes/README.md in $FINAL."
+echo "RESULT: PASS created $FINAL"

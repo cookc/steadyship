@@ -25,7 +25,11 @@ Grep. No Write, no Edit, no code in the reply.
    exactly one child folder contains `steadyship.md`, use that folder for
    everything that follows and say which folder you are using. If none or
    several, say so and stop. Note the `Shared drive:` path in
-   `steadyship.md` (`~` is the home folder).
+   `steadyship.md` (`~` is the home folder; a relative path is relative to
+   the repository folder). If that path does not exist in this session (in
+   Claude desktop, attached folders get a new path each session), look for
+   a folder with the same last name beside the repository folder and say
+   which path you used.
 
 2. **Read the context**, in one turn:
    - every business note: `docs/context/business/**/*` (how the work is

@@ -47,6 +47,11 @@ a value contains `"`, `$` or a backtick, use single quotes for that value
 instead. Backslashes in the middle of a path (`C:\Users\x`) and
 apostrophes (O'Brien) are fine in double quotes.
 
+In Claude desktop, say before running: "Claude will ask permission to create
+files in the attached folder — please allow it." The script builds the
+repository in a temporary place and copies it in at the end, so a failed
+run leaves nothing behind.
+
 The last line is `RESULT: PASS created <dir>` or `RESULT: FAIL <reason>`.
 On FAIL, say what went wrong in plain words. If the folder already has
 files in it, ask for a different folder name (a new, empty folder) and run

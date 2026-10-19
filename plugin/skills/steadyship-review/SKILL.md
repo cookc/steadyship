@@ -25,7 +25,11 @@ Never change any file: this skill only reads.
    exactly one child folder contains `steadyship.md`, use that folder for
    everything that follows and say which folder you are using. If none or
    several, say so and stop. Read `steadyship.md` and note the
-   `Shared drive:` path (a path the user gives wins; `~` is the home folder).
+   `Shared drive:` path (a path the user gives wins; `~` is the home folder;
+   a relative path is relative to the repository folder). If that path does
+   not exist in this session (in Claude desktop, attached folders get a new
+   path each session), look for a folder with the same last name beside the
+   repository folder; say which path you used.
    Identify the app from the request (`apps/<name>/`); if unclear, Glob
    `apps/*/index.html` and pick the closest name, saying which.
 

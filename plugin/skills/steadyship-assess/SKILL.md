@@ -30,7 +30,12 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    exactly one child folder contains `steadyship.md`, use that folder for
    everything that follows and say which folder you are using. If none or
    several, say so and stop. Read `steadyship.md` for the `Shared drive:`
-   path (a path the user gives in the request wins; `~` is the home folder).
+   path (a path the user gives in the request wins; `~` is the home folder;
+   a relative path is relative to the repository folder). If that path does
+   not exist in this session (in Claude desktop, attached folders get a new
+   path each session), look for a folder with the same last name beside the
+   repository folder; say which path you used and suggest the setup owner
+   update `steadyship.md`.
    Then Glob, all in one turn:
    - `apps/*/index.html` (and `apps/**/*.html`, `apps/**/*.js` if there are more files)
    - `docs/context/business/**/*`

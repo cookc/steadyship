@@ -32,12 +32,16 @@ Never overwrite anything: if `<folder>/demo-boatworks` or
 `<folder>/demo-boatworks-shared-drive` already exists and has files, ask for a
 different (new) folder and start again.
 
-Run, with every value in double quotes:
+In Claude desktop, say first: "Claude will ask permission to create files in
+the attached folder — please allow it." Then run, with every value in
+double quotes (the shared-drive value is deliberately relative: the
+attached folder's path changes from session to session, and the drive is
+always beside the repository):
 
     bash "${CLAUDE_PLUGIN_ROOT}/scripts/init.sh" "<folder>/demo-boatworks" \
       --business "Demo Boatworks" --setup-owner "<the person's name>" --sponsor "Morgan Reid" \
       --github-owner TBC --repo-name demo-boatworks \
-      --shared-drive "<folder>/demo-boatworks-shared-drive"
+      --shared-drive "../demo-boatworks-shared-drive"
     bash "${CLAUDE_PLUGIN_ROOT}/demo/populate.sh" "<folder>/demo-boatworks" "<folder>/demo-boatworks-shared-drive"
 
 Each ends with `RESULT: PASS ...` or `RESULT: FAIL <reason>`. On FAIL, say
