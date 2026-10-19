@@ -133,5 +133,18 @@ spike e stays a question for them.
   on a bare Windows machine the order is Git for Windows first, restart
   Claude desktop, then add the marketplace. The README quick start now says
   so; the skills' own winget fallback only matters for Node.
+- **Second run, plugin 0.4.6 (same day).** The demo built first time with
+  no path retry (the `cygpath` fix), and the skill now checks shell, git and
+  the plugin files before asking anything.
+- **Getting 0.4.6 onto the VM needed "Upload plugin".** The account-level
+  "steadyship" marketplace entry stayed pinned at 39bebf0 (0.4.2): Check for
+  updates failed, Remove reported success but the entry survived a relaunch,
+  and after it finally disappeared "Add marketplace" said "This marketplace is
+  already added". That is a Claude desktop/claude.ai defect, reported. The
+  upload path works: `scripts/package-plugin.sh` builds a zip of exactly the
+  tracked plugin files (a hand-built zip had dropped `templates/.gitignore`
+  and init refused to run, which is the template check doing its job), and
+  the upload validator also rejects `<...>` in skill descriptions, fixed in
+  0.4.6.
 - **Plugin updates**: "Check for updates" failed on a device without GitHub
   connected, so the VM ran 0.4.2 while 0.4.3 was published.
