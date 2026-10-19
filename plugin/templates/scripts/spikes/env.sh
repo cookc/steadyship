@@ -38,18 +38,28 @@ else
 fi
 
 echo "== Persistence =="
+# Two markers: one in the environment's home (may vanish between sessions),
+# one in this repository folder (lives on the user's disk, git-ignored).
+# Home present -> survived. Home missing but repo present -> did not survive.
+# Both missing -> first run; the answer comes from the next run in a NEW session.
 MARK="$HOME/.steadyship-env-marker"
+RMARK=".steadyship/env-spike.ran"
 if [ -f "$MARK" ]; then
   echo "ok: files in this environment's home survived since $(cat "$MARK")"
-  pers=ok
+  pers=yes
+elif [ -f "$RMARK" ]; then
+  echo "no: files in this environment's home did NOT survive (first run was $(cat "$RMARK")); tools get reinstalled each session"
+  pers=no
+  date +%Y-%m-%d > "$MARK" 2>/dev/null || true
 else
   if date +%Y-%m-%d > "$MARK" 2>/dev/null; then
-    echo "unknown: persistence — run spike 0 again in a NEW session to find out"
+    echo "unknown: persistence — first run; run spike 0 again in a NEW session to find out"
     pers=unknown
   else
     echo "unknown: persistence — could not write to $HOME"
     pers=no
   fi
+  { mkdir -p .steadyship && date +%Y-%m-%d > "$RMARK"; } 2>/dev/null || true
 fi
 
 echo "== GitHub CLI =="

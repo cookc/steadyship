@@ -1,7 +1,8 @@
 # Spike results — go/no-go
 
 Filled in on the partner's machine. One row per spike. Result is PASS,
-FAIL, or blank (not run). The `steadyship-status` skill reads this table.
+FAIL, SKIP (could not be attempted yet — the note says what is missing),
+or blank (not run). The `steadyship-status` skill reads this table.
 
 | Spike | Result | Date | Note |
 |---|---|---|---|

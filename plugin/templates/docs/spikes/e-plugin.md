@@ -35,6 +35,12 @@ RESULTS.md and replies starting **"Steadyship is installed and working."**
 The reply starts with that sentence and reports at least 1 app assessed
 (`_sample`). Paste into RESULTS.md: `| e | PASS | <date> | appeared for <builder> after restart |`
 
+## If it cannot be attempted yet
+
+One person with one account cannot run this spike. Paste
+`| e | SKIP | <date> | needs a Team owner and a second account |` and come
+back to it when both are available. This is not a failure.
+
 ## If it fails
 
 - Plugin not listed for the builder → check the GitHub App has access to

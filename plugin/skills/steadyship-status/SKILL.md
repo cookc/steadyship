@@ -25,18 +25,21 @@ Steadyship work in plain language for a non-technical reader.
 3. Read `docs/spikes/RESULTS.md` if it exists. If it does not exist,
    report spikes as 'not started' and make the next step 'Ask the setup owner to set
    up docs/spikes/RESULTS.md'. Count rows whose Result
-   column is PASS, FAIL, or blank.
+   column is PASS, FAIL, SKIP (could not be attempted yet; the Note says
+   what is missing), or blank (not run).
 4. Reply with exactly this shape, filled in:
 
    **Steadyship is installed and working.**
 
    Apps assessed: N (list each as "name — stage — relied on by").
-   Spikes: X passed, Y failed, Z not yet run.
+   Spikes: X passed, Y failed, S waiting on setup, Z not yet run.
    Next step: if any spike row is blank, "Run spike <letter of the first blank row, reading RESULTS.md top to bottom (the table starts with 0)>"
    and, if any row is FAIL, add "then go through the failed spike(s) with
-   the setup owner: <letters>". If no rows are blank and any is FAIL: "Go through the
+   the setup owner: <letters>". If no rows are blank and any is SKIP: "Ask
+   the setup owner to finish the setup for spike <letters> (<the Note>),
+   then run it again." If no rows are blank or SKIP and any is FAIL: "Go through the
    failed spike(s) with the setup owner: <letters>". If all rows are PASS: "Review
-   RESULTS.md with the sponsor and the setup owner and decide week 3." (If RESULTS.md
+   RESULTS.md with the sponsor and the setup owner and decide the next stage." (If RESULTS.md
    is missing, see step 3.)
    Setup owner: the setup owner's name (see step 1).
 

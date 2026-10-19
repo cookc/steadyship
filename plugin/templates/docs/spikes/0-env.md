@@ -27,10 +27,13 @@ is `RESULT: PASS` or `RESULT: FAIL`, and the line before it is a summary.
 missing items are findings, not failures. Paste:
 `| 0 | PASS | <date> | <the summary line> |`
 
-**Run it twice.** The first run leaves a marker file. Run it again in a NEW
-session (close the first one). If it says "files in this environment's home
-survived", the environment remembers files; if it says "run spike 0 again"
-again, it does not. Record both runs in the note.
+**Run it twice.** The first run leaves a marker file in the environment's
+home and one in this folder, and reports persistence as `unknown`. Run it
+again in a NEW session (close the first one). The second run says either
+"survived" (persistence yes: tools installed once stay installed) or "did
+NOT survive" (persistence no: the test tools and the GitHub tool are
+reinstalled every session, and spike a's credentials will not persist).
+Record the second run's summary line in the note.
 
 ## If it fails
 

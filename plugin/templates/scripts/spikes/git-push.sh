@@ -5,7 +5,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "RESULT: FAIL not inside a git repository"; exit 1; }
-REMOTE="$(git remote get-url origin 2>/dev/null)" || { echo "RESULT: FAIL no 'origin' remote configured"; exit 1; }
+REMOTE="$(git remote get-url origin 2>/dev/null)" || { echo "RESULT: SKIP no GitHub link yet — the one-time setup in docs/spikes/a-git.md has not been done (ask Claude to 'set up GitHub for this repository')"; exit 2; }
 # Never print credentials that may be embedded in the URL.
 echo "Remote: $(printf '%s' "$REMOTE" | sed -E 's#//[^/@]*@#//#')"
 # Per-command identity only when none is configured (never persisted).

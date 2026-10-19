@@ -73,6 +73,13 @@ set +e; "$ROOT/plugin/scripts/init.sh" 'C:\Users\x\repo' --business b --setup-ow
 # the generated repo's own spike scripts work on this machine
 ( cd "$DIR" && scripts/spikes/nas-rw.sh "$OUT" | tail -1 | grep -q '^RESULT: PASS' ) || fail "nas-rw in generated repo"
 ( cd "$DIR" && export HOME="$OUT/home" && mkdir -p "$HOME" && scripts/spikes/env.sh | tail -1 | grep -q '^RESULT: PASS' ) || fail "env.sh in generated repo"
+# persistence: first run unknown; same home again -> yes; a fresh (wiped) home -> no
+( cd "$DIR" && export HOME="$OUT/home" && scripts/spikes/env.sh | grep -q 'persistence yes' ) || fail "env.sh second run should report persistence yes"
+( cd "$DIR" && export HOME="$OUT/home2" && mkdir -p "$HOME" && scripts/spikes/env.sh | grep -q 'persistence no' ) || fail "env.sh with a wiped home should report persistence no"
+[ -f "$DIR/.steadyship/env-spike.ran" ] || fail "env.sh should leave a repo-side marker"
+( cd "$DIR" && git status --porcelain | grep -q 'env-spike.ran' ) && fail "repo-side marker should be git-ignored"
+# spike a without a GitHub link is SKIP (not set up), never FAIL
+( cd "$DIR" && { scripts/spikes/git-push.sh || true; } | tail -1 | grep -q '^RESULT: SKIP' ) || fail "git-push without a remote should SKIP"
 git init -q --bare "$OUT/bare.git"
 ( cd "$DIR" && git remote add origin "$OUT/bare.git" && scripts/spikes/git-push.sh | tail -1 | grep -q '^RESULT: PASS' ) || fail "git-push in generated repo"
 

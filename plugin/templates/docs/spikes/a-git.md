@@ -60,6 +60,14 @@ commit, pushes it, deletes it. Last line `RESULT: PASS` or `RESULT: FAIL`.
 again.** Both must pass — the second proves credentials persist.
 Paste: `| a | PASS | <date> | persisted across sessions: yes/no |`
 
+## If it cannot be attempted yet
+
+`RESULT: SKIP no GitHub link yet` → the repository has no GitHub address;
+the one-time setup above has not been done. Paste
+`| a | SKIP | <date> | no GitHub link yet |` and ask {{SETUP_OWNER}} to do
+the setup (or to tell Claude "set up GitHub for this repository"). Then
+run the spike again. This is not a failure.
+
 ## If it fails
 
 - "cannot read the remote" → token wrong or expired, or network to
