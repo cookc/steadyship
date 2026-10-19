@@ -12,11 +12,11 @@ findings are at the end.
 | Azure subscription | "Azure subscription 1" (free trial, $200 / 30 days, then pay-as-you-go by choice) |
 | Resource group | `steadyship-rehearsal`, Australia East |
 | VM | `steadyship-win`, Windows 11 Pro 25H2, Standard D4s v5 (4 vCPU, 16 GB, nested virtualisation), Trusted launch |
-| Admin user | `steadyship` (password in the owner's password manager) |
+| Admin user | `<admin user>` (password in the owner's password manager) |
 | Auto-shutdown | 11:00 pm Auckland time, email warning first |
 | Network | public RDP rule deleted; the VM is reachable only over Tailscale |
-| Tailnet | Linux box `100.122.121.25`, VM `100.99.143.77` |
-| Share | Linux `~/steadyship-share` exported by Samba as `\\100.122.121.25\steadyship`, Tailscale addresses only; mapped in the VM as `Z:` |
+| Tailnet | Linux box `<linux tailnet ip>`, VM `<vm tailnet ip>` |
+| Share | Linux `~/steadyship-share` exported by Samba as `\\<linux tailnet ip>\steadyship`, Tailscale addresses only; mapped in the VM as `Z:` |
 
 Running cost at 10 hours a week is roughly $40 a month plus $20 for the disk.
 Left running it is about $330 a month, which is what auto-shutdown prevents.
@@ -47,11 +47,11 @@ Left running it is about $330 a month, which is what auto-shutdown prevents.
    the moment someone signs in):
 
        & 'C:\Program Files\Tailscale\tailscale.exe' up --unattended
-       net use Z: \\100.122.121.25\steadyship /user:<linux user> /persistent:yes
+       net use Z: \\<linux tailnet ip>\steadyship /user:<linux user> /persistent:yes
 
    Then install Claude desktop from claude.ai/download in Edge and sign in.
 5. **Close the public RDP port** (VM, Networking, Network settings, delete the
-   `RDP` inbound rule) once RDP over `100.99.143.77` is proven.
+   `RDP` inbound rule) once RDP over `<vm tailnet ip>` is proven.
 
 ## Driving the VM from Linux
 
@@ -73,7 +73,7 @@ Left running it is about $330 a month, which is what auto-shutdown prevents.
 ## Running the rehearsal
 
 Install the plugin (it syncs across devices on the account, so it may already
-be there), create an empty folder such as `C:\Users\steadyship\steadyship-test`,
+be there), create an empty folder such as `C:\Users\<admin user>\steadyship-test`,
 choose it in a new session, and say, one at a time:
 
 1. Try Steadyship with the demo business
@@ -107,7 +107,7 @@ spike e stays a question for them.
   with PowerShell), and `python3` reported ok because Windows ships a Store
   placeholder (now a tool must run `--version` successfully to count).
 - **Spike b on the mapped Z: drive: PASS.** Both Claude's file tools and the
-  bash script read, wrote and deleted on `\\100.122.121.25\steadyship`, seen
+  bash script read, wrote and deleted on `\\<linux tailnet ip>\steadyship`, seen
   as `/z/` from bash, and the Linux box showed the folder's timestamp change
   with nothing left behind. The runbook's warning that scripts cannot see
   mapped drives did not apply.

@@ -67,3 +67,7 @@ shared-drive files and business docs; see `plugin/demo/README.md`. Its answer
 key is `tests/judgement/answer-key.md`, kept outside the plugin.
 The `steadyship-demo` skill builds it for anyone. Maintainers:
 `scripts/demo-regenerate.sh` rebuilds the standing demo repository from it.
+
+## Licence
+
+Apache License 2.0 — see `LICENSE`.
