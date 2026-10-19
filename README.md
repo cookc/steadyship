@@ -14,9 +14,10 @@ business can run on. See `docs/proposal-v0.1.md`.
 1. Add the Steadyship plugin. In **Claude desktop**: Customize → Plugins →
    Add marketplace → enter `cookc/steadyship` (from GitHub) → install
    **steadyship**. In **Claude Code**: `/plugin marketplace add cookc/steadyship`
-   then `/plugin install steadyship@steadyship`. The repository is private: the
-   GitHub account Claude is connected to must have access, or adding it fails
-   with 'not found'.
+   then `/plugin install steadyship@steadyship`. If the install or a later
+   update fails in Claude desktop, use Customize → Plugins → Add → Upload
+   plugin with the zip from `scripts/package-plugin.sh` (a known Claude desktop
+   sync problem, see `docs/rehearsal-windows-vm.md`).
 2. Choose a folder to work in (any empty or scratch folder), then say:
    **"Try Steadyship with the demo business"**
 3. Then say, one message at a time, in order:
