@@ -7,7 +7,7 @@ Owner: {{SETUP_OWNER}}. Time box: 30 minutes per app, 1 hour for the summary.
 
 (The setup owner holds the accounts and does the one-time plumbing. There
 is no standing engineer reviewer: judgement comes from the skills and the
-independent reviewer they dispatch — see the Steadyship proposal §3, Job 2. In V0 {{SETUP_OWNER}}
+independent reviewer they dispatch. In V0 {{SETUP_OWNER}}
 is also the calibration ground truth for the *assess* skill and the
 escalation path; both are temporary.)
 

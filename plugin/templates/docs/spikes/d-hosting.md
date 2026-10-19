@@ -11,7 +11,7 @@ Azure portal + GitHub + any browser.
 SharePoint will not serve HTML+JS (strict file handling). SWA Free costs
 $0, deploys from the GitHub repo, and has built-in Microsoft sign-in with
 "invitation" roles (up to 25 invited users on Free) — so only invited staff
-can open it, without paying for the Standard tier. See the Steadyship proposal §6.
+can open it, without paying for the Standard tier.
 
 ## Steps ({{SETUP_OWNER}})
 

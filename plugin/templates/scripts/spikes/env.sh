@@ -58,17 +58,26 @@ if command -v gh >/dev/null 2>&1; then
   echo "ok: gh already present"; gh=present
 elif [ "$github_ok" = 1 ] && [ "$api_ok" = 1 ]; then
   arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+  case "$(uname -s)" in
+    Darwin) pat="macOS_${arch}\.zip"; unpack() { unzip -q -o "$1" -d "$2"; } ;;
+    *)      pat="linux_${arch}\.tar\.gz"; unpack() { tar -xzf "$1" -C "$2"; } ;;
+  esac
   tmp=$(mktemp -d)
   url=$(curl -sS -m 60 https://api.github.com/repos/cli/cli/releases/latest 2>/dev/null \
-    | grep -o "https://[^\"]*linux_${arch}\.tar\.gz" | head -1)
+    | grep -o "https://[^\"]*${pat}" | head -1)
   if [ -z "$url" ]; then
-    echo "blocked: could not install gh (no download found)"
-  elif curl -sSL -m 60 -o "$tmp/gh.tgz" "$url" 2>/dev/null \
-    && tar -xzf "$tmp/gh.tgz" -C "$tmp" 2>/dev/null \
+    echo "blocked: could not install gh (no download found for $(uname -s)/$arch)"
+  elif curl -sSL -m 60 -o "$tmp/gh.pkg" "$url" 2>/dev/null \
+    && unpack "$tmp/gh.pkg" "$tmp" 2>/dev/null \
     && mkdir -p "$HOME/.local/bin" \
     && cp "$tmp"/gh_*/bin/gh "$HOME/.local/bin/gh" 2>/dev/null \
     && chmod +x "$HOME/.local/bin/gh"; then
-    echo "ok: gh installed to ~/.local/bin (add to PATH)"; gh=installed
+    if "$HOME/.local/bin/gh" --version >/dev/null 2>&1; then
+      echo "ok: gh installed to ~/.local/bin (add to PATH)"; gh=installed
+    else
+      rm -f "$HOME/.local/bin/gh"
+      echo "blocked: could not install gh (the downloaded copy does not run on this machine)"
+    fi
   else
     echo "blocked: could not install gh (download or unpack failed)"
   fi

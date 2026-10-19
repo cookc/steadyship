@@ -7,7 +7,7 @@ you don't know, write "unknown" — that is a finding.
 <!-- Prototype = works for its builder, data inside it.
      Owned tool = in the repo, data in an owned shared file with one writer, smoke test, named owner, hosted with sign-in.
      Proper app = framework, build and CI.
-     Platform = shared packages/database, release process. See the Steadyship proposal §7. -->
+     Platform = shared packages/database, release process. -->
 
 **Relied on by:** <who uses it, how often; "only the builder" is a valid answer>
 

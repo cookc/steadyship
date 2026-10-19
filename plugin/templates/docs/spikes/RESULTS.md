@@ -14,8 +14,8 @@ FAIL, or blank (not run). The `steadyship-status` skill reads this table.
 
 ## Decision ({{SETUP_OWNER}}, after all rows are filled)
 
-Per the Steadyship proposal §11: every PASS, or a FAIL with its fallback accepted below,
-means proceed to week 3.
+Every PASS, or a FAIL with its fallback accepted below, means the setup can go ahead.
+A FAIL without an accepted fallback means stop and talk to {{SETUP_OWNER}}.
 
 | Spike | Fallback accepted? | What changes |
 |---|---|---|

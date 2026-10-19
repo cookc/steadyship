@@ -38,7 +38,7 @@ local session, `{{REPO_NAME}}` folder attached.
    URL, a file or the remote (a token in the remote URL lands in
    `.git/config` on the builder's disk). Revoke the token after the spike;
    the 30-day expiry is only the backstop. V0 uses {{SETUP_OWNER}}'s token, not the
-   builder's — a recorded deviation from the Steadyship proposal §11(a).
+   builder's — a recorded V0 shortcut, to be replaced by per-builder sign-in later.
    **Alternative, if available (unverified):** {{SETUP_OWNER}} opens a terminal they
    control inside the VM and runs `git credential approve`, entering the
    same four lines, so the token never enters the conversation.
@@ -69,6 +69,6 @@ Paste: `| a | PASS | <date> | persisted across sessions: yes/no |`
   Record it. **Fallback:** the plugin asks for the token at the start of each
   session (worse), or commits land in the attached folder and {{SETUP_OWNER}} pushes
   from their machine weekly (acceptable for V0), or builders use Claude Code
-  after a one-time `gh auth login` (the Steadyship proposal §11 fallback).
+  after a one-time `gh auth login`.
   **Meaning:** "no terminal ever" becomes "one setup session, then
   conversational."
