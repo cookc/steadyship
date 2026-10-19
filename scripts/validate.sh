@@ -11,6 +11,8 @@ if command -v claude >/dev/null 2>&1; then
 else
   echo "-- plugin manifests: skipped (claude CLI not installed)"
 fi
+echo "-- shell scripts parse"
+find scripts plugin tests -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 -n1 bash -n
 echo "-- no real names in plugin/"
 if grep -rnI "Chris\|cookc" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json'; then
   echo "real-person or account names found in plugin/ (above)"; exit 1

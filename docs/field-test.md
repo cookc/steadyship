@@ -6,6 +6,9 @@ VM) proved the mechanics; the field test answers the product question: does
 having "an engineer in the conversation" change what a non-technical builder
 asks for and builds?
 
+This is the internal plan. The version written for the test user is
+`docs/field-test-guide.md`; send them that a week before.
+
 ## Who, where, how long
 
 - **Test user:** the design partner's setup owner, on their Windows computer,
@@ -22,28 +25,30 @@ asks for and builds?
 
 ## Before the day (us)
 
-1. Confirm with the test user, by message: Windows version; whether Claude
-   desktop is installed and up to date; whether Customize → Plugins is
-   visible to them (Team plans can restrict plugins; if it is hidden, the org
-   admin must allow plugins first); the drive letter or folder of the shared
-   drive and whether it is a mapped drive, a OneDrive/SharePoint synced
-   folder, or both; whether `winget` runs in PowerShell.
-2. Build the fallback: `scripts/package-plugin.sh` and put the zip on a USB
-   stick, in case the marketplace install or update fails (a known Claude
-   desktop defect, `docs/rehearsal-windows-vm.md`).
-3. Print the one-page sheet (below) and the observation table.
-4. Ask them to pick, in advance: two of their real apps they are willing to
-   copy into a test repository, and one change they actually want made to one
-   of them.
-5. Take a copy of their apps folder before the session (their job, our
-   reminder), so nothing we do can lose work.
+1. Send `docs/field-test-guide.md`. It asks the test user for what we need:
+   Windows version; whether Customize → Plugins is visible (Team plans can
+   restrict plugins; if hidden, the org admin must allow them first); the
+   drive letter or folder of the shared drive (mapped drive, OneDrive or
+   SharePoint synced folder, or both); two apps and one change; the
+   sponsor's name; a backup copy of their apps folder. It also offers the
+   setup script (`scripts/setup-windows.ps1`), which installs Git and Node
+   and downloads the fallback zip.
+2. Build the fallback anyway: download `steadyship-plugin.zip` from the
+   latest GitHub release (the `release` workflow attaches it on every
+   `v*` tag) onto a USB stick, in case the marketplace install or update
+   fails (a known Claude desktop defect, `docs/rehearsal-windows-vm.md`)
+   and their download is blocked too.
+3. Print the observation table (below).
+4. A few days before, check they have answered the guide's questions and
+   picked the two apps and the change; chase if not.
 
 ## Part A, the quick start as written (30 min)
 
 The test user follows `README.md` from step 0, reading it themselves. We do
 not type and do not pre-empt. Order:
 
-0. Windows: Git for Windows via winget, then quit and reopen Claude desktop.
+0. Windows: the setup script if they did not run it already (or Git via
+   winget by hand), then quit and reopen Claude desktop.
 1. Add the plugin from the marketplace. If it fails, Upload plugin from the USB.
 2. Choose an empty folder, say "Try Steadyship with the demo business".
 3. "Run steadyship status", "run spike 0", "run spike b", "run spike c, the

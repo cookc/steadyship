@@ -1,0 +1,30 @@
+# Tagging vX.Y.Z (matching plugin/.claude-plugin/plugin.json) publishes a GitHub
+# release with the plugin zip for Claude desktop's "Upload plugin" fallback.
+# The setup scripts download it from releases/latest.
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag must match the plugin version
+        run: |
+          ver="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' plugin/.claude-plugin/plugin.json)"
+          [ "v$ver" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME does not match plugin version $ver"; exit 1; }
+          echo "VER=$ver" >> "$GITHUB_ENV"
+      - name: Build the plugin zip
+        run: |
+          scripts/package-plugin.sh dist
+          cp "dist/steadyship-plugin-$VER.zip" dist/steadyship-plugin.zip
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/steadyship-plugin.zip "dist/steadyship-plugin-$VER.zip" \
+            --title "Steadyship plugin $VER" \
+            --notes "Plugin zip for Claude desktop's Customize -> Plugins -> Add -> Upload plugin, for when the marketplace install fails. Normal installs use the marketplace: cookc/steadyship."
