@@ -126,5 +126,12 @@ spike e stays a question for them.
   single job list, agree the spelling rules). Same shape as the Mac result.
 - **Every step of the README quick start passed on Windows** with plugin
   0.4.2, with the skill recovering twice (Git, Node) on a bare machine.
+- **Installing the plugin itself needs git.** After the repo went public a
+  fresh install on the VM failed with "git is required to install the
+  plugin", even though the skill had installed Git earlier in the session:
+  Claude desktop had started before Git existed and kept its old PATH. So
+  on a bare Windows machine the order is Git for Windows first, restart
+  Claude desktop, then add the marketplace. The README quick start now says
+  so; the skills' own winget fallback only matters for Node.
 - **Plugin updates**: "Check for updates" failed on a device without GitHub
   connected, so the VM ran 0.4.2 while 0.4.3 was published.

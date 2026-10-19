@@ -7,6 +7,10 @@ business can run on. See `docs/proposal-v0.1.md`.
 
 ## Try it in 10 minutes
 
+0. **Windows only, once:** install Git for Windows before anything else, because
+   Claude desktop needs git to add a plugin marketplace. In a PowerShell window:
+   `winget install --id Git.Git -e`, then fully quit Claude desktop (right-click
+   its tray icon → Quit) and open it again so it sees the new install.
 1. Add the Steadyship plugin. In **Claude desktop**: Customize → Plugins →
    Add marketplace → enter `cookc/steadyship` (from GitHub) → install
    **steadyship**. In **Claude Code**: `/plugin marketplace add cookc/steadyship`
