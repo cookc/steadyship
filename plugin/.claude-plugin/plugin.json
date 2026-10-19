@@ -6,6 +6,6 @@
     "name": "Chris Cook"
   },
   "repository": "https://github.com/cookc/steadyship",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": ["engineering-guidance", "small-business", "assessment", "non-technical"]
 }
