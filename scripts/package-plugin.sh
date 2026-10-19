@@ -3,7 +3,7 @@
 # containing exactly the files git tracks under plugin/. Usage: scripts/package-plugin.sh [out-dir]
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUT="${1:-$ROOT/dist}"; mkdir -p "$OUT"
+OUT="${1:-$ROOT/dist}"; mkdir -p "$OUT"; OUT="$(cd "$OUT" && pwd)"  # absolute: the zip step runs inside plugin/
 VER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/plugin.json")"
 ZIP="$OUT/steadyship-plugin-$VER.zip"; rm -f "$ZIP"
 ( cd "$ROOT/plugin" && git ls-files -z . | xargs -0 zip -q -X "$ZIP" )
