@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Clock</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f7f4f0; color: #222; }
+  header { background: #5a2e1a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  .btn { background: #8b4513; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  main { max-width: 520px; margin: 1rem auto; padding: 0 1rem; }
+  .row { background: #fff; padding: .8rem; margin-bottom: .6rem; display: flex; justify-content: space-between; align-items: center; }
+  .row.on { outline: 3px solid #2e8b57; }
+  .clock { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .row .btn { font-size: 1.1rem; padding: .6rem 1.2rem; }
+</style>
+</head>
+<body>
+<header><h1>Job Clock</h1></header>
+<main>
+  <p>Fitters: tap Start when you start assembling a job and Stop when you finish or go on a break.</p>
+  <div id="list"></div>
+</main>
+<script>
+  const jobs = [
+    { client: 'Greenstone', what: 'Show home kitchen' },
+    { client: 'Ngata', what: 'Kitchen' },
+    { client: 'Sharma', what: 'Kitchen' },
+    { client: 'Ngata', what: 'Master wardrobe' },
+  ];
+
+  // clock = { Ngata: seconds, running: { client, since } }
+  let clock = JSON.parse(localStorage.getItem('rj_clock') || '{}');
+
+  function save() { localStorage.setItem('rj_clock', JSON.stringify(clock)); }
+
+  function hms(sec) {
+    const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+    return [h, m, s].map(x => String(x).padStart(2, '0')).join(':');
+  }
+
+  function total(client) {
+    let t = clock[client] || 0;
+    if (clock.running && clock.running.client === client) t += Math.floor((Date.now() - clock.running.since) / 1000);
+    return t;
+  }
+
+  function toggle(client) {
+    const r = clock.running;
+    if (r) {
+      clock[r.client] = total(r.client);
+      clock.running = null;
+      if (r.client === client) { save(); draw(); return; }
+    }
+    clock.running = { client, since: Date.now() };
+    save();
+    draw();
+  }
+
+  function draw() {
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    for (const j of jobs) {
+      const on = clock.running && clock.running.client === j.client;
+      const d = document.createElement('div');
+      d.className = 'row' + (on ? ' on' : '');
+      d.innerHTML = `<div><b>${j.client}</b><br>${j.what}</div><div class="clock">${hms(total(j.client))}</div>`;
+      const b = document.createElement('button');
+      b.className = 'btn';
+      b.textContent = on ? 'Stop' : 'Start';
+      b.onclick = () => toggle(j.client);
+      d.appendChild(b);
+      list.appendChild(d);
+    }
+  }
+  setInterval(draw, 1000);
+  draw();
+</script>
+</body>
+</html>

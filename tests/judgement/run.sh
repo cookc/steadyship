@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Judgement eval harness: S1 assess, S2 ask, S3 review on Demo Boatworks, with and
-# without the Steadyship plugin (claude plugin eval --ablation with-without).
+# Judgement eval harness: assess / ask / review cases on mock businesses (s* = Demo Boatworks,
+# r* = Rimu Joinery), with and without the Steadyship plugin (claude plugin eval --ablation with-without).
 # Usage: tests/judgement/run.sh [--runs N] [--case GLOB] [--model M] [--max-cost-usd USD]
 #                              [--ablation with-without|none]   (defaults: 1, all, sonnet, 8, with-without)
 # Costs money and takes minutes: NOT part of scripts/validate.sh or CI.
@@ -8,7 +8,8 @@
 #
 # The cases live here, outside plugin/, so they never ship with the plugin. Each run
 # stages a throwaway copy of plugin/ with the cases copied in as evals/ and evaluates
-# that copy. The answer key (tests/judgement/answer-key.md) is never staged.
+# that copy. Answer keys are never staged. A case whose folder has a FIXTURE file runs on that
+# fixture (see tests/judgement/README.md); the rest run on plugin/demo.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 J="$ROOT/tests/judgement"
@@ -31,8 +32,18 @@ STAGE="$(mktemp -d "${TMPDIR:-/tmp}/steadyship-judgement-XXXXXX")"
 trap 'rm -rf "$STAGE"' EXIT
 ( cd "$ROOT" && tar cf - --exclude=node_modules --exclude=evals plugin ) | ( cd "$STAGE" && tar xf - )
 cp -R "$J/evals" "$STAGE/plugin/evals"
-for c in "$STAGE"/plugin/evals/*/; do cp "$J/scaffold.sh" "$c/scaffold.sh"; done
-[ ! -e "$STAGE/plugin/demo/answer-key.md" ] || { echo "answer key found in staged plugin; refusing" >&2; exit 2; }
+for c in "$STAGE"/plugin/evals/*/; do
+  cp "$J/scaffold.sh" "$c/scaffold.sh"
+  # A case with a FIXTURE file (a repo-relative fixture dir) gets that business staged
+  # into <case>/fixture/, minus its answer key; otherwise scaffold.sh uses plugin/demo.
+  if [ -f "$c/FIXTURE" ]; then
+    fx="$ROOT/$(head -1 "$c/FIXTURE")"
+    [ -f "$fx/init.env" ] || { echo "case $(basename "$c"): no fixture at $fx" >&2; exit 2; }
+    mkdir -p "$c/fixture"
+    ( cd "$fx" && tar cf - --exclude=answer-key.md . ) | ( cd "$c/fixture" && tar xf - )
+  fi
+done
+[ -z "$(find "$STAGE" -name 'answer-key*')" ] || { echo "answer key found in staged plugin; refusing" >&2; exit 2; }
 
 ARGS=(--scaffold --allow-tools Write Edit --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
       --trust-plugin --no-publish --threshold 0 --max-cost-usd "$MAXCOST"

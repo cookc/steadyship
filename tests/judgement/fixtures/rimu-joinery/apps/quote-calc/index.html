@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rimu Joinery - Quote Calculator</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f7f4f0; color: #222; }
+  header { background: #5a2e1a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  main { max-width: 780px; margin: 1rem auto; padding: 0 1rem; }
+  .btn { background: #7a3b1e; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  label { font-weight: bold; }
+  select, input { font-size: 1rem; padding: .25rem; }
+  input[type=number] { width: 5rem; }
+  table { border-collapse: collapse; width: 100%; background: #fff; margin: .8rem 0; }
+  td, th { border: 1px solid #d8cfc4; padding: .3rem .5rem; text-align: left; }
+  td.n, th.n { text-align: right; }
+  .totals p { margin: .2rem 0; text-align: right; }
+  .totals .big { font-size: 1.3rem; font-weight: bold; }
+</style>
+</head>
+<body>
+<header><h1>Quote Calculator</h1></header>
+<main>
+  <label for="cust">Customer</label>
+  <select id="cust"></select>
+  <table>
+    <thead><tr><th>Item</th><th>Unit</th><th class="n">Price</th><th class="n">Qty</th></tr></thead>
+    <tbody id="items"></tbody>
+  </table>
+  <p><label for="hours">Labour hours</label> <input id="hours" type="number" min="0" step="0.5" value="0"> at <span id="rate"></span> an hour</p>
+  <div class="totals">
+    <p>Subtotal <span id="sub"></span></p>
+    <p>GST 15% <span id="gst"></span></p>
+    <p class="big">Total <span id="tot"></span></p>
+    <p>Deposit (40%) <span id="dep"></span></p>
+    <p>Valid until <span id="until"></span></p>
+  </div>
+  <button class="btn" id="save">Save quote</button>
+  <h2>Saved quotes</h2>
+  <table><thead><tr><th>Quote</th><th>Date</th><th>Customer</th><th class="n">Total</th></tr></thead><tbody id="saved"></tbody></table>
+</main>
+<script>
+  // Ana's quote calculator - prices copied from the Price List spreadsheet
+  const customers = ['Waikato Build Co Ltd', "Jo O'Neill", 'Mark Henderson', 'Greenstone Homes Ltd', 'Hemi & Kiri Ngata', 'Priya & Dev Sharma'];
+  const items = [
+    { name: 'Base cabinet 600', unit: 'each', price: 640 },
+    { name: 'Base cabinet 900', unit: 'each', price: 780 },
+    { name: 'Drawer bank 600', unit: 'each', price: 1150 },
+    { name: 'Wall cabinet 600', unit: 'each', price: 450 },
+    { name: 'Tall pantry 600', unit: 'each', price: 1480 },
+    { name: 'Wardrobe module 900', unit: 'each', price: 1260 },
+    { name: 'Vanity 900', unit: 'each', price: 980 },
+    { name: 'Laminate benchtop', unit: 'per metre', price: 290 },
+    { name: 'Engineered stone benchtop', unit: 'per metre', price: 980 },
+    { name: 'Rimu stair tread', unit: 'each', price: 310 },
+  ];
+  const LABOUR_RATE = 78; // per hour
+  const GST = 0.15;
+  const DEPOSIT = 0.4;
+
+  function nzd(n) {
+    return '$' + n.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function isoDate(d) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  const $ = id => document.getElementById(id);
+  for (const c of customers) $('cust').add(new Option(c));
+  $('rate').textContent = nzd(LABOUR_RATE);
+  $('items').innerHTML = items.map((it, i) =>
+    `<tr><td>${it.name}</td><td>${it.unit}</td><td class="n">${nzd(it.price)}</td>` +
+    `<td class="n"><input type="number" min="0" step="any" value="0" data-i="${i}"></td></tr>`).join('');
+
+  function calc() {
+    let sub = 0;
+    document.querySelectorAll('#items input').forEach(inp => { sub += (+inp.value || 0) * items[inp.dataset.i].price; });
+    sub += (+$('hours').value || 0) * LABOUR_RATE;
+    const gst = sub * GST;
+    const total = sub + gst;
+    const until = new Date();
+    until.setDate(until.getDate() + 30);
+    $('sub').textContent = nzd(sub);
+    $('gst').textContent = nzd(gst);
+    $('tot').textContent = nzd(total);
+    $('dep').textContent = nzd(total * DEPOSIT);
+    $('until').textContent = isoDate(until);
+    return total;
+  }
+
+  function showSaved() {
+    const quotes = JSON.parse(localStorage.getItem('rj_quotes') || '[]');
+    $('saved').innerHTML = quotes.map(q =>
+      `<tr><td>${q.no}</td><td>${q.date}</td><td>${q.customer}</td><td class="n">${nzd(q.total)}</td></tr>`).join('');
+  }
+
+  $('save').onclick = () => {
+    const quotes = JSON.parse(localStorage.getItem('rj_quotes') || '[]');
+    quotes.push({
+      no: 'Q-' + String(418 + quotes.length).padStart(4, '0'),
+      date: isoDate(new Date()),
+      customer: $('cust').value,
+      total: calc(),
+    });
+    localStorage.setItem('rj_quotes', JSON.stringify(quotes));
+    showSaved();
+  };
+
+  document.addEventListener('input', calc);
+  calc();
+  showSaved();
+</script>
+</body>
+</html>

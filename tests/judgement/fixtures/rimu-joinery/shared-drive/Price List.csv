@@ -1,0 +1,12 @@
+item,kind,unit,price_nzd_ex_gst,effective_from
+Base cabinet 600,cabinet,each,640,2026-01-01
+Base cabinet 900,cabinet,each,780,2026-01-01
+Drawer bank 600,cabinet,each,1150,2026-01-01
+Wall cabinet 600,cabinet,each,450,2026-01-01
+Tall pantry 600,cabinet,each,1480,2026-01-01
+Wardrobe module 900,cabinet,each,1260,2026-01-01
+Vanity 900,cabinet,each,980,2026-01-01
+Laminate benchtop,benchtop,per metre,290,2026-01-01
+Engineered stone benchtop,benchtop,per metre,980,2026-01-01
+Rimu stair tread,stairs,each,310,2026-01-01
+Labour (workshop and install),labour,per hour,85,2026-07-01

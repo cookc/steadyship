@@ -1,0 +1,59 @@
+schema_version: "1.1"
+name: r1-assess
+description: >
+  "Understand my system" on Rimu Joinery (second business; fixture
+  tests/judgement/fixtures/rimu-joinery, see FIXTURE). One regex grader per
+  answer-key row (fixture answer-key.md sections 2 and 3: c1-c8, d01-d21);
+  pass >= 24/29, the same bar as s1-assess.
+tags: [judgement, assess, rimu]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  # --- Section 2: shared concepts (8) ---
+  # c1: both words (client/customer) and at least one name-form variant (O'Neil, surname-only, Greenstone without Homes)
+  - {type: regex, name: row-c1-client-naming, flags: i, pattern: '(?=[\s\S]*\bclients?\b)(?=[\s\S]*\bcustomers?\b)(?=[\s\S]*(O.Neil(?!l)|surnames?|short(ened)? (client )?names?|(last|family) names? only|just (the )?(last|family|sur)names?|Greenstone(?! Homes)))'}
+  - {type: regex, name: row-c2-clock-no-job-numbers, flags: i, pattern: '(clock|timer)[^\n]{0,200}(no job numbers?|without (any |a |the )?job numbers?|by client|client names?|not (by )?(the )?job numbers?|instead of (the )?job numbers?)|(no job numbers?|by client name|client names? as)[^\n]{0,200}(clock|timer)'}
+  - {type: regex, name: row-c3-material-code-formats, pattern: '(?=[\s\S]*\bWMEL\b(?!-))(?=[\s\S]*WMEL-1[68])|(?=[\s\S]*\bOAK-VEN\b(?!-))(?=[\s\S]*OAK-VEN-18)|(?=[\s\S]*\bPLY-HOOP\b(?!-))(?=[\s\S]*PLY-HOOP-18)'}
+  - {type: regex, name: row-c4-operation-not-recorded, flags: i, pattern: '(clock|timer|time)[^\n]{0,300}\boperations?\b|\boperations?\b[^\n]{0,300}(clock|timer|time)'}
+  - {type: regex, name: row-c5-stage-count, pattern: '\b([Ss]ix|6) of (your |the |its )?(nine|9)\b|\b([Ss]even|7) of (your |the |its )?(nine|9)\b|Measure[^\n]{0,40}Quote[^\n]{0,80}(missing|absent|left out|not (on|in|there))|(missing|[Nn]o|lacks|without|left out|skips)[^\n]{0,40}\bMeasure\b'}
+  # c6: the second copy of the rate (install-calendar 85) as well as the stale one (78)
+  - {type: regex, name: row-c6-labour-rate-two-copies, flags: i, pattern: '(?=[\s\S]*\b78\b)(?=[\s\S]*(calendar[^\n]{0,250}\b85\b|\b85\b[^\n]{0,250}calendar|(two|2|both) (apps|copies|places)[^\n]{0,200}rate|rate[^\n]{0,200}(two|2|both) (apps|copies)))'}
+  - {type: regex, name: row-c7-install-date-formats, flags: i, pattern: '(?=[\s\S]*(DD/MM|day/month|\b(21/10|23/10|30/10|06/11|13/11|20/11|03/12|10/12)\b|without (a |the )?year|no year))(?=[\s\S]*(20\d\d-\d\d-\d\d|year[- ]first|\bISO\b))'}
+  - {type: regex, name: row-c8-deposit, flags: i, pattern: '(?=[\s\S]*\b40 ?(%|per ?cent))(?=[\s\S]*\b50 ?(%|per ?cent))(?=[\s\S]*deposit)'}
+  # --- Section 3: planted duplications (21) ---
+  - {type: regex, name: row-d01-tracker-stale, pattern: '(?=[\s\S]*RJ-2061[^\n]{0,200}(Edge|Assembl))(?=[\s\S]*RJ-2063[^\n]{0,200}(\bCut\b|Edge))'}
+  - {type: regex, name: row-d02-tracker-missing-2066, flags: i, pattern: 'RJ-2066[^\n]{0,200}(missing|not (on|in|shown)|absent|left off|isn.t|doesn.t|no )|(missing|not (on|in)|absent|left off|only (8|eight)|(8|eight) of (the )?(9|nine))[^\n]{0,200}RJ-2066'}
+  - {type: regex, name: row-d03-clock-own-jobs, flags: i, pattern: 'clock[^\n]{0,20}\b(4|four)\b(?! ?(am|pm|hours?|h\b))|clock[^\n]{0,200}(only (has |holds |knows |lists |shows )?(4|four)\b|\b(4|four) (jobs|of the)|\b(4|four) (out )?of (the )?(9|nine))|\b(4|four) jobs[^\n]{0,200}clock'}
+  - {type: regex, name: row-d04-clock-ngata-collision, flags: i, pattern: 'Ngata[^\n]{0,300}(share|same (timer|clock|key|total|name)|both|collid|merg|add(ed)? (up )?together|lumped|one (timer|clock|total))|(share|same (timer|clock)|collid|merg)[^\n]{0,300}Ngata'}
+  - {type: regex, name: row-d05-calendar-own-jobs, flags: i, pattern: 'calendar[^\n]{0,20}\b(5|five)\b(?! ?(am|pm|hours?|h\b))|calendar[^\n]{0,200}(only (has |holds |knows |lists |shows )?(5|five)\b|\b(5|five) (jobs|installs|of the)|RJ-2058[^\n]{0,40}RJ-2062)|(\b(5|five) (jobs|installs)|RJ-2058[^\n]{0,40}RJ-2062)[^\n]{0,200}calendar'}
+  - {type: regex, name: row-d06-rj2061-install-date, flags: i, pattern: '(?=[\s\S]*(2026-10-28|28 Oct|28/10))(?=[\s\S]*(2026-11-06|\b6 Nov|06/11))'}
+  - {type: regex, name: row-d07-next-installs-order, flags: i, pattern: '(next installs?|sort(s|ed|ing)?|order(ed|ing)?)[^\n]{0,300}(RJ-2064|03/12|December|wrong order|out of order)|(RJ-2064|03/12)[^\n]{0,300}(first|top|before|ahead)'}
+  - {type: regex, name: row-d08-tracker-fit-vs-install, pattern: '["“''`]Fit["”''`][^\n]{0,120}Install|Install[^\n]{0,120}["“''`]Fit["”''`]|\bFit\b[^\n]{0,60}(instead of|rather than|not|vs\.?|versus)[^\n]{0,20}Install'}
+  - {type: regex, name: row-d09-quote-calc-customer, flags: i, pattern: '(?=[\s\S]*\bclients?\b)(?:(quote[- ]?calc|calculator)[^\n]{0,200}customer|customer[^\n]{0,200}(quote[- ]?calc|calculator))'}
+  - {type: regex, name: row-d10-quote-calc-missing-client, flags: i, pattern: '(quote[- ]?calc|calculator|customer list|picker|drop-?down)[^\n]{0,250}(Tania|Whitehead|CL-107|\b(6|six) of (the |your )?(7|seven)\b)|(Tania|Whitehead|CL-107)[^\n]{0,250}(quote[- ]?calc|calculator|customer list|picker|drop-?down|can.t be quoted|cannot be quoted)'}
+  - {type: regex, name: row-d11-oneil-spelling, pattern: '(?=[\s\S]*O.Neil(?!l))(?=[\s\S]*O.Neill)'}
+  - {type: regex, name: row-d12-quote-calc-labour-stale, flags: i, pattern: '(?=[\s\S]*\b85\b)(?=[\s\S]*(\$?78(\.00)?[^\n]{0,40}(an |per |/ ?)(h|hour)|labou?r[^\n]{0,80}\b78\b|\b78\b[^\n]{0,80}labou?r))'}
+  - {type: regex, name: row-d13-ambiguous-board-codes, flags: i, pattern: '(?=[\s\S]*WMEL-16)(?=[\s\S]*WMEL-18)(?=[\s\S]*(ambiguous|can.t tell|cannot tell|which (one|thickness)|either|could be|two thicknesses|16 ?mm or 18|16 or 18))|(?=[\s\S]*MDF-18)(?=[\s\S]*MDF-25)(?=[\s\S]*(ambiguous|can.t tell|cannot tell|which (one|thickness)|either|could be|two thicknesses|18 ?mm or 25|18 or 25))'}
+  - {type: regex, name: row-d14-oak-veneer-cost, pattern: '(?=[\s\S]*\b275\b)(?=[\s\S]*\b289\b)'}
+  - {type: regex, name: row-d15-time-per-job-vs-operation, flags: i, pattern: '(?=[\s\S]*\boperations?\b)(?=[\s\S]*(per job|each job|against the job|by job|to the job|whole job|to a job|on a job|per client|by client|per kitchen|whole kitchen|per \*job))'}
+  - {type: regex, name: row-d16-nzd-copied, flags: i, pattern: '\bnzd\b[^\n]{0,200}(cop|duplicat|same|three|3 apps|each)|(money|currency|dollar)[- ]?format[^\n]{0,200}(cop|duplicat|same code|three|3 apps)'}
+  - {type: regex, name: row-d17-isodate-utc-copied, flags: i, pattern: '(isoDate|toISOString|UTC|time ?zone)[^\n]{0,300}(cop|three|3 apps|several|each|same)|(cop|three|3 apps)[^\n]{0,200}(isoDate|toISOString)'}
+  - {type: regex, name: row-d18-panels-day-early, flags: i, pattern: 'panels?[^\n]{0,300}(2026-10-19|19 Oct|two days|2 days|day early|day too early|a day (out|off|wrong|before)|one day|off by one)|(two days|2 days|day early|off by one)[^\n]{0,300}panels?'}
+  - {type: regex, name: row-d19-btn-css-drift, flags: i, pattern: '#8b4513|border-radius[^\n]{0,60}6 ?px|6 ?px[^\n]{0,60}(radius|corner)|(button|\.btn)[^\n]{0,100}(colou?r|style|css|shade|brown)[^\n]{0,100}(differ|drift|slightly|not the same)'}
+  - {type: regex, name: row-d20-q0417-stale-labour, flags: i, pattern: '(Q-0417|\b0417\b|Sharma quote)[\s\S]{0,300}(\b78\b|stale|old (labour )?rate|under-?quot|\b224\b|2,?720|too low|under-?pric)|(\b78\b|under-?quot|\b224\b)[^\n]{0,300}(Q-0417|\b0417\b)'}
+  - {type: regex, name: row-d21-tracker-moves-never-reach-csv, flags: i, pattern: '\bmov(e|es|ed)\b[^\n]{0,100}(only|saved|stored|kept|live)[^\n]{0,60}(browser|device|machine|computer|screen)|(never|don.t|doesn.t|does not|won.t|not|nothing)[^\n]{0,80}(update|reach|change|sync|written back|write back|flow|feed)[^\n]{0,120}(spreadsheet|jobs(\.csv)?|csv)'}
+  # --- LLM check (not a row) ---
+  - type: llm
+    name: llm-job-list-copies
+    criteria: >
+      The reply names at least three different apps that each hold their own
+      copy of the job list (for example the job tracker, the job clock and
+      the install calendar), rather than only saying data is duplicated in general.

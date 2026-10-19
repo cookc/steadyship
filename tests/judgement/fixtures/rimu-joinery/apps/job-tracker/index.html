@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rimu Joinery - Job Tracker</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f7f4f0; color: #222; }
+  header { background: #5a2e1a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  .btn { background: #7a3b1e; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  .next { background: #fff; margin: 1rem; padding: .6rem 1rem; border-left: 4px solid #7a3b1e; }
+  .next h2 { margin: 0 0 .3rem; font-size: 1rem; }
+  .next li { margin: .15rem 0; }
+  .board { display: flex; gap: .6rem; padding: 0 1rem 1rem; overflow-x: auto; }
+  .col { background: #fff; min-width: 160px; border-radius: 4px; padding: .5rem; }
+  .col h2 { font-size: 1rem; margin: 0 0 .5rem; border-bottom: 2px solid #7a3b1e; }
+  .card { border: 1px solid #d8cfc4; border-radius: 3px; padding: .35rem; margin-bottom: .4rem; font-size: .9rem; }
+  .card small { color: #555; display: block; }
+  .card .btn { margin-top: .3rem; font-size: .75rem; padding: .25rem .5rem; }
+</style>
+</head>
+<body>
+<header><h1>Job Tracker</h1></header>
+<div class="next"><h2>Next installs</h2><ol id="next"></ol></div>
+<div class="board" id="board"></div>
+<script>
+  // copied from Jobs.csv 28 Sept - Lisa. Moves are saved on this computer.
+  const stages = ['Design', 'Order', 'Cut', 'Edge & drill', 'Assemble', 'Finish', 'Fit', 'Done'];
+  const jobs = [
+    { job: 'RJ-2058', client: 'Waikato Build Co Ltd', what: 'Kitchen - Lot 14 Pukete Rd', stage: 'Fit', install: '21/10' },
+    { job: 'RJ-2059', client: "Jo O'Neil", what: 'Wardrobes x3', stage: 'Fit', install: '23/10' },
+    { job: 'RJ-2060', client: 'Mark Henderson', what: 'Kitchen and scullery', stage: 'Finish', install: '30/10' },
+    { job: 'RJ-2061', client: 'Greenstone Homes Ltd', what: 'Kitchen - show home Rototuna', stage: 'Edge & drill', install: '06/11' },
+    { job: 'RJ-2062', client: 'Hemi & Kiri Ngata', what: 'Kitchen', stage: 'Assemble', install: '13/11' },
+    { job: 'RJ-2063', client: 'Priya & Dev Sharma', what: 'Kitchen', stage: 'Cut', install: '20/11' },
+    { job: 'RJ-2064', client: 'Waikato Build Co Ltd', what: 'Stairs - rimu treads Lot 22', stage: 'Cut', install: '03/12' },
+    { job: 'RJ-2065', client: 'Hemi & Kiri Ngata', what: 'Master wardrobe', stage: 'Order', install: '10/12' },
+  ];
+
+  const moves = JSON.parse(localStorage.getItem('rj_tracker_moves') || '{}');
+  const stageOf = j => moves[j.job] || j.stage;
+
+  function draw() {
+    const next = jobs.filter(j => stageOf(j) !== 'Done')
+      .sort((a, b) => a.install.localeCompare(b.install))
+      .slice(0, 3);
+    document.getElementById('next').innerHTML = next.map(j => `<li>${j.install} - ${j.job} ${j.client}</li>`).join('');
+
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+    for (const s of stages) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `<h2>${s}</h2>`;
+      for (const j of jobs.filter(j => stageOf(j) === s)) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<b>${j.job}</b><small>${j.client}</small><small>${j.what}</small><small>Install ${j.install}</small>`;
+        const i = stages.indexOf(s);
+        if (i < stages.length - 1) {
+          const b = document.createElement('button');
+          b.className = 'btn';
+          b.textContent = 'Move to ' + stages[i + 1];
+          b.onclick = () => {
+            moves[j.job] = stages[i + 1];
+            localStorage.setItem('rj_tracker_moves', JSON.stringify(moves));
+            draw();
+          };
+          card.appendChild(b);
+        }
+        col.appendChild(card);
+      }
+      board.appendChild(col);
+    }
+  }
+  draw();
+</script>
+</body>
+</html>

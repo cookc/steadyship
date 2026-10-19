@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install Calendar</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f7f4f0; color: #222; }
+  header { background: #5a2e1a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  .btn { background: #7a3b1e; color: #fff; border: 0; border-radius: 6px; padding: .45rem .9rem; cursor: pointer; }
+  main { max-width: 760px; margin: 1rem auto; padding: 0 1rem; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  td, th { border: 1px solid #d8cfc4; padding: .35rem .5rem; text-align: left; }
+  td.n, th.n { text-align: right; }
+  tr.today { background: #fff3c4; }
+  .hide-done tr.done { display: none; }
+</style>
+</head>
+<body>
+<header><h1>Install Calendar</h1></header>
+<main>
+  <p><button class="btn" id="toggle">Hide past installs</button></p>
+  <table id="tbl">
+    <thead><tr><th>Install</th><th>Job</th><th>Client</th><th>Panels to site</th><th class="n">Hours</th><th class="n">Install labour</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</main>
+<script>
+  // Coming installs - Lisa. Labour rate from the price list.
+  const RATE = 85;
+  const installs = [
+    { job: 'RJ-2058', client: 'Waikato Build Co Ltd', install: '2026-10-21', hours: 16 },
+    { job: 'RJ-2059', client: "Jo O'Neill", install: '2026-10-23', hours: 6 },
+    { job: 'RJ-2060', client: 'Mark Henderson', install: '2026-10-30', hours: 20 },
+    { job: 'RJ-2061', client: 'Greenstone Homes Ltd', install: '2026-10-28', hours: 18 },
+    { job: 'RJ-2062', client: 'Hemi & Kiri Ngata', install: '2026-11-13', hours: 14 },
+  ];
+
+  function nzd(n) {
+    return '$' + n.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function isoDate(d) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  // panels go to site the day before the install
+  function addDays(iso, n) {
+    const d = new Date(iso + 'T00:00');
+    d.setDate(d.getDate() + n);
+    return isoDate(d);
+  }
+
+  const today = isoDate(new Date());
+  document.getElementById('rows').innerHTML = installs
+    .slice()
+    .sort((a, b) => a.install.localeCompare(b.install))
+    .map(i => `<tr class="${i.install === today ? 'today' : ''}${i.install < today ? ' done' : ''}">` +
+      `<td>${i.install}</td><td>${i.job}</td><td>${i.client}</td><td>${addDays(i.install, -1)}</td>` +
+      `<td class="n">${i.hours}</td><td class="n">${nzd(i.hours * RATE)}</td></tr>`).join('');
+
+  document.getElementById('toggle').onclick = e => {
+    const t = document.getElementById('tbl').classList.toggle('hide-done');
+    e.target.textContent = t ? 'Show past installs' : 'Hide past installs';
+  };
+</script>
+</body>
+</html>

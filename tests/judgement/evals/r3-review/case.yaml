@@ -1,0 +1,35 @@
+schema_version: "1.1"
+name: r3-review
+description: >
+  "Rely on it?" for Rimu Joinery's job-tracker (fixture: see FIXTURE).
+  Fixture answer-key section 4 risks for job-tracker. Pass = read-jobs-csv
+  (it opened the shared drive's Jobs.csv) AND >= 5 of the 6 risk-* graders.
+  stale-jobs-named (RJ-2061, RJ-2063) and missing-job-named (RJ-2066) are
+  reported, not gating.
+tags: [judgement, review, rimu]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: read-jobs-csv, tool: Read, input_match: 'Jobs\.csv', min: 1}
+  - {type: regex, name: stale-jobs-named, pattern: '(?=[\s\S]*RJ-2061)(?=[\s\S]*RJ-2063)'}
+  - {type: regex, name: missing-job-named, pattern: 'RJ-2066'}
+  - {type: regex, name: risk-1-browser-storage, flags: i, pattern: 'localStorage|local storage|(in|inside) (the|each|your|one|that|whichever) (web )?browser|browser storage|per (machine|computer|device|browser|screen)|own (device|computer|machine|browser)'}
+  - {type: regex, name: risk-2-no-backup, flags: i, pattern: 'back[- ]?up|clear(ing|s|ed)?\b[^\n]{0,80}\b(lose|loses|lost|reset|resets|wipe|wipes|wiped|gone)\b|(would|will|could|is|be|get|gets) (lost|gone|wiped)'}
+  - {type: regex, name: risk-3-stale-copy, flags: i, pattern: '(cop(y|ied)|stale|out of date|hard-?coded|typed in|out of sync|disagree|(don.t|doesn.t|do not|does not) match|wrong stage|behind)[^\n]{0,200}(spreadsheet|jobs\.csv|csv)|(spreadsheet|jobs\.csv|csv)[^\n]{0,200}(cop(y|ied)|stale|out of date|hard-?coded|out of sync|disagree|(don.t|doesn.t|do not|does not) match|wrong stage|behind)'}
+  - {type: regex, name: risk-4-install-date-format, flags: i, pattern: 'DD/MM|day/month|without (a |the )?year|no year|\b(21/10|06/11|03/12|10/12)\b|install dates?[^\n]{0,80}(format|written|sort|order)'}
+  - {type: regex, name: risk-5-stage-names, pattern: '\bFit\b[^\n]{0,80}\bInstall\b|\bInstall\b[^\n]{0,80}\bFit\b|[Ss]tage names?[^\n]{0,80}(differ|match|missing|spell)|(missing|[Nn]o|lacks|without)[^\n]{0,40}\b(Measure|Quote)\b'}
+  - {type: regex, name: risk-6-no-sign-in, flags: i, pattern: 'sign[- ]?in|log[- ]?in|password|who can (change|edit|move)|anyone (can|could) (change|edit|move)|access control|permissions?\b'}
+  - type: llm
+    name: llm-verdict-and-next-step
+    criteria: >
+      The reply gives a clear yes or no (or "not yet") answer to whether the
+      office can rely on the job tracker instead of the Jobs spreadsheet, and
+      recommends at least one concrete next step.

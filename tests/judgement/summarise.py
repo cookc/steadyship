@@ -2,15 +2,18 @@
 """Turn a `claude plugin eval --json` result into the judgement summary table (Markdown).
 
 Usage: summarise.py <result.json>
-Case pass rules (deterministic graders only; llm graders are reported, not gating):
-  s1-assess  rows found (row-* graders) >= 24 of 29
-  s2*-ask    no-write AND no-edit AND its asks-* grader (s2 job-vs-operation, s2b price-list, s2c where-or-who)
-  s3-review  read-jobs-csv AND >= 5 of the 6 risk-* graders
+Cases are recognised by the skill in their name (s* = Demo Boatworks, r* = Rimu Joinery,
+any other prefix works the same way). Pass rules (deterministic graders only; llm graders are
+reported, not gating):
+  *-assess   rows found (row-* graders) >= ceil(rows * 24/29): the first key's 24 of 29
+  *-ask      no-write AND no-edit AND its asks-* grader
+  *-review   read-jobs-csv AND all but one of the risk-* graders (5 of 6)
 Every case also needs no-peek (the agent did not read the staged cases).
 Also saves each run's final reply (taken from the llm grader's evidence) as
 <case>-<arm>-<n>.md next to result.json, for regrade.py and for reading.
 """
 import json
+import math
 import os
 import sys
 
@@ -19,21 +22,25 @@ def verdict(case, g):
     ok = lambda n: g.get(n, False)
     if not ok("no-peek"):
         return "-", False, "PEEKED at eval files"
-    if case.startswith("s1"):
+    kind = case.rsplit("-", 1)[-1]
+    if kind == "assess":
         rows = sum(v for k, v in g.items() if k.startswith("row-"))
         total = sum(1 for k in g if k.startswith("row-"))
-        return f"rows {rows}/{total}", rows >= 24, f"llm job-list copies: {'yes' if ok('llm-job-list-copies') else 'no'}"
-    if case.startswith("s2"):
+        return (f"rows {rows}/{total}", rows >= math.ceil(total * 24 / 29),
+                f"llm job-list copies: {'yes' if ok('llm-job-list-copies') else 'no'}")
+    if kind == "ask":
         built = not (ok("no-write") and ok("no-edit"))
         q = next((k for k in g if k.startswith("asks-")), "asks-?")
         asked = ok(q)
         return (f"{'built' if built else 'no files'}; {q[5:]} {'asked' if asked else 'not asked'}",
                 (not built) and asked, f"llm asks-before-building: {'yes' if ok('llm-asks-before-building') else 'no'}")
-    if case.startswith("s3"):
+    if kind == "review":
         risks = sum(v for k, v in g.items() if k.startswith("risk-"))
+        nrisks = sum(1 for k in g if k.startswith("risk-"))
         read = ok("read-jobs-csv")
-        return (f"risks {risks}/6; Jobs.csv {'read' if read else 'not read'}; stale J-1039/J-1041 {'named' if ok('stale-jobs-named') else 'not named'}",
-                read and risks >= 5, f"llm verdict+next step: {'yes' if ok('llm-verdict-and-next-step') else 'no'}")
+        extra = "; ".join(f"{k[:-6]} named {'yes' if v else 'no'}" for k, v in g.items() if k.endswith("-named"))
+        return (f"risks {risks}/{nrisks}; Jobs.csv {'read' if read else 'not read'}; {extra}",
+                read and risks >= nrisks - 1, f"llm verdict+next step: {'yes' if ok('llm-verdict-and-next-step') else 'no'}")
     return "", False, ""
 
 

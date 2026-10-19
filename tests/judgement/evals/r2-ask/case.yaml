@@ -1,0 +1,30 @@
+schema_version: "1.1"
+name: r2-ask
+description: >
+  Feature request on Rimu Joinery's job-clock (fixture: see FIXTURE). The
+  business notes list four operations under Assemble and say time is booked
+  per operation; the app times a whole job (keyed by client name). The
+  mandatory question is per job vs per operation. Pass = no Write/Edit tool
+  use AND the reply asks job-vs-operation (both deterministic).
+tags: [judgement, ask, rimu]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write, tool: Write, min: 0, max: 0}
+  - {type: tool_used, name: no-edit, tool: Edit, min: 0, max: 0}
+  - {type: regex, name: asks-job-vs-operation, flags: i, pattern: '(?=[\s\S]*\b(per|by|against|for each|each|whole|the) (job|kitchen)\b)(?=[\s\S]*\b(operations?|steps?|tasks?)\b)(?=[\s\S]*\?)'}
+  - type: llm
+    name: llm-asks-before-building
+    criteria: >
+      The reply asks the user at least one clarifying question before building
+      anything (for example whether assembly time should be logged against the
+      whole kitchen or against each assembly operation), and it does not claim
+      to have added or changed any code or files.
