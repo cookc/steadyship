@@ -1,0 +1,38 @@
+schema_version: "1.1"
+name: s2-ask-answered
+description: >
+  Second turn of S2. history.jsonl replays (via claude --resume) the S2 request
+  and a real with-arm ask reply (results 20261019T021756Z, s2-ask-with-3: it
+  asks per job vs per operation, and where the times are kept). The user then
+  answers "per operation" and says go ahead. Pass = decisions.md exists and
+  records the question and answer, the timer was changed (Edit or Write on
+  shop-timer), and the reply says where the time data is stored.
+tags: [judgement, ask, multi-turn]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+  history_file: history.jsonl    # Claude Code session transcript (JSONL), passed to --resume
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: file_exists, name: decision-file, path: docs/context/decisions.md}
+  - type: regex
+    name: decision-recorded
+    flags: i
+    target: {source: file, path: docs/context/decisions.md}
+    pattern: '(?=[\s\S]*\b(jobs?|boats?)\b)(?=[\s\S]*\boperations?\b)(?=[\s\S]*\b(prime|priming|topcoat|antifoul))'
+  - {type: tool_used, name: changed-by-edit, tool: Edit, input_match: 'shop-timer', min: 1}
+  - {type: tool_used, name: changed-by-write, tool: Write, input_match: 'shop-timer', min: 1}
+  - {type: regex, name: states-storage, flags: i, pattern: '(stor|sav|kept|keep|live|held|record)[^\n]{0,160}(localStorage|local storage|browser|shared drive|\.csv\b)|(localStorage|local storage|browser|shared drive|\.csv\b)[^\n]{0,160}(stor|sav|kept|keep|live|held)'}
+  - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}   # indicator: the ask skill fired on the answer turn
+  - type: llm
+    name: llm-built-and-recorded
+    criteria: >
+      The reply says it built what was agreed (time recorded per operation:
+      prime, topcoat, antifoul, within each job) and says the decision was
+      recorded (for example in docs/context/decisions.md).

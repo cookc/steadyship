@@ -8,6 +8,9 @@ reported, not gating):
   *-assess   rows found (row-* graders) >= ceil(rows * 24/29): the first key's 24 of 29
   *-ask      no-write AND no-edit AND its asks-* grader
   *-review   read-jobs-csv AND all but one of the risk-* graders (5 of 6)
+             (also *-review-<variant>, e.g. s3-review-second-opinion; used-agent is reported)
+  *-answered (second turn after an ask) every deterministic grader except changed-* and used-* (with-only indicators), AND at
+             least one changed-* grader (the app was changed by Edit or by Write)
 Every case also needs no-peek (the agent did not read the staged cases).
 Also saves each run's final reply (taken from the llm grader's evidence) as
 <case>-<arm>-<n>.md next to result.json, for regrade.py and for reading.
@@ -22,7 +25,17 @@ def verdict(case, g):
     ok = lambda n: g.get(n, False)
     if not ok("no-peek"):
         return "-", False, "PEEKED at eval files"
-    kind = case.rsplit("-", 1)[-1]
+    parts = case.split("-")
+    kind = ("answered" if parts[-1] == "answered" else
+            next((k for k in ("assess", "ask", "review") if k in parts[1:]), parts[-1]))
+    if kind == "answered":
+        gating = [k for k in g if not k.startswith(("llm-", "changed-", "used-"))]
+        missed = [k for k in gating if not g[k]]
+        changed = any(v for k, v in g.items() if k.startswith("changed-"))
+        res = "changed app" if changed else "app not changed"
+        res += "; missed " + ", ".join(missed) if missed else "; all checks met"
+        llm = [f"{k}: {'yes' if v else 'no'}" for k, v in g.items() if k.startswith(("llm-", "used-"))]
+        return res, changed and not missed, "; ".join(llm)
     if kind == "assess":
         rows = sum(v for k, v in g.items() if k.startswith("row-"))
         total = sum(1 for k in g if k.startswith("row-"))
@@ -39,6 +52,8 @@ def verdict(case, g):
         nrisks = sum(1 for k in g if k.startswith("risk-"))
         read = ok("read-jobs-csv")
         extra = "; ".join(f"{k[:-6]} named {'yes' if v else 'no'}" for k, v in g.items() if k.endswith("-named"))
+        if "used-agent" in g:
+            extra += f"; second reviewer {'dispatched' if g['used-agent'] else 'not dispatched'}"
         return (f"risks {risks}/{nrisks}; Jobs.csv {'read' if read else 'not read'}; {extra}",
                 read and risks >= nrisks - 1, f"llm verdict+next step: {'yes' if ok('llm-verdict-and-next-step') else 'no'}")
     return "", False, ""

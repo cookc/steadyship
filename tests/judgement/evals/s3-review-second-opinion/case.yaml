@@ -1,0 +1,42 @@
+schema_version: "1.1"
+name: s3-review-second-opinion
+description: >
+  S3 with the Agent tool granted, so the review skill's step 6 (second opinion)
+  can run. Same prompt and graders as s3-review, plus used-agent (with-only
+  indicator: the agent dispatched a reviewer) and an llm grader on the
+  reconciliation. "Rely on it?" for job-board. Answer key section 4 risks for job-board.
+  Pass = read-jobs-csv (it opened the shared drive's Jobs.csv) AND >= 5 of the
+  6 risk-* graders. stale-jobs-named checks it found the two stale rows.
+tags: [judgement, review, second-opinion]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Agent]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: read-jobs-csv, tool: Read, input_match: 'Jobs\.csv', min: 1}
+  - {type: regex, name: stale-jobs-named, pattern: '(?=[\s\S]*J-1039)(?=[\s\S]*J-1041)'}
+  - {type: regex, name: risk-1-browser-storage, flags: i, pattern: 'localStorage|local storage|(in|inside) (the|each|your|one|that|whichever) (web )?browser|browser storage|per (machine|computer|device|browser)|own (device|computer|machine|browser)'}
+  - {type: regex, name: risk-2-no-backup, flags: i, pattern: 'back[- ]?up|clear(ing|s|ed)?\b[^\n]{0,80}\b(lose|loses|lost|reset|resets|wipe|wipes|wiped|gone)\b|(would|will|could|is|be|get|gets) (lost|gone|wiped)'}
+  - {type: regex, name: risk-3-stale-copy, flags: i, pattern: '(cop(y|ied)|stale|out of date|hard-?coded|typed in|out of sync|disagree|(don.t|doesn.t|do not|does not) match|wrong stage)[^\n]{0,200}(spreadsheet|jobs\.csv|csv)|(spreadsheet|jobs\.csv|csv)[^\n]{0,200}(cop(y|ied)|stale|out of date|hard-?coded|out of sync|disagree|(don.t|doesn.t|do not|does not) match|wrong stage)'}
+  - {type: regex, name: risk-4-job-number-format, flags: i, pattern: '(?<![-\w])1043\b|job[- ]numbers?[^\n]{0,80}(format|written|style|inconsisten|differ|prefix|J-)'}
+  - {type: regex, name: risk-5-stage-names, flags: i, pattern: 'fit out|sea trial|stage names?[^\n]{0,80}(differ|match|missing|spell)|(missing|no|lacks)[^\n]{0,40}(stages?|columns?)\b'}
+  - {type: regex, name: risk-6-no-sign-in, flags: i, pattern: 'sign[- ]?in|log[- ]?in|password|who can (change|edit|move)|anyone (can|could) (change|edit|move)|access control|permissions?\b'}
+  - {type: tool_used, name: used-agent, tool: Agent, min: 1, arm: with-only}
+  - type: llm
+    name: llm-reconciles-second-opinion
+    criteria: >
+      The reply reports a second reviewer's findings and reconciles them with
+      its own: it says where the second reviewer agreed and where it differed
+      (or added something).
+  - type: llm
+    name: llm-verdict-and-next-step
+    criteria: >
+      The reply gives a clear yes or no (or "not yet") answer to whether the
+      job board can replace the Jobs spreadsheet, and recommends at least one
+      concrete next step.

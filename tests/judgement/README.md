@@ -42,3 +42,16 @@ example `~/rimu-joinery-shared-drive`). Put that path in the assess prompt.
    `regrade.py evals/t1-assess/case.yaml fixtures/<name>/answer-key.md`
    should score every row. A reply from another business should score few.
 6. Run `run.sh --case 't*'`.
+
+## Multi-turn cases
+
+A case can start part-way through a conversation: put a Claude Code session
+transcript (JSONL, one `user` / `assistant` message object per line, as in
+`~/.claude/projects/*/*.jsonl`) in the case folder and name it in
+`case.yaml` as `context.history_file`. The runner passes it to
+`claude --resume`, and `prompt.md` is the next user turn. Keep the history
+to plain text messages (no Skill tool calls or skill text): with
+`--ablation with-without` both arms replay the same history, so anything the
+plugin put into it would leak into the without arm. See `evals/s2-ask-answered`.
+Cases whose name ends in `-answered` pass on every deterministic grader except
+`changed-*` and `used-*`, plus at least one `changed-*`.
