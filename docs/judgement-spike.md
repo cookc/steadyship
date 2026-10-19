@@ -283,3 +283,63 @@ runs per case per arm, 668 s, $1.92):
 - **Not planted:** both with-arm r1 replies noted that page widths differ
   (520–820px). That is true, but it is layout, not a copy. The key now says
   so and does not score it.
+
+## Variance and model arms
+
+Harness flags added: `--runs N`, `--model M`, `--cases GLOB` (alias of
+`--case`), `--arms with|both`, `-j N` (concurrency) and `--max-cost-usd`.
+`summarise.py` now prints a per-case table with pass count / N, mean and
+min-max score, cost, and the graders missed in failing runs.
+`results/latest` and `results/latest.md` point at the last run (results are
+git-ignored). Claude Code 2.1.303, with-arm only, `-j 2`.
+
+| Run | Model | Cases x runs | Wall | Cost |
+|---|---|---|---|---|
+| `20261019T021756Z` | sonnet | 8 x 10 | 2179 s | $13.81 (ceiling $15, not hit) |
+| `20261019T022454Z` | opus | 5 x 3 | 565 s | $4.98 (ceiling $15) |
+| `20261019T021801Z` | haiku | 5 x 3 | 404 s | $0.17 (ceiling $3) |
+
+Pass rate (mean score, min):
+
+| Case | sonnet n=10 | opus n=3 | haiku n=3 |
+|---|---|---|---|
+| s1-assess | 10/10 (0.94, 0.90) | 3/3 (0.89, 0.87) | 3/3 (0.87, 0.81) |
+| s2-ask | 10/10 (1.00, 1.00) | 3/3 (1.00, 1.00) | 3/3 (0.93, 0.80) |
+| s2b-ask | 10/10 (0.98, 0.80) | 3/3 (1.00, 1.00) | 3/3 (1.00, 1.00) |
+| s2c-ask | 10/10 (1.00, 1.00) | 3/3 (1.00, 1.00) | 1/3 (0.60, 0.40) |
+| s3-review | 10/10 (0.99, 0.90) | 3/3 (1.00, 1.00) | 1/3 (0.73, 0.40) |
+| r1-assess | 10/10 (0.93, 0.84) | not run | not run |
+| r2-ask | 10/10 (1.00, 1.00) | not run | not run |
+| r3-review | 10/10 (0.98, 0.91) | not run | not run |
+
+Reading:
+
+- **Sonnet is stable.** 80 of 80 with-arm runs pass; no run failed a gating
+  grader, so there are no wording-miss or behaviour-miss failures to
+  classify, and no grader looked like the cause of a failure. The variance
+  is in the assess rows only (scores 0.84-1.00), never in ask (no run built
+  anything) or review. Rows sonnet misses most on the S1 key: c3 model
+  short name 7/10, d20 stale Q-031 prices 6/10, d13 money format 2/10, c9
+  hull number 2/10. On R1: d13 ambiguous board codes 6/10, c1 client
+  naming 4/10, d09 quote-calc customer 4/10, d12 stale labour 3/10.
+- **Haiku** passes assess (3/3) and the plain asks (s2, s2b), but is fragile
+  where the right behaviour needs restraint. s2c-ask: in 2 of 3 runs it
+  edited files and did not ask where or who. s3-review: 2 of 3 runs missed
+  four to five of six risks (run 3 named none of browser storage, backup,
+  stale copy, job-number format or sign-in). It is a quarter of the cost of
+  sonnet or less ($0.17 for 15 runs), so it is viable for assess and
+  simple ask, not for review or for asks that tempt a build. For desktop
+  usage limits: haiku could carry assess and the simple ask; keep sonnet for
+  review and anything where building without asking is costly.
+- **Opus** passes all 15 runs and scores 1.00 on every ask and review run.
+  It costs about 4 to 5 times sonnet per run ($4.98 for 15 runs against
+  roughly $0.30 per run on sonnet), so it buys no pass-rate on this set.
+- **S1's resistant row c3 (model short name):** opus did NOT find it, in
+  0 of 3 runs. Sonnet found it 3 of 10, haiku 0 of 3. A stronger model does
+  not change the verdict on that row; it also missed c9 hull number twice,
+  d13 money format twice and d16 UTC date twice. Opus's assess runs are not
+  better than sonnet's (mean 0.89 against 0.94).
+- No skill change was made in this part.
+- Caveats: n=3 for haiku and opus is small; one failing run moves the rate
+  by 33 points. Haiku and opus were run with the with-arm only, so the
+  plugin's lift on those models is not measured here.
