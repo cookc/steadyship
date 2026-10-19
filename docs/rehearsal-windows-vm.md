@@ -146,5 +146,10 @@ spike e stays a question for them.
   and init refused to run, which is the template check doing its job), and
   the upload validator also rejects `<...>` in skill descriptions, fixed in
   0.4.6.
+- **Spike c with Node uninstalled, plugin 0.4.6: PASS without a question.**
+  The skill said "This computer doesn't have Node.js ... installing it now",
+  installed it with winget, ran the check, and job-board opened clean. The
+  only prompt left is the spike skill's deliberate "Shall I record that in
+  RESULTS.md?".
 - **Plugin updates**: "Check for updates" failed on a device without GitHub
   connected, so the VM ran 0.4.2 while 0.4.3 was published.
