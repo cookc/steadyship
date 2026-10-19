@@ -1,6 +1,6 @@
 ---
 name: steadyship-ask
-description: Use BEFORE making any change request in a Steadyship repository — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the <app> do" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. Not for questions, status, assessments, reviews or spikes.
+description: Use BEFORE making any change request in a Steadyship repository — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the <app> do" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. ALSO use on the user's answer to such a question ("the second one", "against each step", "go ahead", "just do it the simple way"): it records the decision in docs/context/decisions.md, builds as agreed and says where the data is stored. Not for questions, status, assessments, reviews or spikes.
 ---
 
 # Steadyship ask
@@ -87,6 +87,12 @@ Grep. No Write, no Edit, no code in the reply.
    if you are confident of the answer.
 
 ## After the user answers (a later turn)
+
+If this turn is the user's answer to a question asked earlier in the
+conversation (whether or not this skill was loaded then), skip steps 1–5:
+re-read only what you need to build (step 2's notes and the app), then do
+the three steps below. All three, every time: the decision record is how
+the next person learns why it was built this way.
 
 1. Append to `docs/context/decisions.md` (create it with a `# Decisions`
    heading if missing) one entry: date, the change asked for, the question,
