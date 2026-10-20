@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+import Mark from '../components/Mark.astro';
+
+const today = [
+  { title: 'Sets itself up for your business', body: 'One prompt. It asks who holds the accounts, who decides what the business relies on, and where the spreadsheets live, then makes a folder of ordinary files the business owns.' },
+  { title: 'Checks the ground first', body: 'Say "Check this computer". Three one-minute checks, each a plain PASS, FAIL or SKIP: can it reach GitHub, read and write the shared drive, open one of your apps. Written down so nobody has to wonder again.' },
+  { title: 'Finds the same thing kept twice', body: 'It reads every app and every spreadsheet and tells you where a price, a job or a name is typed in two places and already disagrees.' },
+  { title: 'Gives a straight verdict', body: 'Ask "Review the job board" and you get Yes, No or Not yet, with the evidence. Anything it could not check is labelled, never waved through.' },
+  { title: 'Asks before it builds', body: 'One or two questions that would be expensive to get wrong, with a recommendation. You decide, it builds, and it writes down why.' },
+];
+
+const steps = [
+  { prompt: 'Set up Steadyship for Harbour Boatworks', note: 'Answer four questions. About two minutes.' },
+  { prompt: 'Check this computer', note: 'Three checks, one minute, recorded.' },
+  { prompt: 'Review the job board', note: 'A verdict the owner can act on.' },
+];
+---
+<Base title="Steadyship" description="An engineer in the conversation. A Claude plugin for small businesses whose own people build their apps: it asks what you don't know to ask, judges what you can't judge, and gives prototypes a path to software a business can run on.">
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pt-24">
+    <div class="grid items-center gap-12 md:grid-cols-[1.2fr_1fr]">
+      <div>
+        <p class="font-display text-sm font-semibold uppercase tracking-wider text-sea">A plugin for Claude</p>
+        <h1 class="mt-4 font-display text-5xl font-extrabold leading-[1.05] sm:text-6xl">An engineer in the conversation.</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
+          Your team builds its own apps with Claude. Steadyship asks the questions an engineer would ask before building,
+          gives a straight verdict after, and keeps everything written down in a folder the business owns.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/get-started" class="rounded-full bg-navy px-6 py-3 font-semibold text-white hover:bg-sea">Get started</a>
+          <a href="/why" class="rounded-full border border-[var(--line)] px-6 py-3 font-semibold hover:border-sea">Why Steadyship</a>
+        </div>
+        <p class="mt-6 text-sm text-[var(--muted)]">Open source. Stays on your computer. Keeps working if you remove it.</p>
+      </div>
+      <div class="flex justify-center md:justify-end">
+        <Mark size={260} class="drop-shadow-[0_24px_40px_rgba(17,49,79,0.25)]" />
+      </div>
+    </div>
+  </section>
+
+  <!-- What it does today -->
+  <section class="bg-[var(--surface)]">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <h2 class="font-display text-3xl font-bold sm:text-4xl">What it does today</h2>
+      <p class="mt-3 max-w-2xl text-[var(--muted)]">Five things, each one a plain prompt in Claude. No dashboard, no account, nothing to learn.</p>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {today.map((c, i) => (
+          <article class="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-6">
+            <span class="font-display text-sm font-bold text-sea">0{i + 1}</span>
+            <h3 class="mt-2 font-display text-lg font-bold">{c.title}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-[var(--muted)]">{c.body}</p>
+          </article>
+        ))}
+        <article class="flex flex-col justify-between rounded-2xl bg-navy p-6 text-white dark:bg-sea-deep">
+          <div>
+            <h3 class="font-display text-lg font-bold">Everything stays yours</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-[#C6D3DE]">Ordinary files in a private folder or repository the business owns. Nothing is sent anywhere Claude does not already send it.</p>
+          </div>
+          <a href="/why#what-you-keep" class="mt-6 text-sm font-semibold text-sun hover:underline">What you keep</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <h2 class="font-display text-3xl font-bold sm:text-4xl">How it works</h2>
+    <p class="mt-3 max-w-2xl text-[var(--muted)]">Three prompts on day one. After that, ask for changes the way you already do.</p>
+    <ol class="mt-10 grid gap-5 md:grid-cols-3">
+      {steps.map((s, i) => (
+        <li class="rounded-2xl border border-[var(--line)] p-6">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sea font-display text-sm font-bold text-white">{i + 1}</span>
+          <p class="mt-4 rounded-xl bg-[var(--surface)] px-4 py-3 font-mono text-sm">“{s.prompt}”</p>
+          <p class="mt-3 text-[15px] text-[var(--muted)]">{s.note}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- See it answer -->
+  <section class="bg-[var(--surface)]">
+    <div class="mx-auto grid max-w-6xl items-start gap-12 px-4 py-20 sm:px-6 md:grid-cols-[1fr_1.2fr]">
+      <div>
+        <h2 class="font-display text-3xl font-bold sm:text-4xl">See it answer</h2>
+        <p class="mt-4 text-[var(--muted)] leading-relaxed">
+          This is a real reply from the demo business, a made-up boat builder with six apps its staff built with Claude.
+          The short version is what you read. The full picture, every row that differs, goes into a file you keep.
+        </p>
+        <a href="/get-started" class="mt-6 inline-block font-semibold text-sea hover:underline">Try the demo business</a>
+      </div>
+      <div class="space-y-4 text-[15px] leading-relaxed">
+        <div class="bubble-user ml-auto max-w-md px-5 py-3">What apps do we have and where is the same information kept twice?</div>
+        <div class="bubble-reply px-5 py-4">
+          <p class="font-semibold">The three things that matter most</p>
+          <ol class="mt-2 list-decimal space-y-2 pl-5">
+            <li><strong>The Quote Builder is using old prices.</strong> Price List 2026.csv has Bimini top $3,450 and Trailer $6,250. The app has $3,200 and $5,800, so a quote with both is $700 low before GST.</li>
+            <li><strong>The job list is typed into several places, and they disagree.</strong> Jobs.csv has 8 jobs. Job Board has 8, Delivery Checklist 4 and Shop Timer 3. J-1039 is “Sea trial” in Jobs.csv but “Paint” on the board.</li>
+            <li><strong>If a laptop died, most of the work would be lost.</strong> Five apps keep what people enter only in that browser on that computer.</li>
+          </ol>
+          <p class="mt-3 font-semibold">What I'd do first</p>
+          <p class="mt-1">Update the Quote Builder's two prices, and make it read Price List 2026.csv. It is the one customers see numbers from.</p>
+          <p class="mt-3 text-[var(--muted)]">The full picture is in docs/assessment/SUMMARY.md. Say ‘show me everything’ and I'll put it here.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who it's for -->
+  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <div class="grid gap-10 md:grid-cols-2">
+      <div>
+        <h2 class="font-display text-3xl font-bold sm:text-4xl">Who it's for</h2>
+        <p class="mt-4 leading-relaxed text-[var(--muted)]">
+          A business where a few people who are not developers build their own tools with Claude, and those tools are
+          starting to matter. A job board someone relies on. A quote builder that disagrees with the price list.
+          Two apps that both keep the customer list.
+        </p>
+        <p class="mt-4 leading-relaxed text-[var(--muted)]">
+          One person does a ten-minute setup. The owner decides what the business relies on. Everyone else keeps building,
+          with an engineer in the conversation.
+        </p>
+      </div>
+      <div class="rounded-2xl border border-[var(--line)] p-6">
+        <h3 class="font-display text-lg font-bold">What it is not</h3>
+        <ul class="mt-3 space-y-2 text-[15px] leading-relaxed text-[var(--muted)]">
+          <li>Not a place to host apps, and not a database.</li>
+          <li>Not a replacement for Claude. It is an add-on that sits in the same chat.</li>
+          <li>Not a certificate that an app is secure. It tells you what it checked and what it could not.</li>
+          <li>Not in the way. It stays quiet until something matters.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+    <div class="rounded-3xl bg-navy px-6 py-12 text-center text-white dark:border dark:border-white/10 sm:px-12">
+      <h2 class="font-display text-3xl font-bold">Ten minutes to a first verdict.</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">Windows or Mac, the Claude desktop app or Claude Code in a terminal. One page for each.</p>
+      <a href="/get-started" class="mt-7 inline-block rounded-full bg-sun px-6 py-3 font-semibold text-navy hover:bg-[#F7C95F]">Get started</a>
+    </div>
+  </section>
+</Base>

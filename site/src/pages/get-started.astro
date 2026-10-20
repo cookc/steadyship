@@ -1,0 +1,69 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const tabs = [
+  { id: 'windows-claude-desktop', os: 'Windows', tool: 'Claude desktop app' },
+  { id: 'windows-claude-code', os: 'Windows', tool: 'Claude Code' },
+  { id: 'mac-claude-desktop', os: 'Mac', tool: 'Claude desktop app' },
+  { id: 'mac-linux-claude-code', os: 'Mac or Linux', tool: 'Claude Code' },
+];
+const entries = await getCollection('docs', (e) => e.id.startsWith('quickstart/'));
+const panels = await Promise.all(
+  tabs.map(async (t) => {
+    const entry = entries.find((e) => e.id === `quickstart/${t.id}`);
+    if (!entry) throw new Error(`docs/quickstart/${t.id}.md not found`);
+    const { Content } = await render(entry);
+    return { ...t, Content };
+  }),
+);
+---
+<Base title="Get started" description="Set up Steadyship in about ten minutes: one page for each setup, Windows or Mac, Claude desktop app or Claude Code.">
+  <section class="mx-auto max-w-3xl px-4 pt-16 sm:px-6">
+    <h1 class="font-display text-4xl font-extrabold sm:text-5xl">Get started</h1>
+    <p class="mt-4 text-lg leading-relaxed text-[var(--muted)]">
+      About ten minutes, and no terminal beyond a one-off setup line. Pick your setup and follow the page top to bottom.
+      Every page ends the same way: set it up for your business, check this computer, see your apps, review one.
+    </p>
+  </section>
+
+  <div class="tabs mx-auto max-w-3xl px-4 sm:px-6">
+    <div class="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Your setup">
+      {panels.map((p, i) => (
+        <>
+          <input type="radio" name="setup" id={`tab-${p.id}`} value={p.id} checked={i === 0} />
+          <label for={`tab-${p.id}`}><span>{p.os}</span><span class="opacity-60">·</span><span>{p.tool}</span></label>
+        </>
+      ))}
+    </div>
+    {panels.map((p) => (
+      <section class="panel" id={`panel-${p.id}`}>
+        <h2 class="mt-10 font-display text-2xl font-bold">{p.os}, {p.tool}</h2>
+        <div class="prose mt-2">
+          <p.Content />
+        </div>
+      </section>
+    ))}
+  </div>
+
+
+  <script>
+    // Remember the chosen setup and keep the address in step, so a link to
+    // /get-started#mac-claude-desktop opens that tab.
+    const radios = document.querySelectorAll<HTMLInputElement>('.tabs input[type="radio"]');
+    const pick = (id: string | null) => {
+      const r = id && document.getElementById(`tab-${id}`);
+      if (r instanceof HTMLInputElement) r.checked = true;
+    };
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('steadyship-setup'); } catch {}
+    pick(location.hash.slice(1) || saved);
+    for (const r of radios) {
+      r.addEventListener('change', () => {
+        history.replaceState(null, '', `#${r.value}`);
+        try { localStorage.setItem('steadyship-setup', r.value); } catch {}
+      });
+    }
+    window.addEventListener('hashchange', () => pick(location.hash.slice(1)));
+  </script>
+</Base>

@@ -1,0 +1,21 @@
+{
+  "name": "steadyship-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "brand": "node scripts/copy-brand.mjs",
+    "dev": "npm run brand && astro dev",
+    "build": "npm run brand && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.11",
+    "@astrojs/markdown-remark": "^7.3.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "unist-util-visit": "^5.1.0"
+  }
+}

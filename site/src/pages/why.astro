@@ -1,0 +1,13 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const entry = await getEntry('docs', 'why-steadyship');
+if (!entry) throw new Error('docs/why-steadyship.md not found');
+const { Content } = await render(entry);
+---
+<Base title="Why Steadyship" description="Why Steadyship exists: for the moment a home-made app starts to matter, and nobody in the building can say whether it is good enough to run the business on.">
+  <article class="prose mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <Content />
+  </article>
+</Base>
