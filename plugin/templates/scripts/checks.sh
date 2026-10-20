@@ -27,7 +27,7 @@ for dir in apps/*/; do
   ENFORCED=0; [ "$stage" != "Prototype" ] && ENFORCED=1
   echo "== $app ($stage; checks are $([ $ENFORCED = 1 ] && echo enforced || echo 'notes only until it is an Owned tool'))"
   # escaping: data must not enter the page as HTML
-  hits="$(grep_app '\.innerHTML\s*[+]?=|document\.write\(|insertAdjacentHTML\(' "$app" | head -3)"
+  hits="$(grep_app '\.innerHTML\s*[+]?=|document\.write\(|insertAdjacentHTML\(' "$app" | grep -vE "innerHTML\s*=\s*(''|\"\")\s*;?\s*$" | head -3)"
   [ -z "$hits" ] && report "$app" escaping PASS || report "$app" escaping FAIL "data may enter the page as HTML: $(echo "$hits" | head -1)"
   # nothing loaded from outside: scripts and styles come from lib/ or the app's folder
   hits="$(grep -nE '<(script|link)[^>]+(src|href)="?https?://' "$dir"/*.html 2>/dev/null | head -3)"

@@ -1,0 +1,30 @@
+schema_version: "1.1"
+name: s5-next-own
+description: >
+  The job board has been assessed (assessment/job-board.md is copied into the repo
+  by the scaffold; its next rung is 2 Own it). "What's next for the job board?"
+  must ask the owner question with the own-it facts and recommended answers, and
+  change nothing until the person answers.
+tags: [judgement, next]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write, tool: Write, min: 0, max: 0}
+  - {type: tool_used, name: no-edit, tool: Edit, min: 0, max: 0}
+  - {type: regex, name: asks-owner, flags: i, pattern: '(responsible|owner|owns)[^\n]{0,120}\?'}
+  - {type: regex, name: asks-offline, flags: i, pattern: 'offline|no (network|wi-?fi|internet)|without (a |the )?(network|connection|wi-?fi)'}
+  - {type: regex, name: asks-personal-data, flags: i, pattern: 'personal (data|details|information)|phone numbers?|addresses'}
+  - {type: regex, name: offers-defaults, flags: i, pattern: 'use your defaults'}
+  - type: llm
+    name: llm-asks-before-changing
+    criteria: >
+      The reply asks who is responsible for the job board plus a few own-it facts,
+      gives a recommended answer for each, and does not claim to have changed,
+      added or written any file. It says it will wait for the answer.

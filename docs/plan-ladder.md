@@ -123,3 +123,26 @@ missing rung. Assess, review, status and ask all look at one list.
 
 Hosting with sign-in, the other-vendor reviewer, a database stage, model
 routing, anything that stores state outside the repository.
+
+## Status, 21 Oct 2026
+
+Built on the branch, validated, CI green:
+
+| Step | State |
+|---|---|
+| 1 The bar | reviewed by Chris; value forms, edges, banner, browser baseline, time zones, long lists, types added |
+| 2 Companion plugins | setup.sh installs the baseline six; desktop names them once; superpowers and playwright on demand |
+| 3 Assess profile and ledger | every assessment has the profile tables and the ladder; checked in an eval trace |
+| 4 Review against the bar | runs `scripts/test.sh`, names failing rows, cites the ladder, hands the bar to the reviewer |
+| 5 Ask rules | builds to the bar, one test per change, new apps from the template, next-rung offer once |
+| 6 `steadyship-next` | written; eval cases s4 and s5 |
+| 7 Serve script | `scripts/serve.mjs`, tested by `tests/test-serve.sh`; Papa Parse vendored in `lib/` |
+| 8 New-app template | `apps/_template`, `lib/steadyship.js`, `lib/theme.css`, `tests/_template` |
+| 9 Machine checks | `scripts/checks.sh`; eslint with the browser baseline, prettier, tsc; notes at Prototype, enforced from Owned tool |
+| 10 Reference app | not done: graduating the demo job board would remove the defects the assess eval is scored on. `_template` is the exemplar until a separate reference business exists |
+
+Still to do before this merges as 0.7.0: run the next skill for real on a
+scratch copy of the demo (rungs 2, 3 and 4 in turn, with a person answering);
+a fresh-VM run of the quick start including a rung; confirm that hook-based
+plugins and other plugins' agents are reachable from Claude desktop; README
+and the website's features page updated to what then exists.

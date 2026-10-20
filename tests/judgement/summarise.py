@@ -27,7 +27,7 @@ def verdict(case, g):
         return "-", False, "PEEKED at eval files"
     parts = case.split("-")
     kind = ("answered" if parts[-1] == "answered" else
-            next((k for k in ("assess", "ask", "review") if k in parts[1:]), parts[-1]))
+            next((k for k in ("assess", "ask", "review", "next") if k in parts[1:]), parts[-1]))
     if kind == "answered":
         gating = [k for k in g if not k.startswith(("llm-", "changed-", "used-"))]
         missed = [k for k in gating if not g[k]]
@@ -36,6 +36,11 @@ def verdict(case, g):
         res += "; missed " + ", ".join(missed) if missed else "; all checks met"
         llm = [f"{k}: {'yes' if v else 'no'}" for k, v in g.items() if k.startswith(("llm-", "used-"))]
         return res, changed and not missed, "; ".join(llm)
+    if kind == "next":
+        gating = [k for k in g if not k.startswith("llm-")]
+        missed = [k for k in gating if not g[k]]
+        llm = [f"{k}: {'yes' if v else 'no'}" for k, v in g.items() if k.startswith("llm-")]
+        return ("all checks met" if not missed else "missed " + ", ".join(missed)), not missed, "; ".join(llm)
     if kind == "assess":
         rows = sum(v for k, v in g.items() if k.startswith("row-"))
         total = sum(1 for k in g if k.startswith("row-"))
