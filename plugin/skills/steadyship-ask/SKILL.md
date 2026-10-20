@@ -35,7 +35,14 @@ Grep. No Write, no Edit, no code in the reply.
    - every business note: `docs/context/business/**/*` (how the work is
      organised — stages, the steps or operations inside them, the glossary,
      who uses what, which file is the master for what);
-   - `docs/context/decisions.md` if present (questions already answered);
+   - `docs/context/decisions.md` if present (questions already answered,
+     rungs declined);
+   - `docs/context/engineering.md` if present (facts the bar cannot know;
+     rows this business overrides);
+   - the bar, `${CLAUDE_PLUGIN_ROOT}/standard/STANDARD.md`: the defaults
+     and free habits the lines you write must follow (if it cannot be
+     read, say so once and carry on);
+   - `tests/<app>/` if present (the app's own tests);
    - `docs/assessment/<app>.md` and `docs/assessment/SUMMARY.md` if present;
    - the app being changed, in full (`apps/<app>/index.html` and its files);
    - a Glob of the shared drive (`<shared drive>/**/*`), and Read any file
@@ -71,6 +78,10 @@ Grep. No Write, no Edit, no code in the reply.
    - **Prototype or relied on.** Will people depend on this every day? Then
      it needs a home that isn't one laptop.
    - **Build or buy.** Does something they already use do this?
+
+   Never ask a question the bar already answers (which library, where a
+   value's form comes from, whether to add a test): those are decided,
+   and the reply says the decision in one line when it is applied.
 
 4. **Ask.** Reply in plain words, short:
    - one sentence on what you understood they want;
@@ -123,8 +134,23 @@ the next person learns why it was built this way.
    honours the decision: no new browser permissions, file pickers, name
    lists or sync logic unless the decision needs them, and say what was
    left out and why.
+   **The lines you write meet the bar.** Before writing, list to yourself
+   the bar rows the change touches (where the data lives, a new kind of
+   value, a library, an edge where data comes in, a list that can grow)
+   and apply the stage default for each; the free habits apply to every
+   line you write (escaping helper, value forms, errors in the page, no
+   business data in code, nothing from the regret list). Do not rewrite
+   the rest of the app to the bar: note what still falls short in the
+   assessment's profile instead. Each default applied gets one line in
+   the reply.
+   **One test per change.** If `tests/<app>/` exists, add one Playwright
+   test for the behaviour you added and run `bash scripts/test.sh <app>`
+   if a shell is available; if the app has no tests of its own yet, run
+   the smoke test only and let the next-rung line below propose the
+   test rung.
 3. If `docs/assessment/<app>.md` exists, update its Data table and
-   storage line so it no longer describes the app as it was.
+   storage line so it no longer describes the app as it was, and any
+   profile row or ladder rung the change moved.
 4. Commit, if a shell is available: `git add -A` and a one-line message
    saying what changed and for whom; never push. If no shell, say the
    change is not yet committed and that the setup owner should commit it.
@@ -137,7 +163,18 @@ the next person learns why it was built this way.
    one on every computer instead of a copy in each browser"); anything the
    person must know to use it (a browser it needs, a one-time click); that
    the decision is in `docs/context/decisions.md`; whether it was
-   committed and that nothing was uploaded. End with: "Say 'more' for the
+   committed and that nothing was uploaded.
+   **While I'm in here**, one line, once per app per conversation: the
+   app's next rung from `docs/assessment/<app>.md` (its `**Next rung:**`
+   line) as an offer with its one question, for example "Next for this
+   app: a named owner. Who is responsible for it? Say 'not now' and I'll
+   leave it." If the change itself met a stage trigger (someone other
+   than the builder will use it, real data now flows through it, it
+   records who did something), say so in that same line and what stage
+   it should become, with the option to defer. Skip the line if
+   `decisions.md` records the rung declined in the last 30 days or there
+   is no assessment file.
+   End with: "Say 'more' for the
    limits, what I tested and what I left out, or ask 'why' about any of
    the additions." The person did not know to ask for any of this, so they
    cannot tell whether it was worth it unless you say, briefly.
@@ -151,7 +188,10 @@ the next person learns why it was built this way.
 ## Rules
 
 - Never build before asking when a mandatory question exists.
-- Never ask more than two questions.
+- Never ask more than two questions. The next-rung line is an offer, not
+  a third question; it never blocks the build.
+- A "not now" to the next-rung line is recorded in `decisions.md` as
+  "declined rung N <date>" and not raised again for 30 days.
 - Never ask something the context already answers; say what answered it.
 - Plain language. Gloss any technical word the first time (e.g.
   "localStorage, the browser's own storage on that one computer").

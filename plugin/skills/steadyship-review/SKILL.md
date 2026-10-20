@@ -35,12 +35,17 @@ Never change any file: this skill only reads.
 
 2. **Read the app and the context**, in one turn:
    - the app in full (`apps/<name>/index.html` and any other files in it);
+   - the bar, the engineering standard every app is held to:
+     `${CLAUDE_PLUGIN_ROOT}/standard/STANDARD.md` (if it cannot be read, say
+     "couldn't read the bar" once and judge from the assessment's profile);
+   - `docs/context/engineering.md` (facts the bar cannot know and rows
+     this business overrides; an override wins);
    - every business note: `docs/context/business/**/*` (the official
      stage/status list, the glossary's rules for how each identifier is
      written, which file is the master for what, who uses which app);
    - `docs/assessment/<name>.md` and `docs/assessment/SUMMARY.md` if present;
    - Glob the shared drive: `<shared drive>/**/*`;
-   - Glob `scripts/smoke.sh` and `tests/**/*` (do not run anything).
+   - Glob `scripts/test.sh` and `tests/**/*`.
 
 3. **Open the master files.** From the shared-drive listing, Read **every**
    file that holds the same kind of record the app holds (the app's list of
@@ -77,13 +82,26 @@ Never change any file: this skill only reads.
      file move or change records, with no record of who did it?
    - **Many users**: if several people use it on different computers, will
      they see the same thing? (With browser storage, no.)
-   - **Tests**: does `scripts/smoke.sh` or any test exist, and does
-     `docs/assessment/` say it passed? If not found, say so.
+   - **Tests**: if a shell is available, run `bash scripts/test.sh <name>`
+     now and quote its last line; it is the one claim in the review that
+     is proven rather than read. If no shell, say whether `tests/<name>/`
+     exists and what `docs/assessment/` says about the last run, and
+     write "tests: not run here".
+   - **Against the bar**: from the bar and the assessment's engineering
+     profile, name every row the app fails at the stage the person wants
+     to rely on ("every day", "instead of the spreadsheet", "the whole
+     workshop" mean Owned tool at least; "the business runs on it" means
+     Proper app). The free habits apply at every stage. Then read the
+     assessment's ladder: which rungs are done and which is next.
 
 6. **Second opinion.** If an `Agent` tool is available to you, dispatch one
-   read-only reviewer (a different model if you can choose) with a written
-   brief: the app path, the master files, the business notes, and the
-   checklist in steps 4–5; ask for findings with evidence and no verdict.
+   read-only reviewer with a written brief: the app path, the master
+   files, the business notes, `docs/context/engineering.md`, the path to
+   the bar, and the checklist in steps 4–5; ask for findings with evidence
+   and no verdict. Prefer a reviewer agent from a companion plugin if one
+   is listed (`feature-dev:code-reviewer`, or a `pr-review-toolkit`
+   reviewer); otherwise a general agent, a different model if you can
+   choose. Say which one ran.
    Reconcile: say where it agreed and where it differed. If no `Agent` tool
    is available, write "Second opinion: not run" and carry on.
 
@@ -106,12 +124,18 @@ Never change any file: this skill only reads.
    its evidence (file:line or row), one line each; then one line naming
    the others by topic only ("also: no sign-in, no tests").
 
-   **Second opinion**: one line: where it agreed, what it added, where it
-   disagreed, or "not run".
+   **Against the bar**: "Tests: PASS" or "FAIL" or "not run here", then
+   the rows it fails at that stage, by the bar's row name, up to five, one
+   line each with the evidence; then one line for the rest by name only.
+   Then the ladder in one line: "Rungs done: 1 Name it. Next: 2 Own it."
+
+   **Second opinion**: one line: which reviewer ran, where it agreed, what
+   it added, where it disagreed, or "not run".
 
    **The one next step**: a single concrete action that removes the biggest
-   risk, naming the file that should be the single master. Then, in one
-   line, what would have to be true for the answer to become Yes.
+   risk, naming the file that should be the single master; usually it is
+   the next rung. Then, in one line, what would have to be true for the
+   answer to become Yes: the rungs and rows still missing, by name.
 
    End with: "Say 'show me everything' for every row and every risk."
 
@@ -123,7 +147,8 @@ Never change any file: this skill only reads.
 
 ## Rules
 
-- Read only: never Write or Edit anything during a review.
+- Read only: never Write or Edit anything during a review. Running the
+  app's tests is the one command allowed.
 - Never invent facts: every identifier, value and spelling comes from a file
   you read. If you did not read it, say "couldn't check".
 - Gloss any technical word the first time.

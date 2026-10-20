@@ -29,7 +29,7 @@ case "$APP" in
   *) [ -e "$APP" ] || { echo "RESULT: FAIL could not find the app at that path: $APP"; exit 1; } ;;
 esac
 echo "Opening $APP in a test browser and checking it loads without errors..."
-if APP="$APP" npx playwright test --config playwright.config.ts >/tmp/smoke.log 2>&1; then
+if APP="$APP" npx playwright test --config playwright.config.ts tests/smoke >/tmp/smoke.log 2>&1; then
   echo "The app opened and no errors were reported."
   echo "RESULT: PASS"
   exit 0

@@ -13,7 +13,7 @@ fail() { echo "FAIL: $*"; exit 1; }
 tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
-         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/check.sh \
+         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
          docs/assessment/_sample.md docs/context/business/README.md docs/context/engineering.md docs/spikes/README.md docs/spikes/RESULTS.md \
@@ -22,7 +22,7 @@ for f in steadyship.md README.md .gitignore .gitattributes package.json playwrig
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
   [ -f "$DIR/$f" ] || fail "missing $f"
 done
-for s in scripts/validate.sh scripts/smoke.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
+for s in scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
   [ -x "$DIR/$s" ] || fail "$s not executable"
 done
 # GitHub Actions "${{ secrets.X }}" is legitimate; only {{UPPER_CASE}} placeholders count.

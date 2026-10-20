@@ -7,6 +7,7 @@ honest. Set up with Steadyship (see `steadyship.md`); works without it.
 - `docs/assessment/` — what each app is and what it would take to rely on it
 - `docs/context/` — business notes Steadyship reads first, and `engineering.md`, the facts the engineering standard cannot know
 - `docs/spikes/` — the checks (environment, shared drive, tests, GitHub, hosting, team) and their results
-- `scripts/validate.sh` — every check CI runs
+- `tests/<name>/` — each app's own tests, next to the smoke test every app gets
+- `scripts/validate.sh` — every check CI runs; `scripts/test.sh <name>` runs one app's tests
 
 Setup owner: {{SETUP_OWNER}} · Sponsor: {{SPONSOR}}

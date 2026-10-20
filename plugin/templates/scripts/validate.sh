@@ -7,7 +7,8 @@ echo "-- smoke test on sample app"
 scripts/smoke.sh apps/_sample/index.html
 for f in apps/*/index.html; do
   [ "$f" = "apps/_sample/index.html" ] && continue
-  echo "-- smoke test on $f"
-  scripts/smoke.sh "$f"
+  name="$(basename "$(dirname "$f")")"
+  echo "-- tests for $name"
+  scripts/test.sh "$name"
 done
 echo "OK"
