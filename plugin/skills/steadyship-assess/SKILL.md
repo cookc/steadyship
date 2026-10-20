@@ -147,34 +147,41 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    Replace every `<...>` placeholder; fill `{{...}}` names from
    `steadyship.md`. Do not touch `README.md`.
 
-9. **Reply.** Start with one line saying which steps you did and which
-   sources you could not check. Then these sections, in plain English, every
-   bullet **one self-contained line** that names the thing, the places and
-   the exact difference (a reader must not need the previous line to
-   understand it):
+9. **Reply, short.** The files you just wrote hold every row; the reply is
+   the first screen, for someone who did not know what to ask. Start with
+   one line saying which steps you did and which sources you could not
+   check. Then, in plain English, every bullet one self-contained line that
+   names the thing, the places and the exact difference:
 
    **What you have**: one line per app: name, what it is for, who relies on
    it, where its data lives.
 
-   **Where the same information lives more than once**: one bullet per
-   concept from step 4, including concepts that are defined but never
-   recorded. Each gives the places, how many rows each holds, and the exact
-   spelling or format differences quoted side by side.
-
-   **Things that don't agree**: every difference from step 5, each with both
-   values and its source (prices, costs, stages, quote prices and validity).
-
-   **Copied code**: every repeat from step 6 with its count, the apps, and
-   the drift.
-
-   **What could go wrong**: the risks from step 7, most serious first, and
-   what is lost if a laptop dies.
+   **The three things that matter most**: the three findings from steps 4–7
+   with the biggest consequence, each with its exact values quoted (both
+   spellings, both prices, the row counts), chosen so that at least one is
+   about the same information living in more than one place and at least
+   one is about what is lost if a laptop dies. Name every app that keeps
+   its own copy of the most-copied list, in one of these lines.
 
    **What I'd do first**: one to three steps, the first being the one app
    most relied on, and which file should be the single master for its data.
 
-   End with: "I've written this up in docs/assessment/ — run steadyship
-   status to see it."
+   End with: "The full picture — every row that differs, every copied
+   function, every risk — is in docs/assessment/SUMMARY.md and one file
+   per app. Say 'show me everything' and I'll put it here."
+
+   Nothing else. No "copied code" section, no full risk list, no
+   per-concept table in the reply: that is what the files are for.
+
+10. **"Show me everything" / "more" / "the full list"** (a later turn): give
+    the full version from what you read in this conversation, in these
+    sections, every bullet one self-contained line: **Where the same
+    information lives more than once** (one bullet per concept from step 4,
+    the places, the row counts, spellings quoted side by side), **Things
+    that don't agree** (every difference from step 5 with both values),
+    **Copied code** (every repeat from step 6 with count, apps and drift),
+    **What could go wrong** (the risks from step 7, most serious first). If
+    that context is gone, re-read `docs/assessment/` and give it from there.
 
 ## Rules
 
@@ -183,5 +190,6 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
   you read. If you did not read it, say "couldn't check".
 - Gloss any technical word the first time (e.g. "localStorage, the
   browser's own storage on that one computer").
-- Be complete before being brief: a long specific reply beats a short vague
-  one.
+- Complete in the files, short in the reply: the files hold every row; the
+  reply holds the three things that matter and where the rest is. Short
+  never means vague: every line in the reply still quotes its exact values.

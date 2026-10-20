@@ -128,17 +128,25 @@ the next person learns why it was built this way.
 4. Commit, if a shell is available: `git add -A` and a one-line message
    saying what changed and for whom; never push. If no shell, say the
    change is not yet committed and that the setup owner should commit it.
-5. Reply: what changed, where its data is stored now (and what that means:
-   "only on this computer's browser" or "in <file> on the shared drive"),
-   what was recorded in `docs/context/decisions.md`, and whether it was
-   committed. If the change added anything the person did not ask for by
-   name (a shared file, a folder picker, a sign-in, a library, a test), add
-   **one line per addition**: what it is and why it is worth having, in
-   plain words ("a folder picker, so the hours file is the same one on
-   every computer instead of a copy in each browser"). Keep it to one
-   line each and end with "ask 'why' and I'll explain any of these
-   properly": the person did not know to ask for it, so they cannot tell
-   whether it was worth it unless you say.
+5. Reply, short (about ten lines): what changed, in one or two lines;
+   where its data is stored now and what that means ("only on this
+   computer's browser" or "in <file> on the shared drive"); **one line per
+   thing the person did not ask for by name** (a shared file, a folder
+   picker, a sign-in, a library, a test): what it is and why it is worth
+   having, in plain words ("a folder picker, so the hours file is the same
+   one on every computer instead of a copy in each browser"); anything the
+   person must know to use it (a browser it needs, a one-time click); that
+   the decision is in `docs/context/decisions.md`; whether it was
+   committed and that nothing was uploaded. End with: "Say 'more' for the
+   limits, what I tested and what I left out, or ask 'why' about any of
+   the additions." The person did not know to ask for any of this, so they
+   cannot tell whether it was worth it unless you say, briefly.
+
+6. **"More" / "why"** (a later turn): the limits (what is not recorded,
+   what happens with two people at once, old data not migrated), what was
+   tested and how, what was left out and why, and for "why" the proper
+   explanation of the addition asked about: what would go wrong without
+   it, in one short paragraph.
 
 ## Rules
 

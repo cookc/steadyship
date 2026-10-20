@@ -87,33 +87,39 @@ Never change any file: this skill only reads.
    Reconcile: say where it agreed and where it differed. If no `Agent` tool
    is available, write "Second opinion: not run" and carry on.
 
-7. **Verdict.** Reply in plain English:
+7. **Verdict, short.** The person is about to decide on your first line.
+   Reply in plain English, about a screen, no more:
 
    **Verdict: Yes / No / Not yet** — one sentence why. Then the stage it is
    at today: Prototype (one person's tool), Owned tool (someone owns and
    maintains it), Proper app (shared data, sign-in, backup, tests) or
    Platform. Add "(partial — couldn't check …)" if any source was missing.
 
-   **What I checked**: the app file, each master file opened, the business
-   notes; anything you couldn't check.
+   **What I checked**: one line: the app file, each master file opened, the
+   business notes; anything you couldn't check.
 
-   **Where it disagrees with <master file>**: one bullet per differing row,
-   identifier first, both values. Then missing rows, identifier-format and
-   name differences, and the stage/status list comparison.
+   **Where it disagrees with <master file>**: the five most serious
+   differences, identifier first, both values; then one line with the
+   count of the rest ("and 7 more rows, plus 3 spelling differences").
 
-   **Risks if the whole team relies on it**, most serious first, each with
-   its evidence (file:line or row): where the data is stored, no backup /
-   what is lost if the laptop dies, stale copy of the master, identifier
-   formats, stage/status names, no sign-in, many users on different
-   computers, no tests.
+   **Risks if the team relies on it**: the three most serious, each with
+   its evidence (file:line or row), one line each; then one line naming
+   the others by topic only ("also: no sign-in, no tests").
 
-   **Second opinion**: the reconciliation, or "not run".
+   **Second opinion**: one line: where it agreed, what it added, where it
+   disagreed, or "not run".
 
    **The one next step**: a single concrete action that removes the biggest
-   risk, naming the file that should be the single master (for example
-   "make <master file> the one place records are changed, and have the app
-   read from it instead of keeping its own copy"). Then, briefly, what would
-   have to be true for the answer to become Yes.
+   risk, naming the file that should be the single master. Then, in one
+   line, what would have to be true for the answer to become Yes.
+
+   End with: "Say 'show me everything' for every row and every risk."
+
+8. **"Show me everything" / "more"** (a later turn): the full lists from
+   what you read in this conversation: every differing row with both
+   values, missing rows, every identifier-format and name difference, the
+   stage/status list comparison, every risk with its evidence, and the
+   second opinion in full. If that context is gone, re-read and give it.
 
 ## Rules
 
