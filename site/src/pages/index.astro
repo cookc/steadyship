@@ -2,12 +2,45 @@
 import Base from '../layouts/Base.astro';
 import Mark from '../components/Mark.astro';
 
-const today = [
-  { title: 'Sets itself up for your business', body: 'One prompt. It asks who holds the accounts, who decides what the business relies on, and where the spreadsheets live, then makes a folder of ordinary files the business owns.' },
-  { title: 'Checks the ground first', body: 'Say "Check this computer". Three one-minute checks, each a plain PASS, FAIL or SKIP: can it reach GitHub, read and write the shared drive, open one of your apps. Written down so nobody has to wonder again.' },
-  { title: 'Finds the same thing kept twice', body: 'It reads every app and every spreadsheet and tells you where a price, a job or a name is typed in two places and already disagrees.' },
-  { title: 'Gives a straight verdict', body: 'Ask "Review the job board" and you get Yes, No or Not yet, with the evidence. Anything it could not check is labelled, never waved through.' },
-  { title: 'Asks before it builds', body: 'One or two questions that would be expensive to get wrong, with a recommendation. You decide, it builds, and it writes down why.' },
+const ASK = 'https://github.com/cookc/steadyship/issues/new?title=I%20want%3A%20&body=What%20would%20you%20want%20Steadyship%20to%20do%20first%2C%20and%20for%20what%20kind%20of%20business%3F';
+
+const brings = [
+  {
+    title: 'Security, in plain words',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+    body: 'Who can see this? Where does what people type end up? Is a password sitting in a file? Is the shared drive open to anyone with the link? It names each exposure and what it would take to close it.',
+    example: 'It never calls an app secure. It says what it checked, and labels what it could not.',
+  },
+  {
+    title: 'Maintainability',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
+    body: 'One master for each piece of information. A named owner for each app. Every decision written down with its reason. The next person can pick it up, and the apps stop drifting apart.',
+    example: 'Two apps both keep the customer list, so it points them at the one spreadsheet that is already the master.',
+  },
+  {
+    title: 'Rigour when it\'s needed, not before',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
+    body: 'A prototype stays a prototype. Tests, a proper framework, a database: each arrives only when someone starts relying on the app, and each comes with one plain line on why it is worth it.',
+    example: 'A one-person tool gets no ceremony. The day the workshop runs on it, it gets a backup, a test and an owner.',
+  },
+];
+
+const features = [
+  { title: 'Asks before it builds', body: 'The one or two questions that would be expensive to get wrong, with a recommendation. You decide, it builds, and it writes down why.' },
+  { title: 'Gives a straight verdict', body: 'Yes, No or Not yet on whether the team can rely on an app, with the evidence. A second reviewer checks the first.' },
+  { title: 'Finds the same thing kept twice', body: 'Reads every app and every spreadsheet and shows where a price, a job or a name is in two places and already disagrees.' },
+  { title: 'Checks the ground first', body: 'Can it reach GitHub, read and write the shared drive, open your app? One minute, PASS or FAIL, written down.' },
+  { title: 'A path, not a rebuild', body: 'Prototype, owned tool, proper app, platform. It says which stage an app is at and moves it one step at a time, with you deciding at each.' },
+  { title: 'Apps that stay in step', body: 'A shared glossary with a human owner. Every app reading the same spreadsheets instead of its own copy.' },
+  { title: 'A second opinion from another vendor', body: 'A reviewer from a different AI vendor, so it does not share the builder\'s blind spots. No terminal needed.' },
+  { title: 'Everything stays yours', body: 'Ordinary files in a private folder the business owns. Remove it tomorrow and everything it wrote is still there.' },
+];
+
+const stages = [
+  { name: 'Prototype', looks: 'One file, one person\'s tool.', trigger: 'someone else starts using it.' },
+  { name: 'Owned tool', looks: 'Shared, backed-up data with one writer. A test. A named owner.', trigger: 'two apps touch the same information.' },
+  { name: 'Proper app', looks: 'A real framework, shared parts, data checked on the way in.', trigger: 'the business depends on it daily.' },
+  { name: 'Platform', looks: 'Several apps on one database, kept in step.', trigger: 'they must stay consistent for the business to run.' },
 ];
 
 const steps = [
@@ -16,7 +49,7 @@ const steps = [
   { prompt: 'Review the job board', note: 'A verdict the owner can act on.' },
 ];
 ---
-<Base title="Steadyship" description="An engineer in the conversation. A Claude plugin for small businesses whose own people build their apps: it asks what you don't know to ask, judges what you can't judge, and gives prototypes a path to software a business can run on.">
+<Base title="Steadyship" description="An engineer in the conversation. A Claude plugin for businesses whose own people build their apps: it asks what you don't know to ask, judges what you can't judge, and brings in real engineering the moment an app starts to matter.">
 
   <!-- Hero -->
   <section class="mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pt-24">
@@ -25,12 +58,13 @@ const steps = [
         <p class="font-display text-sm font-semibold uppercase tracking-wider text-sea">A plugin for Claude</p>
         <h1 class="mt-4 font-display text-5xl font-extrabold leading-[1.05] sm:text-6xl">An engineer in the conversation.</h1>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
-          Your team builds its own apps with Claude. Steadyship asks the questions an engineer would ask before building,
-          gives a straight verdict after, and keeps everything written down in a folder the business owns.
+          Your team builds its own apps with Claude. Steadyship is the engineer working beside them, always:
+          it asks what they don't know to ask, judges what they can't judge, and brings in real engineering the
+          moment an app starts to matter. Not before.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a href="/get-started" class="rounded-full bg-navy px-6 py-3 font-semibold text-white hover:bg-sea">Get started</a>
-          <a href="/why" class="rounded-full border border-[var(--line)] px-6 py-3 font-semibold hover:border-sea">Why Steadyship</a>
+          <a href="/features" class="rounded-full border border-[var(--line)] px-6 py-3 font-semibold hover:border-sea">See what it does</a>
         </div>
         <p class="mt-6 text-sm text-[var(--muted)]">Open source. Stays on your computer. Keeps working if you remove it.</p>
       </div>
@@ -40,26 +74,40 @@ const steps = [
     </div>
   </section>
 
-  <!-- What it does today -->
+  <!-- What an engineer brings -->
+  <section class="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+    <h2 class="font-display text-3xl font-bold sm:text-4xl">What an engineer brings</h2>
+    <p class="mt-3 max-w-2xl text-[var(--muted)]">Claude builds what it is asked to build. These are the three things nobody in the building was there to add.</p>
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      {brings.map((b) => (
+        <article class="rounded-2xl border border-[var(--line)] p-6">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-sea/10 text-sea" set:html={b.icon} />
+          <h3 class="mt-4 font-display text-xl font-bold">{b.title}</h3>
+          <p class="mt-2 text-[15px] leading-relaxed text-[var(--muted)]">{b.body}</p>
+          <p class="mt-3 text-[15px] leading-relaxed">{b.example}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Features -->
   <section class="bg-[var(--surface)]">
     <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h2 class="font-display text-3xl font-bold sm:text-4xl">What it does today</h2>
-      <p class="mt-3 max-w-2xl text-[var(--muted)]">Five things, each one a plain prompt in Claude. No dashboard, no account, nothing to learn.</p>
-      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {today.map((c, i) => (
+      <h2 class="font-display text-3xl font-bold sm:text-4xl">What it does</h2>
+      <p class="mt-3 max-w-2xl text-[var(--muted)]">Each one is a plain sentence in Claude. No dashboard, no account, nothing to learn. Everything it finds goes into files you keep.</p>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {features.map((c, i) => (
           <article class="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-6">
             <span class="font-display text-sm font-bold text-sea">0{i + 1}</span>
             <h3 class="mt-2 font-display text-lg font-bold">{c.title}</h3>
             <p class="mt-2 text-[15px] leading-relaxed text-[var(--muted)]">{c.body}</p>
           </article>
         ))}
-        <article class="flex flex-col justify-between rounded-2xl bg-navy p-6 text-white dark:bg-sea-deep">
-          <div>
-            <h3 class="font-display text-lg font-bold">Everything stays yours</h3>
-            <p class="mt-2 text-[15px] leading-relaxed text-[#C6D3DE]">Ordinary files in a private folder or repository the business owns. Nothing is sent anywhere Claude does not already send it.</p>
-          </div>
-          <a href="/why#what-you-keep" class="mt-6 text-sm font-semibold text-sun hover:underline">What you keep</a>
-        </article>
+      </div>
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <a href="/features" class="font-semibold text-sea hover:underline">All of it, in more detail</a>
+        <span class="text-[var(--muted)]">·</span>
+        <a href={ASK} class="font-semibold text-sea hover:underline">Tell us which one you'd want first</a>
       </div>
     </div>
   </section>
@@ -67,7 +115,7 @@ const steps = [
   <!-- How it works -->
   <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
     <h2 class="font-display text-3xl font-bold sm:text-4xl">How it works</h2>
-    <p class="mt-3 max-w-2xl text-[var(--muted)]">Three prompts on day one. After that, ask for changes the way you already do.</p>
+    <p class="mt-3 max-w-2xl text-[var(--muted)]">Three sentences on day one. After that, ask for changes the way you already do.</p>
     <ol class="mt-10 grid gap-5 md:grid-cols-3">
       {steps.map((s, i) => (
         <li class="rounded-2xl border border-[var(--line)] p-6">
@@ -85,10 +133,10 @@ const steps = [
       <div>
         <h2 class="font-display text-3xl font-bold sm:text-4xl">See it answer</h2>
         <p class="mt-4 text-[var(--muted)] leading-relaxed">
-          This is a real reply from the demo business, a made-up boat builder with six apps its staff built with Claude.
+          A real reply from the demo business, a boat builder with six apps its staff built with Claude.
           The short version is what you read. The full picture, every row that differs, goes into a file you keep.
         </p>
-        <a href="/get-started" class="mt-6 inline-block font-semibold text-sea hover:underline">Try the demo business</a>
+        <a href="/get-started" class="mt-6 inline-block font-semibold text-sea hover:underline">Try it on the demo business</a>
       </div>
       <div class="space-y-4 text-[15px] leading-relaxed">
         <div class="bubble-user ml-auto max-w-md px-5 py-3">What apps do we have and where is the same information kept twice?</div>
@@ -107,9 +155,37 @@ const steps = [
     </div>
   </section>
 
-  <!-- Who it's for -->
+  <!-- The path -->
   <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-    <div class="grid gap-10 md:grid-cols-2">
+    <h2 class="font-display text-3xl font-bold sm:text-4xl">From prototype to something the business runs on</h2>
+    <p class="mt-3 max-w-2xl leading-relaxed text-[var(--muted)]">
+      Every app is at one of four stages. Steadyship says which, what would move it on, and does the moving one step
+      at a time with a review at each step. Nobody has to choose a framework, a database or a host. It makes the call,
+      gives the reason, and you can defer.
+    </p>
+    <ol class="mt-10 grid gap-4 md:grid-cols-4">
+      {stages.map((st, i) => (
+        <li class="rounded-2xl border border-[var(--line)] p-5">
+          <span class="font-display text-sm font-bold text-sea">Stage {i + 1}</span>
+          <h3 class="mt-1 font-display text-lg font-bold">{st.name}</h3>
+          <p class="mt-2 text-[14px] leading-relaxed text-[var(--muted)]">{st.looks}</p>
+          <p class="mt-3 text-[14px] leading-relaxed"><span class="font-semibold">Moves on when</span> {st.trigger}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="mt-8 rounded-2xl bg-navy p-6 text-white dark:bg-sea-deep md:flex md:items-center md:justify-between md:gap-8">
+      <p class="text-[15px] leading-relaxed text-[#C6D3DE]">
+        <span class="font-display font-bold text-white">Always there, never in the way.</span>{" "}
+        Exploring? Prototype as you do today; it asks at most once and never blocks. Keeping it? It gets a name, an owner and a first verdict.
+        Relying on it? The stages run, with you deciding at each.
+      </p>
+      <a href="/features" class="mt-4 inline-block shrink-0 font-semibold text-sun hover:underline md:mt-0">How each step works</a>
+    </div>
+  </section>
+
+  <!-- Who it's for -->
+  <section class="bg-[var(--surface)]">
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2">
       <div>
         <h2 class="font-display text-3xl font-bold sm:text-4xl">Who it's for</h2>
         <p class="mt-4 leading-relaxed text-[var(--muted)]">
@@ -122,11 +198,11 @@ const steps = [
           with an engineer in the conversation.
         </p>
       </div>
-      <div class="rounded-2xl border border-[var(--line)] p-6">
+      <div class="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-6">
         <h3 class="font-display text-lg font-bold">What it is not</h3>
         <ul class="mt-3 space-y-2 text-[15px] leading-relaxed text-[var(--muted)]">
           <li>Not a place to host apps, and not a database.</li>
-          <li>Not a replacement for Claude. It is an add-on that sits in the same chat.</li>
+          <li>Not a replacement for Claude. It sits in the same chat.</li>
           <li>Not a certificate that an app is secure. It tells you what it checked and what it could not.</li>
           <li>Not in the way. It stays quiet until something matters.</li>
         </ul>
@@ -135,11 +211,14 @@ const steps = [
   </section>
 
   <!-- CTA -->
-  <section class="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+  <section class="mx-auto max-w-6xl px-4 pt-20 pb-8 sm:px-6">
     <div class="rounded-3xl bg-navy px-6 py-12 text-center text-white dark:border dark:border-white/10 sm:px-12">
       <h2 class="font-display text-3xl font-bold">Ten minutes to a first verdict.</h2>
       <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">Windows or Mac, the Claude desktop app or Claude Code in a terminal. One page for each.</p>
-      <a href="/get-started" class="mt-7 inline-block rounded-full bg-sun px-6 py-3 font-semibold text-navy hover:bg-[#F7C95F]">Get started</a>
+      <div class="mt-7 flex flex-wrap justify-center gap-3">
+        <a href="/get-started" class="inline-block rounded-full bg-sun px-6 py-3 font-semibold text-navy hover:bg-[#F7C95F]">Get started</a>
+        <a href={ASK} class="inline-block rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:border-white">Tell us what you'd want first</a>
+      </div>
     </div>
   </section>
 </Base>
