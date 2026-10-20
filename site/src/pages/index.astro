@@ -8,44 +8,44 @@ const brings = [
   {
     title: 'Asks what you don\'t know to ask',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>',
-    body: 'Before a change is built, it has read your business notes, your other apps and your spreadsheets. So it asks the one or two questions that would be expensive to get wrong, recommends an answer, and builds once you decide.',
-    example: 'You say "Make the job board track hours." It asks: against the whole job, or each step? And isn\'t that already in Hours.csv on the shared drive?',
+    body: 'By the time you ask for a change it has already read your business notes, your other apps and your spreadsheets. If there is a question that would be expensive to get wrong, it asks it, suggests an answer, and builds once you decide. Usually that is one question. It is never a questionnaire.',
+    example: 'You say "Make the job board track hours." It asks whether hours go against the whole job or each step, and points out that Hours.csv on the shared drive already has some of them.',
   },
   {
     title: 'Judges what you can\'t judge',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
-    body: 'A straight Yes, No or Not yet on whether the team can rely on an app, with the evidence. Security in plain words: who can see this, where what people type ends up, whether a password is sitting in a file.',
-    example: 'It never calls an app secure. It says what it checked, and labels what it could not.',
+    body: 'Ask whether the team can rely on an app and the first line is Yes, No or Not yet, followed by the evidence. It also covers the security questions most people don\'t think to ask: who can see this, where what people type ends up, whether a password is sitting in a file.',
+    example: 'It won\'t tell you an app is secure. It tells you what it checked, and is clear about what it couldn\'t.',
   },
   {
     title: 'Brings engineering when it\'s needed, not before',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
-    body: 'A prototype stays a prototype. The day someone relies on it, it gets one master for its data, a backup, a test, a named owner and its decisions written down, each step with one plain line on why. The apps stop drifting apart.',
-    example: 'A one-person tool gets no ceremony. The day the workshop runs on it, it gets looked after like software.',
+    body: 'While an app is one person\'s experiment, it is left alone. Once other people start relying on it, Steadyship gives it the things software needs to be relied on: its data in one shared, backed-up place, a test, a named owner, and a record of why decisions were made. Each addition comes with a sentence on why it is worth having.',
+    example: 'So a one-person tool stays quick and simple, and the app the workshop runs on gets looked after properly.',
   },
 ];
 
 const features = [
-  { title: 'Asks before it builds', body: 'The one or two questions that would be expensive to get wrong, with a recommendation. You decide, it builds, and it writes down why.' },
-  { title: 'Gives a straight verdict', body: 'Yes, No or Not yet on whether the team can rely on an app, with the evidence. A second reviewer checks the first.' },
-  { title: 'Finds the same thing kept twice', body: 'Reads every app and every spreadsheet and shows where a price, a job or a name is in two places and already disagrees.' },
-  { title: 'Checks the ground first', body: 'Can it reach GitHub, read and write the shared drive, open your app? One minute, PASS or FAIL, written down.' },
-  { title: 'A path, not a rebuild', body: 'Prototype, owned tool, proper app, platform. It says which stage an app is at and moves it one step at a time, with you deciding at each.' },
-  { title: 'Apps that stay in step', body: 'A shared glossary with a human owner. Every app reading the same spreadsheets instead of its own copy.' },
-  { title: 'A second opinion from another vendor', body: 'A reviewer from a different AI vendor, so it does not share the builder\'s blind spots. No terminal needed.' },
-  { title: 'Everything stays yours', body: 'Ordinary files in a private folder the business owns. Remove it tomorrow and everything it wrote is still there.' },
+  { title: 'Asks before it builds', body: 'If a change would be expensive to get wrong, it asks about it first and suggests an answer. Once you decide, it builds, and records why.' },
+  { title: 'Gives a straight verdict', body: 'Yes, No or Not yet on whether the team can rely on an app, with the evidence. A second, independent reviewer checks the first one\'s work.' },
+  { title: 'Finds the same thing kept twice', body: 'It reads every app and every spreadsheet, and shows you where the same price, job or customer is kept in two places and already disagrees.' },
+  { title: 'Checks the ground first', body: 'Before anything is built, it checks that it can reach GitHub, read and write the shared drive, and open one of your apps. It takes a minute, and the result is recorded.' },
+  { title: 'A path forward, not a rebuild', body: 'Every app is at one of four stages, from prototype to platform. It tells you which, and moves an app one step at a time, with you deciding at each step.' },
+  { title: 'Apps that stay in step', body: 'A shared glossary that someone in the business owns, and every app reading the same spreadsheets instead of keeping its own copy.' },
+  { title: 'A second opinion from another vendor', body: 'If you want the strongest check, the review can go to a model from a different company, which won\'t share the blind spots of the one that built it.' },
+  { title: 'Everything stays yours', body: 'Ordinary files in a private folder the business owns. If you remove Steadyship tomorrow, everything it wrote is still there and still useful.' },
 ];
 
 const stages = [
   { name: 'Prototype', looks: 'One file, one person\'s tool.', trigger: 'someone else starts using it.' },
-  { name: 'Owned tool', looks: 'Shared, backed-up data with one writer. A test. A named owner.', trigger: 'two apps touch the same information.' },
+  { name: 'Owned tool', looks: 'Shared, backed-up data, a test and a named owner.', trigger: 'two apps touch the same information.' },
   { name: 'Proper app', looks: 'A real framework, shared parts, data checked on the way in.', trigger: 'the business depends on it daily.' },
   { name: 'Platform', looks: 'Several apps on one database, kept in step.', trigger: 'they must stay consistent for the business to run.' },
 ];
 
 const steps = [
-  { prompt: 'Set up Steadyship for Harbour Boatworks', note: 'Answer four questions. About two minutes.' },
-  { prompt: 'Check this computer', note: 'Three checks, one minute, recorded.' },
+  { prompt: 'Set up Steadyship for Harbour Boatworks', note: 'Four questions, about two minutes.' },
+  { prompt: 'Check this computer', note: 'Three checks in about a minute, all recorded.' },
   { prompt: 'Review the job board', note: 'A verdict the owner can act on.' },
 ];
 ---
@@ -58,15 +58,15 @@ const steps = [
         <p class="font-display text-sm font-semibold uppercase tracking-wider text-sea">A plugin for Claude</p>
         <h1 class="mt-4 font-display text-5xl font-extrabold leading-[1.05] sm:text-6xl">An engineer in the conversation.</h1>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
-          Your team builds its own apps with Claude. Steadyship is the engineer working beside them, always:
-          it asks what they don't know to ask, judges what they can't judge, and brings in real engineering the
-          moment an app starts to matter. Not before.
+          Your team builds its own apps with Claude. Steadyship is the engineer sitting beside them. It asks the
+          questions nobody thought to ask, tells you honestly whether an app is good enough to rely on, and only
+          starts adding proper engineering once something actually matters.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a href="/get-started" class="rounded-full bg-navy px-6 py-3 font-semibold text-white hover:bg-sea">Get started</a>
           <a href="/features" class="rounded-full border border-[var(--line)] px-6 py-3 font-semibold hover:border-sea">See what it does</a>
         </div>
-        <p class="mt-6 text-sm text-[var(--muted)]">Open source. Stays on your computer. Keeps working if you remove it.</p>
+        <p class="mt-6 text-sm text-[var(--muted)]">Open source, and it all stays on your computer. If you remove it, everything it wrote is still there.</p>
       </div>
       <div class="flex justify-center md:justify-end">
         <Mark size={260} class="drop-shadow-[0_24px_40px_rgba(17,49,79,0.25)]" />
@@ -77,7 +77,7 @@ const steps = [
   <!-- What an engineer brings -->
   <section class="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
     <h2 class="font-display text-3xl font-bold sm:text-4xl">What an engineer brings</h2>
-    <p class="mt-3 max-w-2xl text-[var(--muted)]">Claude builds what it is asked to build. These are the three things nobody in the building was there to add.</p>
+    <p class="mt-3 max-w-2xl text-[var(--muted)]">Claude builds whatever it is asked to build. What is usually missing is someone who has seen a few of these go wrong.</p>
     <div class="mt-10 grid gap-5 md:grid-cols-3">
       {brings.map((b) => (
         <article class="rounded-2xl border border-[var(--line)] p-6">
@@ -94,7 +94,7 @@ const steps = [
   <section class="bg-[var(--surface)]">
     <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <h2 class="font-display text-3xl font-bold sm:text-4xl">What it does</h2>
-      <p class="mt-3 max-w-2xl text-[var(--muted)]">Each one is a plain sentence in Claude. No dashboard, no account, nothing to learn. Everything it finds goes into files you keep.</p>
+      <p class="mt-3 max-w-2xl text-[var(--muted)]">You type a sentence in Claude. There is no dashboard or account to set up, and whatever it finds is written into files you keep.</p>
       <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {features.map((c, i) => (
           <article class="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-6">
@@ -115,7 +115,7 @@ const steps = [
   <!-- How it works -->
   <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
     <h2 class="font-display text-3xl font-bold sm:text-4xl">How it works</h2>
-    <p class="mt-3 max-w-2xl text-[var(--muted)]">Three sentences on day one. After that, ask for changes the way you already do.</p>
+    <p class="mt-3 max-w-2xl text-[var(--muted)]">Three sentences on the first day. After that you ask for changes the way you already do.</p>
     <ol class="mt-10 grid gap-5 md:grid-cols-3">
       {steps.map((s, i) => (
         <li class="rounded-2xl border border-[var(--line)] p-6">
@@ -133,8 +133,9 @@ const steps = [
       <div>
         <h2 class="font-display text-3xl font-bold sm:text-4xl">See it answer</h2>
         <p class="mt-4 text-[var(--muted)] leading-relaxed">
-          A real reply from the demo business, a boat builder with six apps its staff built with Claude.
-          The short version is what you read. The full picture, every row that differs, goes into a file you keep.
+          This is a real reply, from the demo business that ships with Steadyship: a boat builder with six apps its
+          staff built with Claude. You read the short version. The full picture, with every row that differs, goes
+          into a file you keep.
         </p>
         <a href="/get-started" class="mt-6 inline-block font-semibold text-sea hover:underline">Try it on the demo business</a>
       </div>
@@ -159,9 +160,9 @@ const steps = [
   <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
     <h2 class="font-display text-3xl font-bold sm:text-4xl">From prototype to something the business runs on</h2>
     <p class="mt-3 max-w-2xl leading-relaxed text-[var(--muted)]">
-      Every app is at one of four stages. Steadyship says which, what would move it on, and does the moving one step
-      at a time with a review at each step. Nobody has to choose a framework, a database or a host. It makes the call,
-      gives the reason, and you can defer.
+      Every app is at one of four stages. Steadyship tells you which, what would move it on, and does the moving one
+      step at a time with a review at each step. Nobody in the business has to pick a framework, a database or a host.
+      When it thinks the time has come, it says so and explains why, and you can always say "not yet".
     </p>
     <ol class="mt-10 grid gap-4 md:grid-cols-4">
       {stages.map((st, i) => (
@@ -175,9 +176,10 @@ const steps = [
     </ol>
     <div class="mt-8 rounded-2xl bg-navy p-6 text-white dark:bg-sea-deep md:flex md:items-center md:justify-between md:gap-8">
       <p class="text-[15px] leading-relaxed text-[#C6D3DE]">
-        <span class="font-display font-bold text-white">Always there, never in the way.</span>{" "}
-        Exploring? Prototype as you do today; it asks at most once and never blocks. Keeping it? It gets a name, an owner and a first verdict.
-        Relying on it? The stages run, with you deciding at each. Short answers, with more if you ask.
+        <span class="font-display font-bold text-white">It stays out of the way.</span>{" "}
+        While you are experimenting it leaves you alone, apart from the occasional question. When you decide to keep something, it
+        gets a name, an owner and a first verdict. Only when people start relying on it does the real work begin, and even then
+        its answers fit on one screen, with more if you ask.
       </p>
       <a href="/features" class="mt-4 inline-block shrink-0 font-semibold text-sun hover:underline md:mt-0">How each step works</a>
     </div>
@@ -189,22 +191,22 @@ const steps = [
       <div>
         <h2 class="font-display text-3xl font-bold sm:text-4xl">Who it's for</h2>
         <p class="mt-4 leading-relaxed text-[var(--muted)]">
-          A business where a few people who are not developers build their own tools with Claude, and those tools are
-          starting to matter. A job board someone relies on. A quote builder that disagrees with the price list.
-          Two apps that both keep the customer list.
+          Businesses where a few people who are not developers build their own tools with Claude, and those tools are
+          starting to matter: a job board the workshop relies on, a quote builder that disagrees with the price list,
+          two apps that both keep the customer list.
         </p>
         <p class="mt-4 leading-relaxed text-[var(--muted)]">
-          One person does a ten-minute setup. The owner decides what the business relies on. Everyone else keeps building,
-          with an engineer in the conversation.
+          We are building it alongside a New Zealand boat builder whose staff did exactly that. One person does a
+          ten-minute setup, the owner decides what the business relies on, and everyone else keeps building.
         </p>
       </div>
       <div class="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-6">
         <h3 class="font-display text-lg font-bold">What it is not</h3>
         <ul class="mt-3 space-y-2 text-[15px] leading-relaxed text-[var(--muted)]">
-          <li>Not a place to host apps, and not a database.</li>
-          <li>Not a replacement for Claude. It sits in the same chat.</li>
-          <li>Not a certificate that an app is secure. It tells you what it checked and what it could not.</li>
-          <li>Not in the way. It stays quiet until something matters.</li>
+          <li>It doesn't host your apps and it isn't a database.</li>
+          <li>It doesn't replace Claude. It sits in the same chat.</li>
+          <li>It isn't a certificate that an app is secure. It tells you what it checked and what it couldn't.</li>
+          <li>It doesn't nag. It stays quiet until something matters.</li>
         </ul>
       </div>
     </div>
@@ -214,7 +216,7 @@ const steps = [
   <section class="mx-auto max-w-6xl px-4 pt-20 pb-8 sm:px-6">
     <div class="rounded-3xl bg-navy px-6 py-12 text-center text-white dark:border dark:border-white/10 sm:px-12">
       <h2 class="font-display text-3xl font-bold">Ten minutes to a first verdict.</h2>
-      <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">Windows or Mac, the Claude desktop app or Claude Code in a terminal. One page for each.</p>
+      <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">There is a page for each setup: Windows or Mac, the Claude desktop app or Claude Code.</p>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
         <a href="/get-started" class="inline-block rounded-full bg-sun px-6 py-3 font-semibold text-navy hover:bg-[#F7C95F]">Get started</a>
         <a href={ASK} class="inline-block rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:border-white">Tell us what you'd want first</a>

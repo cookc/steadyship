@@ -6,50 +6,50 @@ const ASK = 'https://github.com/cookc/steadyship/issues/new?title=I%20want%3A%20
 const groups = [
   {
     heading: 'Before anything is built',
-    intro: 'The questions an engineer would ask. Never a questionnaire, never more than two.',
+    intro: 'An engineer asks a couple of things before starting. So does Steadyship, and it stops at a couple.',
     items: [
-      ['Asks what you don\'t know to ask', 'You say "Make the job board track hours." It has read your build guide, your other apps and your spreadsheets, so it asks: against the whole job, or each step? Where should this live so the team can see it? Isn\'t this already in the price list? It recommends an answer, you decide, it builds.'],
-      ['Checks the ground first', 'Most of what goes wrong with home-made apps is the setup around them. Say "Check this computer" and in one minute it tells you whether it can reach GitHub, read and write the shared drive your apps depend on, and open one of your apps. PASS or FAIL, written down, so nobody has to wonder again.'],
-      ['Explains any complexity it adds, in one line', 'A library, a test, a shared file: each comes with one plain sentence on why it is worth it, and more if you ask. You should never feel it got slower for no reason.'],
+      ['Asks what you don\'t know to ask', 'You say "Make the job board track hours." It has already read your build guide, your other apps and your spreadsheets, so it knows time is booked per step and asks whether hours should go against the whole job or each step. It suggests an answer. You decide, and it builds.'],
+      ['Checks the ground first', 'Most of what goes wrong with home-made apps is the setup around them, not the code. Say "Check this computer" and in about a minute it tells you whether it can reach GitHub, read and write the shared drive your apps depend on, and open one of your apps. The result is recorded, so nobody has to wonder again.'],
+      ['Explains anything it adds, in a sentence', 'When it brings in a library, a test or a shared file, it says in one sentence why that is worth having, and says more if you ask. You should not be left wondering why things got slower.'],
     ],
   },
   {
     heading: 'After it is built',
-    intro: 'The opinion nobody was there to give.',
+    intro: 'This is the part nobody sells: an honest opinion on what was just built.',
     items: [
-      ['A straight verdict', 'Ask "Review the quote builder" and you get Yes, No or Not yet, in the first line. Then the stage it is at, the five places it disagrees with your master spreadsheet, the three biggest risks, and the one next step. Every claim names its file and its row.'],
-      ['Security in plain words', 'Who can see this app? Where does what people type end up? Is a password in a file? Is the shared drive open to anyone with the link? It names each exposure and what closing it would take. It never calls an app secure; it says what it checked and labels what it could not.'],
-      ['A second reviewer, and one from another vendor', 'A separate, independent reviewer checks every verdict. For a business that wants the strongest check, the brief and the change can go to a reviewer from a different AI vendor, so it does not share the builder\'s blind spots. No terminal, no copy-pasting.'],
-      ['Honest about its limits', 'When something is beyond its evidence, a platform problem or a security question it cannot verify, it says so and names what a human engineer should be asked.'],
+      ['A straight verdict', 'Ask "Review the quote builder" and the first line is Yes, No or Not yet. Then the stage it is at, where it disagrees with your master spreadsheet, the biggest risks, and the one thing to do next. Every claim names the file and the row it came from.'],
+      ['Security in plain words', 'It answers the questions most people don\'t think to ask: who can see this app, where what people type ends up, whether a password is sitting in a file, whether the shared drive is open to anyone with the link. It names each exposure and what closing it would take. It won\'t tell you an app is secure, only what it checked and what it couldn\'t.'],
+      ['A second reviewer, and one from another company', 'A separate, independent reviewer checks every verdict. If you want the strongest check, the brief and the change can go to a model from a different company, which won\'t share the blind spots of the one that built it. Nobody has to open a terminal or copy anything around.'],
+      ['Honest about its limits', 'When something is beyond what it can verify, a platform problem, say, or a security question, it says so and tells you what to ask a human engineer.'],
     ],
   },
   {
     heading: 'The path',
-    intro: 'From a prototype to something the business runs on, one step at a time. Never a rebuild.',
+    intro: 'From a prototype to something the business runs on, one step at a time, without a rebuild.',
     items: [
-      ['The whole picture on one page', 'What apps you have, what each is for, who relies on it, where its data is, what it duplicates, how exposed it is. Written so the owner can read it in five minutes.'],
-      ['Four stages, and it says which', 'Prototype: one file, one person\'s tool. Owned tool: data in one shared, backed-up place with one writer, a test, a named owner. Proper app: a real framework and shared parts. Platform: several apps on one database, kept in step. An app\'s label changes only when the evidence does.'],
-      ['It makes the call, you can defer', 'You never choose a framework, a database or a host. When an app has reached the point where it should become a proper app, it says so, gives the reason, and offers to do it now or later. The decision is recorded either way.'],
-      ['Rigour when it\'s needed, not before', 'A shared module, a package or a database is introduced only when duplication or data divergence is shown. Before any restructuring it keeps a working baseline and writes a behavioural test. Every step is small and reversible.'],
+      ['The whole picture on one page', 'What apps you have, what each one is for, who relies on it, where its data lives, what it duplicates and how exposed it is, written so the owner can read it in five minutes.'],
+      ['Four stages, and it tells you which', 'A prototype is one file and one person\'s tool. An owned tool has its data in one shared, backed-up place, a test and a named owner. A proper app is built on a real framework with shared parts. A platform is several apps on one database, kept consistent. An app moves up only when the evidence says it should.'],
+      ['It makes the call, and you can say not yet', 'Nobody in the business has to choose a framework, a database or a host. When an app has reached the point where it should become a proper app, Steadyship says so, explains why, and offers to do it now or later. Either way the decision is written down.'],
+      ['Rigour when it\'s needed, not before', 'It only introduces a shared module, a package or a database once there is evidence of duplication or data drifting apart. Before restructuring anything it keeps a working copy and writes a test for how the app behaves today, so every step is small and can be undone.'],
     ],
   },
   {
     heading: 'Apps that stay in step',
-    intro: 'The fix for the pile getting bigger.',
+    intro: 'The pile of apps stops being a problem when they all read the same information.',
     items: [
-      ['One master for everything', 'It finds where the same price, job or customer is typed into two apps and a spreadsheet, shows where they already disagree, and points every app at the one file that is the real master.'],
-      ['A shared glossary with a human owner', 'What a "job" is, how its number is written, what the stages are called. Every new piece of work is checked against it.'],
-      ['A template for new apps', 'So coherence is the starting point: the glossary, the data contracts and a test are there before the first line is written.'],
+      ['One master copy of everything', 'It finds where the same price, job or customer has been typed into two apps and a spreadsheet, shows where they already disagree, and points every app at the one file that is the real master.'],
+      ['A shared glossary that someone owns', 'What a "job" is, how its number is written, what the stages are called. New work is checked against it, and a person in the business is responsible for keeping it right.'],
+      ['A template for new apps', 'New apps start from a template that already has the glossary, the agreed data formats and a test in it, so they fit in from the first line.'],
     ],
   },
   {
     heading: 'Everything stays yours',
-    intro: 'You are never worse off for having used it.',
+    intro: 'We think you should never be worse off for having used it. That is a design rule, not a slogan.',
     items: [
-      ['Ordinary files in a folder the business owns', 'Markdown, your apps, scripts and tests. No proprietary format, no hosted dependency, nothing stored anywhere else.'],
-      ['Private by construction', 'Repositories it creates are private, and it refuses to push to one that is not. Passwords, secrets and large files never enter the folder.'],
-      ['Your data, your call', 'Whether business data may go to a cloud session is the business\'s decision. It asks once, records the answer, and adapts.'],
-      ['Remove it tomorrow', 'Everything it wrote is still there and still useful. Its honest answer is sometimes "use the tool you already pay for", and that is it working.'],
+      ['Ordinary files in a folder the business owns', 'Text files, your apps, a few scripts and tests. There is no special format and nothing is stored anywhere else.'],
+      ['Private by default, and checked', 'Any repository it creates is private, and it refuses to push to one that isn\'t. Passwords, secrets and large files are kept out of the folder.'],
+      ['Your data, your call', 'Whether business data may be processed in a cloud session is the business\'s decision. It asks once, records the answer, and works within it.'],
+      ['Remove it tomorrow', 'Everything it wrote is still there and still useful. Sometimes its honest answer is "use the tool you already pay for". We count that as it working.'],
     ],
   },
 ];
@@ -59,9 +59,9 @@ const groups = [
     <p class="font-display text-sm font-semibold uppercase tracking-wider text-sea">Features</p>
     <h1 class="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl">An engineer working with you, always.</h1>
     <p class="mt-6 text-lg leading-relaxed text-[var(--muted)]">
-      Every app your business builds with Claude should have an engineer beside it: asking before, judging after,
-      watching for the moment it starts to matter, and then bringing in exactly as much engineering as that moment needs.
-      Here is what that looks like.
+      We think every app a business builds with Claude should have an engineer beside it. Someone who asks a question
+      before the work starts, gives an honest opinion afterwards, and knows when an app has become important enough to
+      deserve proper engineering. This page is what that looks like in practice.
     </p>
 
     {groups.map((g) => (
@@ -81,7 +81,7 @@ const groups = [
 
     <div class="mt-16 rounded-3xl bg-navy px-6 py-10 text-center text-white dark:border dark:border-white/10 sm:px-12">
       <h2 class="font-display text-2xl font-bold">Which of these would you want first?</h2>
-      <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">Steadyship is being built with real businesses, feature by feature. Tell us what yours needs and what kind of business it is.</p>
+      <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">We are building Steadyship with real businesses, a feature at a time. Tell us what yours needs, and what kind of business it is.</p>
       <div class="mt-6 flex flex-wrap justify-center gap-3">
         <a href={ASK} class="inline-block rounded-full bg-sun px-6 py-3 font-semibold text-navy hover:bg-[#F7C95F]">Tell us what you'd want</a>
         <a href="/get-started" class="inline-block rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:border-white">Get started</a>
