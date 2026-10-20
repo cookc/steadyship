@@ -5,9 +5,20 @@ import Base from '../layouts/Base.astro';
 const entry = await getEntry('docs', 'why-steadyship');
 if (!entry) throw new Error('docs/why-steadyship.md not found');
 const { Content } = await render(entry);
+const ASK = 'https://github.com/cookc/steadyship/issues/new?title=I%20want%3A%20&body=What%20would%20you%20want%20Steadyship%20to%20do%20first%2C%20and%20for%20what%20kind%20of%20business%3F';
 ---
 <Base title="Why Steadyship" description="Why Steadyship exists: for the moment a home-made app starts to matter, and nobody in the building can say whether it is good enough to run the business on.">
   <article class="prose mx-auto max-w-3xl px-4 py-16 sm:px-6">
     <Content />
   </article>
+  <div class="mx-auto max-w-3xl px-4 sm:px-6">
+    <div class="rounded-3xl bg-navy px-6 py-10 text-center text-white dark:border dark:border-white/10 sm:px-12">
+      <h2 class="font-display text-2xl font-bold">Sound like your business?</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[#C6D3DE]">Ten minutes to a first verdict on an app you already have. Or tell us which of these you'd want first.</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a href="/get-started" class="inline-block rounded-full bg-sun px-6 py-3 font-semibold text-navy hover:bg-[#F7C95F]">Get started</a>
+        <a href={ASK} class="inline-block rounded-full border border-white/30 px-6 py-3 font-semibold text-white hover:border-white">Tell us what you'd want</a>
+      </div>
+    </div>
+  </div>
 </Base>

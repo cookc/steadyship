@@ -6,22 +6,22 @@ const ASK = 'https://github.com/cookc/steadyship/issues/new?title=I%20want%3A%20
 
 const brings = [
   {
-    title: 'Security, in plain words',
+    title: 'Asks what you don\'t know to ask',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>',
+    body: 'Before a change is built, it has read your business notes, your other apps and your spreadsheets. So it asks the one or two questions that would be expensive to get wrong, recommends an answer, and builds once you decide.',
+    example: 'You say "Make the job board track hours." It asks: against the whole job, or each step? And isn\'t that already in Hours.csv on the shared drive?',
+  },
+  {
+    title: 'Judges what you can\'t judge',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
-    body: 'Who can see this? Where does what people type end up? Is a password sitting in a file? Is the shared drive open to anyone with the link? It names each exposure and what it would take to close it.',
+    body: 'A straight Yes, No or Not yet on whether the team can rely on an app, with the evidence. Security in plain words: who can see this, where what people type ends up, whether a password is sitting in a file.',
     example: 'It never calls an app secure. It says what it checked, and labels what it could not.',
   },
   {
-    title: 'Maintainability',
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
-    body: 'One master for each piece of information. A named owner for each app. Every decision written down with its reason. The next person can pick it up, and the apps stop drifting apart.',
-    example: 'Two apps both keep the customer list, so it points them at the one spreadsheet that is already the master.',
-  },
-  {
-    title: 'Rigour when it\'s needed, not before',
+    title: 'Brings engineering when it\'s needed, not before',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
-    body: 'A prototype stays a prototype. Tests, a proper framework, a database: each arrives only when someone starts relying on the app, and each comes with one plain line on why it is worth it.',
-    example: 'A one-person tool gets no ceremony. The day the workshop runs on it, it gets a backup, a test and an owner.',
+    body: 'A prototype stays a prototype. The day someone relies on it, it gets one master for its data, a backup, a test, a named owner and its decisions written down, each step with one plain line on why. The apps stop drifting apart.',
+    example: 'A one-person tool gets no ceremony. The day the workshop runs on it, it gets looked after like software.',
   },
 ];
 
@@ -177,7 +177,7 @@ const steps = [
       <p class="text-[15px] leading-relaxed text-[#C6D3DE]">
         <span class="font-display font-bold text-white">Always there, never in the way.</span>{" "}
         Exploring? Prototype as you do today; it asks at most once and never blocks. Keeping it? It gets a name, an owner and a first verdict.
-        Relying on it? The stages run, with you deciding at each.
+        Relying on it? The stages run, with you deciding at each. Short answers, with more if you ask.
       </p>
       <a href="/features" class="mt-4 inline-block shrink-0 font-semibold text-sun hover:underline md:mt-0">How each step works</a>
     </div>
