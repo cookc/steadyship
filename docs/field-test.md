@@ -20,8 +20,8 @@ This is the internal plan. The version written for the test user is
 - **Where:** their office, at their desk, with the shared drive mapped the
   way they normally use it. A screen share is a fallback, not the plan: half
   the value is seeing the real machine.
-- **Length:** 90 minutes, in three parts of about 30. Stop at 90 even if
-  unfinished; what did not fit is a finding.
+- **Length:** 90 minutes, in three parts. Stop at 90 even if unfinished;
+  what did not fit is a finding.
 
 ## Before the day (us)
 
@@ -42,39 +42,47 @@ This is the internal plan. The version written for the test user is
 4. A few days before, check they have answered the guide's questions and
    picked the two apps and the change; chase if not.
 
-## Part A, the quick start as written (30 min)
+## Part A, the quick start as written, on their business (50 min)
 
-The test user follows `README.md` from step 0, reading it themselves. We do
-not type and do not pre-empt. Order:
+The test user follows `docs/quickstart/windows-claude-desktop.md` steps 1 to
+3, reading it themselves. We
+do not type and do not pre-empt. Order:
 
-0. Windows: the setup script if they did not run it already (or Git via
-   winget by hand), then quit and reopen Claude desktop.
-1. Add the plugin from the marketplace. If it fails, Upload plugin from the USB.
-2. Choose an empty folder, say "Try Steadyship with the demo business".
-3. "Run steadyship status", "run spike 0", "run spike b", "run spike c, the
-   app is job-board", "What apps do we have and where is the same
-   information kept twice?"
+1. Computer ready: the setup script if they did not run it already (or Git
+   via winget by hand), then quit and reopen Claude desktop.
+2. Add the plugin from the marketplace. If it fails, Upload plugin from the
+   USB.
+3. "Set up Steadyship for <business name>" in a new empty folder, with their
+   real shared drive path and the sponsor's name. Decline GitHub for now
+   (local only) unless they already have an account and want it.
+4. Copy their two chosen apps into `apps/` (File Explorer, their hands).
+5. "Run steadyship status", "run spike 0", "run spike b", "run spike c, the
+   app is <one of theirs>".
+   Spike b against the real shared drive is the single most important
+   result of the day: a mapped drive, a SharePoint-synced folder and
+   OneDrive "files on demand" placeholders can each behave differently.
+   Spike c on one of their apps tells us whether their code runs at all
+   under a test browser.
+6. "What apps do we have and where is the same information kept twice?"
+   Then read the `docs/assessment/` files with them.
+7. "Review <one of their apps>", the Yes / No / Prototype verdict. Ask them
+   to explain the verdict back in their own words.
 
 What we are watching for: where they stop reading and start guessing; which
 question from a skill they cannot answer; any permission prompt they do not
-understand; whether the assessment answer makes sense to them in their own
-words (ask them to explain it back).
+understand; whether the assessment and the verdict make sense to them.
 
-## Part B, their business (40 min)
+The demo business is not part of the day. It is the fallback if Part A
+cannot run on their machine for reasons outside the product (plugins hidden
+on the Team plan and no admin to hand): run it on the setup owner's personal
+account and note that the real-drive results are missing.
 
-1. "Set up Steadyship for <business name>" in a new empty folder, with their
-   real shared drive path and the sponsor's name. Decline GitHub for now
-   (local only) unless they already have an account and want it.
-2. Copy their two chosen apps into `apps/` (File Explorer, their hands).
-3. "run spike b" against the real shared drive. This is the single most
-   important result of the day: a mapped drive, a SharePoint-synced folder
-   and OneDrive "files on demand" placeholders can each behave differently.
-4. "What apps do we have and where is the same information kept twice?"
-   Then read the `docs/assessment/` files with them.
-5. "Review <one of their apps>", the Yes / No / Prototype verdict.
-6. The real change: they ask for it in their own words. The ask skill should
-   ask one or two questions and stop. We watch whether the questions make
-   sense to them, what they answer, and what gets built.
+## Part B, the real change (20 min)
+
+They ask for the change in their own words. The ask skill should ask one or
+two questions and stop. We watch whether the questions make sense to them,
+what they answer, what gets built, and whether they read the decision it
+recorded.
 
 ## Part C, debrief (20 min)
 
@@ -90,19 +98,17 @@ Ask, and write the answers down verbatim:
 
 | Step | What happened | Minutes | Friction / quote |
 |---|---|---|---|
-| A0 Git | | | |
-| A1 plugin | | | |
-| A2 demo | | | |
-| A3 status | | | |
-| A3 spike 0 | | | |
-| A3 spike b | | | |
-| A3 spike c | | | |
-| A3 assessment | | | |
-| B1 setup | | | |
-| B3 spike b real drive | | | |
-| B4 assessment | | | |
-| B5 review | | | |
-| B6 real change | | | |
+| A1 computer ready | | | |
+| A2 plugin | | | |
+| A3 setup | | | |
+| A4 copy apps | | | |
+| A5 status | | | |
+| A5 spike 0 | | | |
+| A5 spike b (real drive) | | | |
+| A5 spike c (their app) | | | |
+| A6 assessment | | | |
+| A7 review | | | |
+| B real change | | | |
 
 Collect at the end: `docs/spikes/RESULTS.md`, `docs/assessment/`,
 `docs/context/decisions.md` and `steadyship.md` from the business repository,
@@ -112,7 +118,8 @@ touch.
 
 ## Success criteria
 
-- All six quick-start prompts complete with no typing by us.
+- Every quick-start prompt completes on their own repository with no typing
+  by us.
 - Spike b passes on the real shared drive, and nothing on it was altered.
 - At least one skill answer changed what the test user decided to build or
   rely on, in their words.
@@ -125,7 +132,7 @@ Anything short of this is not a failure of the test, it is the finding.
 
 | Risk | What we do |
 |---|---|
-| Plugins hidden on the Team plan | Org admin enables plugins before the day; otherwise test on the setup owner's personal account and note it |
+| Plugins hidden on the Team plan | Org admin enables plugins before the day; otherwise the demo on the setup owner's personal account, and note it |
 | Marketplace install or update fails | Upload plugin from the USB zip |
 | No winget, or antivirus blocks the Playwright browser | Spike c records FAIL with the CI fallback; carry on |
 | Shared drive is a synced folder with placeholders | Spike b tells us; record exactly what the drive is |

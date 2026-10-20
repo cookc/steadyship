@@ -29,15 +29,12 @@ Claude today.
 About an hour and a half, at your desk, you on the keyboard. I'll watch,
 answer questions when you ask, and take notes. Three parts:
 
-1. **A pretend business (about 30 minutes).** Steadyship comes with a
-   made-up boat builder called Demo Boatworks: six apps its staff "built with
-   Claude" and the spreadsheets they run on. You'll install Steadyship and
-   run through it on that first, so the first time you see it, nothing of
-   yours is involved.
-2. **Your real apps (about 40 minutes).** You'll set Steadyship up for the
-   business, drop two of your apps in, let it check it can see your shared
-   drive, get its assessment of the apps, and then ask it for a real change
-   you've been meaning to make. That last bit is the point of the day: we
+1. **Set it up on your apps (about 50 minutes).** You'll install Steadyship,
+   set it up for the business, drop two of your apps in, let it check it can
+   see your shared drive and run one app's tests, then get its assessment of
+   the apps and a verdict on one of them. All with the apps you actually use.
+2. **One real change (about 20 minutes).** You'll ask it for a change you've
+   been meaning to make, in your own words. This is the point of the day: we
    want to see what it asks you before it builds, and whether that is useful.
 3. **Your verdict (about 20 minutes).** Five questions from me, your honest
    answers. "That was annoying" is as useful as "that was great".
@@ -75,10 +72,9 @@ Ten minutes, whenever suits:
 
 You'll type a handful of plain sentences into Claude, one at a time:
 
-- "Try Steadyship with the demo business"
+- "Set up Steadyship for [the business]"
 - "Run steadyship status", "run spike 0", "run spike b", "run spike c"
 - "What apps do we have and where is the same information kept twice?"
-- "Set up Steadyship for [the business]"
 - "Review the [app]"
 - And the change you want, in your own words.
 
