@@ -9,6 +9,7 @@ Sponsor: {{SPONSOR}}
 GitHub: {{GITHUB_OWNER}}/{{REPO_NAME}}
 Plugin marketplace: {{PLUGIN_MARKETPLACE}}
 Shared drive: {{SHARED_DRIVE}}
+Time zone: {{TIME_ZONE}}
 Template version: {{TEMPLATE_VERSION}}
 
 `.steadyship/manifest` records what the templates generated, so a future update can tell template files from ones you changed.

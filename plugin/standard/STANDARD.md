@@ -194,15 +194,18 @@ when the plugin is absent, as the second opinion does today.
 | Need | Plugin (official marketplace unless noted) | Used by |
 |---|---|---|
 | Explore, design and review a change bigger than a few lines | feature-dev (explorer, architect, reviewer agents) | ask |
-| Test-first builds, systematic debugging, subagent-driven work with review | superpowers | ask, next |
+| Test-first builds, systematic debugging, subagent-driven work with review | superpowers: on demand, not baseline. Its session hook changes how every request is handled, which would fight the ask skill's flow for a non-technical builder | next, when installed |
 | Multi-agent review with confidence scoring; reviewers for tests, errors, types | code-review, pr-review-toolkit | review |
 | Warnings on risky edits; security review of the diff | security-guidance | ask |
 | Production-grade interface work, pointed at the business's brand file | frontend-design | ask, the template |
-| The browser for smoke and behaviour tests | playwright | next, review, check |
+| A browser the agent can drive during a change | playwright: on demand. Smoke and behaviour tests run through the repository's own Playwright install, so the plugin is only needed when an agent must click through an app itself | next, when installed |
 | Tidy-up after a change so the next builder can read it | code-simplifier | ask |
 | Database, hosting, monitoring | installed when an app reaches the stage that needs them | next |
 
-The baseline set is recommended at setup. The brief handed to any of them
+The baseline set (feature-dev, code-review, pr-review-toolkit,
+security-guidance, frontend-design, code-simplifier) is installed by the
+setup script on Claude Code and named once, as optional, in Claude
+desktop. The brief handed to any of them
 is this file plus the business notes, in Markdown, so a reviewer from
 another provider (Codex cloud review, Copilot on a pull request) reads the
 same brief and is held to the same bar. Versions tested against are listed

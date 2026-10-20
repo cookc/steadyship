@@ -16,7 +16,7 @@ for f in steadyship.md README.md .gitignore .gitattributes package.json playwrig
          tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/check.sh \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
-         docs/assessment/_sample.md docs/context/business/README.md docs/spikes/README.md docs/spikes/RESULTS.md \
+         docs/assessment/_sample.md docs/context/business/README.md docs/context/engineering.md docs/spikes/README.md docs/spikes/RESULTS.md \
          docs/spikes/environment.md docs/spikes/github.md docs/spikes/shared-drive.md docs/spikes/tests.md docs/spikes/hosting.md \
          docs/spikes/team.md docs/spikes/hosting/staticwebapp.config.json \
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
@@ -34,6 +34,8 @@ VER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/
 grep -q "^Template version: $VER\$" "$DIR/steadyship.md" || fail "template version $VER not written"
 MP="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p' "$ROOT/plugin/.claude-plugin/plugin.json")"
 grep -q "^Plugin marketplace: $MP\$" "$DIR/steadyship.md" || fail "plugin marketplace $MP not written"
+grep -qE "^Time zone: ([A-Za-z]+/[A-Za-z_/+-]+|not yet confirmed)$" "$DIR/steadyship.md" || fail "time zone line missing or malformed"
+grep -q "^| Time zone | " "$DIR/docs/context/engineering.md" || fail "engineering.md lacks the time zone row"
 grep -q 'Setup owner:\*\* Sam Setup' "$DIR/docs/assessment/README.md" || fail "README role line"
 for f in .gitignore .gitattributes .github/workflows/validate.yml; do [ -f "$DIR/$f" ] || fail "missing $f"; done
 [ -f "$DIR/.steadyship/manifest" ] || fail "manifest missing"
@@ -51,9 +53,10 @@ set +e; "$ROOT/plugin/scripts/init.sh" "$DIR" --business x --setup-owner x --spo
 # special characters survive substitution
 SP="$OUT/special"
 "$ROOT/plugin/scripts/init.sh" "$SP" --business "A & B's \"Boats\" | x" --setup-owner "O'Neil" --sponsor S \
-  --github-owner g --repo-name r --shared-drive '\\nas\share' --no-git >/dev/null || fail "special-char init"
+  --github-owner g --repo-name r --shared-drive '\\nas\share' --time-zone Pacific/Auckland --no-git >/dev/null || fail "special-char init"
 grep -qF "Business: A & B's \"Boats\" | x" "$SP/steadyship.md" || fail "special business"
 grep -qF "Setup owner: O'Neil" "$SP/steadyship.md" || fail "special setup owner"
+grep -q "^Time zone: Pacific/Auckland$" "$SP/steadyship.md" || fail "explicit --time-zone not written"
 grep -qF 'Shared drive: \\nas\share' "$SP/steadyship.md" || fail "special shared drive"
 grep -rqE '\{\{[A-Z_]+\}\}' "$SP" && fail "placeholders remain in special run" || true
 

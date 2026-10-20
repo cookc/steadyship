@@ -26,6 +26,14 @@ if runs claude; then
     ok "Steadyship marketplace added"
     if claude plugin install steadyship@steadyship >/dev/null 2>&1 && claude plugin update steadyship@steadyship >/dev/null 2>&1; then
       ok "Steadyship plugin installed$(claude plugin list 2>/dev/null | grep -A1 'steadyship@steadyship' | sed -n 's/^ *Version: */ (version /p' | sed 's/$/)/')"
+      # Companion plugins from Anthropic's official marketplace: Steadyship hands them its
+      # brief for reviews, designs and tidy-ups. Each is optional; a skill says "not run" without it.
+      got=""; miss=""
+      for c in feature-dev code-review pr-review-toolkit security-guidance frontend-design code-simplifier; do
+        if claude plugin install "$c@claude-plugins-official" >/dev/null 2>&1; then got="$got $c"; else miss="$miss $c"; fi
+      done
+      [ -z "$got" ] || ok "companion plugins installed:$got"
+      [ -z "$miss" ] || note "companion plugins not installed (Steadyship still works; a review or tidy-up that would use one says so):$miss"
     else
       todo "could not install the plugin; in Claude Code run  /plugin install steadyship@steadyship  and read the message"
     fi

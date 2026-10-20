@@ -23,8 +23,8 @@ echo "-- template steadyship.md names no business"
 if grep '^Business: ' plugin/templates/steadyship.md | grep -v '^Business: {{BUSINESS_NAME}}$'; then
   echo "plugin/templates/steadyship.md names a business (above)"; exit 1
 fi
-echo "-- placeholders are the allowed eight"
-ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'
+echo "-- placeholders are the allowed nine"
+ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}} {{TIME_ZONE}}'
 for p in $(grep -rhoE '\{\{[A-Za-z_]+\}\}' plugin/templates | sort -u); do
   case " $ALLOWED " in *" $p "*) ;; *) echo "unexpected placeholder $p"; exit 1;; esac
 done

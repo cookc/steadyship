@@ -57,11 +57,13 @@ missing rung. Assess, review, status and ask all look at one list.
 1. **The bar** (`plugin/standard/STANDARD.md`): free habits, the stage
    table, the regret list, what we lean on. Assess, review and ask all read
    it, so it is first. Argue with the rows before anything is built on them.
-2. **Companion plugins.** Init and the setup scripts recommend the baseline
-   set (feature-dev, superpowers, code-review, security-guidance,
-   frontend-design, playwright, code-simplifier); others are installed when a
-   rung needs them. Every call to one is optional and reports "not run"
-   when absent, as the second opinion does today.
+2. **Companion plugins.** The setup script installs the baseline set on
+   Claude Code (feature-dev, code-review, pr-review-toolkit,
+   security-guidance, frontend-design, code-simplifier); in Claude desktop
+   the setup report names them once as optional. Superpowers and the
+   Playwright plugin are on demand (the bar says why). Every call to one
+   is optional and reports "not run" when absent, as the second opinion
+   does today.
 3. **Assess writes the engineering profile**: every row of the bar answered
    by reading, per app; the reply shows only the rows failing at the current
    stage. The ledger lives in the same file.

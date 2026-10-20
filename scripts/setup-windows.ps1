@@ -87,6 +87,7 @@ Write-Host '== Next, in Claude desktop =='
 Write-Host '1. Customize (left sidebar) -> Plugins -> Add marketplace -> type cookc/steadyship -> Add.'
 Write-Host '2. Find steadyship in the list -> Install.'
 Write-Host "3. Only if that fails: Customize -> Plugins -> Add -> Upload plugin -> choose $zip"
+Write-Host '4. Optional, for better reviews and tidier code: in the same Plugins list install feature-dev, code-review, pr-review-toolkit, security-guidance, frontend-design and code-simplifier (all by Anthropic). Steadyship works without them.'
 Write-Host ''
 if ($state.todo -eq 0) { Write-Host 'RESULT: READY' -ForegroundColor Green }
 else { Write-Host "RESULT: $($state.todo) thing(s) to do, marked 'to do' above" -ForegroundColor Yellow }

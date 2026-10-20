@@ -20,8 +20,9 @@ Steadyship work in plain language for a non-technical reader.
    holds the accounts and did the one-time setup. They are not an
    engineering reviewer: judgement comes from the skills.)
 2. List every file in `docs/assessment/` except `README.md`, `TEMPLATE.md`
-   and `SUMMARY.md`. For each, read the line that starts with `**Stage:**`
-   and the line that starts with `**Relied on by:**`.
+   and `SUMMARY.md`. For each, read the lines that start with `**Stage:**`,
+   `**Relied on by:**`, `**Owner:**` and `**Next rung:**` (an older file
+   may lack the last two: say "not assessed against the ladder yet").
 3. Read `docs/spikes/RESULTS.md` if it exists. If it does not exist,
    report checks as 'not started' and make the next step 'Ask the setup owner to set
    up docs/spikes/RESULTS.md'. Count rows whose Result
@@ -31,7 +32,9 @@ Steadyship work in plain language for a non-technical reader.
 
    **Steadyship is installed and working.**
 
-   Apps assessed: N (list each as "name — stage — relied on by").
+   Apps assessed: N (list each as "name — stage — relied on by — owner
+   — next rung", the next rung in the file's own words, for example
+   "next: 2 Own it, who is responsible for it?").
    Checks: X passed, Y failed, S waiting on setup, Z not yet run.
    Next step: if any of the rows environment, shared-drive or tests is
    blank: 'Say "Check this computer" (three one-minute checks of this
