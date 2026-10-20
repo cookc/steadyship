@@ -9,6 +9,7 @@ An engineer in the conversation for non-technical people building business
 software with AI. Steadyship is a Claude plugin: it asks what you don't know
 to ask, judges what you can't judge, and gives prototypes a path to software a
 business can run on. Why it exists, in plain words: [Why Steadyship](docs/why-steadyship.md).
+Website: https://steadyship-zeta.vercel.app (built from `site/`, see below).
 
 ## Quick start
 
@@ -54,6 +55,10 @@ first two differ.
 - `scripts/validate.sh` runs every product check CI runs; `STEADYSHIP_FULL=1`
   adds the generated repository's Playwright smoke test.
 - `tests/test-init.sh` generates a customer repository and checks it works.
+- `site/` is the website (Astro, deployed to Vercel on every push to `main`). It
+  renders `docs/why-steadyship.md` and `docs/quickstart/*.md` directly, so edit
+  those files, not the site, to change what it says. `cd site && npm install &&
+  npm run dev` to preview.
 - `tests/judgement/` is the judgement eval harness (assess/ask/review on Demo
   Boatworks, with and without the plugin): `tests/judgement/run.sh`, results
   in `docs/judgement-spike.md`. It costs money and minutes, so it is not in

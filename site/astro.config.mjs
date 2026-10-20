@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { remarkRepoLinks } from './src/lib/remark-repo-links.mjs';
 
 export default defineConfig({
-  site: 'https://steadyship.vercel.app',
+  site: 'https://steadyship-zeta.vercel.app',
   markdown: {
     remarkPlugins: [remarkRepoLinks],
     shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' } },

@@ -5,3 +5,5 @@ node_modules/
 Thumbs.db
 tests/judgement/results/
 dist/
+.vercel
+.env*
