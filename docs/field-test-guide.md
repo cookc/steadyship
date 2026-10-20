@@ -78,9 +78,12 @@ You'll type a handful of plain sentences into Claude, one at a time:
 - "Review the [app]"
 - And the change you want, in your own words.
 
-A "spike" is just a short check of what your computer can actually do: reach
-the internet, read the shared drive, run an app's tests. Each one ends with a
-plain PASS, FAIL or SKIP. A FAIL is not a problem on the day; it's a finding.
+A "spike" is a one-minute check that answers one question about your setup,
+with a plain PASS, FAIL or SKIP: can it reach the internet from here, can it
+read and write your shared drive, can it open one of your apps and tell you
+whether it works. The answer gets written down so nobody has to wonder again.
+A FAIL is not a problem on the day; it's the thing that would have bitten
+you three months in, found early.
 
 When Steadyship asks you a question before building, answer it the way you'd
 answer a colleague. If you don't know, say so; it will recommend something.

@@ -32,7 +32,10 @@ differ.
 
 - A repository of your own, self-contained: it works even without the plugin.
 - A status check: what apps you have, what each is for, what is at risk.
-- Go/no-go spikes: short checks of what your environment can really do.
+- Spikes: one-minute checks that answer one question each about your own
+  setup (can Claude reach GitHub from here, read the shared drive, run an
+  app?) with a plain PASS, FAIL or SKIP, recorded so nobody has to wonder
+  again. A FAIL is the problem found before anything was built on it.
 - An assessment of each app, written into `docs/assessment/`, from prototype
   to something the business can run on.
 - Reviews, and the questions an engineer would ask before a change is built,

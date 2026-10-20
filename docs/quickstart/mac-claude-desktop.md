@@ -50,10 +50,18 @@ Plugins, **Add**, **Upload plugin**, and choose the zip.
    should live, whether something you already have does it), records the
    answer, and then builds.
 
-The spikes are short go/no-go checks of what this computer can really do:
-reach GitHub, read the shared drive, run an app's tests. Each ends with a
-plain `RESULT: PASS`, `FAIL` or `SKIP` line and Steadyship offers to record
-it. The "what apps do we have" question is answered from the assessment
+**What a spike is, and why it is worth a minute.** "Spike" is engineering
+slang for a short, throwaway experiment that answers one question before
+you commit to anything. Each Steadyship spike answers one question about
+*your* setup, on your computer, in about a minute: can Claude reach GitHub
+from here? Can it read the shared drive your apps depend on, and write to
+it, without touching anything else? Can it open one of your apps and tell
+you whether it works? Each ends in one word, `PASS`, `FAIL` or `SKIP`, and
+the result is written into the repository so nobody has to wonder again. A
+`FAIL` is good news arriving early: it is the thing that would have bitten
+you three months in, found before anything was built on top of it.
+
+The "what apps do we have" question is answered from the assessment
 Steadyship writes into `docs/assessment/`, and the review gives a plain
 Yes / No / Prototype verdict on whether an app is good enough for the team
 to rely on.

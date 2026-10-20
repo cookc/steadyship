@@ -57,6 +57,17 @@ place with one owner; a home that isn't someone's laptop; a check that it
 still works; a named owner. Step by step, with a review at each step, not a
 rebuild.
 
+**It checks the ground before anyone builds on it.** Most of what goes
+wrong with home-made apps is not the code; it is the setup around it. The
+shared drive that turns out to be read-only from one PC. The app that only
+ever worked on the laptop it was built on. So before any of the above,
+Steadyship runs a handful of one-minute checks it calls spikes, each
+answering one question about your setup with a plain PASS, FAIL or SKIP:
+can it reach GitHub from here, can it read and write the shared drive your
+apps depend on, can it open one of your apps and tell you whether it works.
+The answers are written down. A FAIL is the problem found at minute one
+instead of month three.
+
 ## What it looks like day to day
 
 You say: "Make the job board track hours."
