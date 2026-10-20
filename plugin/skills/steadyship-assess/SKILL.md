@@ -149,8 +149,10 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
 
 9. **Reply, short.** The files you just wrote hold every row; the reply is
    the first screen, for someone who did not know what to ask. Start with
-   one line saying which steps you did and which sources you could not
-   check. Then, in plain English, every bullet one self-contained line that
+   one line saying what you read and, only if something was unreachable,
+   what you could not check ("I read all six apps, the business notes and
+   the five shared-drive files"; never a double negative like "couldn't
+   check anything I tried to read"). Then, in plain English, every bullet one self-contained line that
    names the thing, the places and the exact difference:
 
    **What you have**: one line per app: name, what it is for, who relies on

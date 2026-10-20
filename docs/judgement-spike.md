@@ -402,3 +402,23 @@ $3.15.
 - `llm-built-and-recorded` failed once after the fix (run 1) because the
   build was partial by design (storage left open); the deterministic
   graders passed. `used-skill` and `used-agent` are with-only indicators.
+
+## Short replies (plugin 0.6.0, 20 Oct 2026)
+
+From 0.6.0 the assess reply is deliberately the first screen only (what you
+have, the three findings that matter most, what to do first) and points at
+`docs/assessment/` for every row; "show me everything" gives it in chat. The
+`row-*` regex graders score the chat reply, so the reply-only score fell
+from 25–26 to 14–15 of 29 on `s1-assess`, by design. `run.sh` now also
+scores the reply **plus the files each run wrote** (recovered from the run's
+trace with `tests/judgement/regrade-with-files.py`) and prints both:
+
+| Case | Arm | Reply only | Reply + written files |
+|---|---|---|---|
+| s1-assess (0.6.0, sonnet, 1 run) | with | 14/29 | 28/29 (missed only `row-d13-money-format-copied`) |
+
+The judgement did not get worse; it moved out of the chat and into the
+files. The file-inclusive number is the one to track for assess; the
+reply-only number is the one to watch for "did the short reply keep the
+three things that matter" (prices, the job list, what a dead laptop loses
+all appeared in the 0.6.0 reply).

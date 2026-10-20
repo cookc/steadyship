@@ -53,7 +53,8 @@ done
 
 ARGS=(--scaffold --allow-tools Write Edit --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
       --trust-plugin --no-publish --threshold 0 --max-cost-usd "$MAXCOST"
-      --concurrency "$JOBS" --output-dir "$OUT" --report "$OUT/report.html" --json "$OUT/result.json")
+      --concurrency "$JOBS" --output-dir "$OUT" --report "$OUT/report.html" --json "$OUT/result.json"
+      --keep-temp)   # temp dirs hold each run's trace; regrade-with-files.py reads them, then they are removed
 [ -z "$CASE" ] || ARGS+=(--case "$CASE")
 [ ${#EXTRA[@]} -eq 0 ] || ARGS+=("${EXTRA[@]}")
 echo "Staged plugin: $STAGE/plugin  ->  results: $OUT"
@@ -65,4 +66,9 @@ set -e
 echo "claude plugin eval exit $rc after $(( $(date +%s) - start ))s" | tee -a "$OUT/eval.log"
 [ -f "$OUT/result.json" ] || { echo "no result.json written" >&2; exit 1; }
 python3 "$J/summarise.py" "$OUT/result.json" | tee "$OUT/summary.md"
+# Since plugin 0.6.0 the assess reply is deliberately short and the rows live in docs/assessment/;
+# score the reply plus the files the run wrote, from each run's trace, then drop the temp dirs.
+{ echo; echo "Rows including the files each run wrote (assess replies are short by design):"; echo;
+  python3 "$J/regrade-with-files.py" "$OUT/result.json"; } | tee -a "$OUT/summary.md"
+grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u | while read -r d; do case "$d" in /tmp/claude-eval-*) rm -rf "$d";; esac; done
 ln -sfn "$(basename "$OUT")/summary.md" "$J/results/latest.md"
