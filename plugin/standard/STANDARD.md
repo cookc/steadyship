@@ -32,10 +32,12 @@ asking and without announcing, except for one line when it adds something.
 | Semantic HTML: real buttons, labels, headings, lists | Gets keyboard use, screen readers and most of responsiveness for free |
 | Theme tokens for colour, spacing and type; never a hard-coded value | Brand, dark mode and consistency across apps become a one-file change |
 | Data never enters the page as raw HTML; one escaping helper, used everywhere | The most common hole in home-made apps; a CSV cell is enough to trigger it |
-| Money as whole cents; dates as ISO text with the business's timezone stated; identifiers in the glossary's format | Floats for dollars and guessing dd/mm are regrets within a month |
-| Validation at the boundary: every row read from a file is checked against a written shape; bad rows are reported, not dropped | Silent data loss is the failure nobody notices until it matters |
+| One form per kind of value: converted on the way in, stored one way, formatted on the way out. The forms are the value table in section 3; a kind of value not in that table gets a row there before it gets a column in a file | Floats for dollars, guessing dd/mm and a timestamp with no time zone are regrets within a month, and they are only the first three |
+| Checked at every edge: a file read, a form submitted, a paste, a value from the address bar, a file written. Each edge has a written shape; whatever fails it is reported with the row and the reason, never dropped or guessed | Silent data loss is the failure nobody notices until it matters; the edges are where it happens |
 | Errors in plain words, in the page; never swallowed, never an alert box; what the person typed is kept | A person who loses ten minutes of typing stops trusting the app |
 | No secrets, prices, staff lists or any business data typed into code | Code is copied; data belongs in the master file |
+| A stage banner at the top of the page until the app is a proper app. Prototype: "Prototype. Not for anything the business depends on. Built by <name>, <month year>." Owned tool: "Owned by <name>. Its data lives in <file>. Problems go to <name>." Only a stage move changes it | The person reading the page is the one about to rely on it; the banner tells them what they are relying on, and names who to ask |
+| Only browser features the business's browsers have: the browser baseline in section 3, nothing newer without a fallback | A builder tests on their own laptop; the workshop tablet is four years older |
 | Nothing loaded from a random CDN; dependencies pinned and from the allow-list below | An unpinned script is a change nobody reviewed |
 | A smoke test under Playwright from the own-it rung; one test added for each change made | Confidence to make the next change; the thing a reviewer can verify |
 | Names from the glossary; structure by concern once an app passes one file; comments say why, not what | The next builder can pick it up from the folder alone |
@@ -62,12 +64,13 @@ asking and without announcing, except for one line when it adds something.
 | **Backups?** | None | The master file is inside the business's existing backup; confirmed, and restored once | Automated, restore tested | Same, with retention |
 | **Retention?** | n/a | Asked at own-it; tax and health-and-safety records have legal minimums | Enforced | Same |
 | **Personal data?** | Sample data only | Asked at own-it; if yes, named in the assessment and local privacy law applies (for example New Zealand's Privacy Act) | Access limited by role | Same |
-| **Performance?** | n/a | A stated row budget (default 5,000); never loads the whole shared drive | Pagination; measured startup on the slowest machine in use | Same |
+| **Performance?** | n/a | A stated budget for the master file (default 5,000 rows, about where a CSV over a shared drive takes seconds to open); past a few hundred rows, only the rows on screen are rendered (a virtualised list, a few dozen lines of code); never loads the whole shared drive | A database with paging once the file budget is passed; startup measured on the slowest machine in use | Same |
 | **Consistency with other apps?** | n/a | Brand file for logo and colours; glossary terms; same navigation pattern | Shared components | Shared design system |
 | **Accessibility?** | n/a | The free habits (semantic HTML, contrast, targets, keyboard) | Checked by an automated scan on every change | Full standard if the business supplies to government |
 | **Code structure?** | One file is fine | Split by concern past roughly 300 lines; no copy-paste between apps | Shared module only when duplication is shown across two apps | Shared packages |
 | **Formatting and lint?** | Don't care | Enforced by the repo's validate script | Same, on every commit | Same |
-| **Types?** | No | JSDoc on the data shapes | Type checking with the framework | Same |
+| **Browsers?** | Whatever the builder uses | The browsers the business actually uses, asked at own-it and written in the README (default: current Edge and Chrome, Safari on iPhone and iPad); the baseline in section 3 unless the business overrides it | Tested in each named browser by the smoke test (Chromium and WebKit under Playwright) | Same |
+| **Types?** | No | JSDoc on the data shapes, checked by TypeScript's checker without a build step | TypeScript source, since the framework brings the build step anyway | Same |
 | **Updates and rollback?** | Overwrite the file | The previous version is one commit back; the person is told what changed | Release notes; rollback is a redeploy | Release process across apps |
 | **Who is told?** | Nobody | The owner, in the build report | The owner and the users, in the changelog | Same |
 | **Cost?** | Nothing | Nothing beyond AI usage | Hosting bill, stated before hosting | Stated and reviewed |
@@ -98,13 +101,39 @@ Opinions, versioned here, overridable per business.
 | Prototype and Owned tool stack | Vanilla HTML, CSS and JavaScript, one folder per app | What the builders already make; no build; opens from a folder |
 | CSV handling | Papa Parse, pinned | Quoting, commas and encodings are a solved problem |
 | Dates | Native `Intl` and ISO strings; a date library only when arithmetic across time zones appears | Most date bugs come from parsing, not arithmetic |
-| Identifiers | The glossary's format; generated with `crypto.randomUUID()` only when the glossary has none | Business identifiers belong to the business |
+| Identifiers | The glossary's format, exactly; a new one is the next number in the master file, in that format. Random identifiers only for things nobody will ever read or type, and then `crypto.randomUUID()`, which every major browser has had since 2022 | Business identifiers belong to the business; `J-1043` is typed over the phone, a UUID is not |
+| Time zone | The business's zone name (`Pacific/Auckland`) recorded once in the business notes at setup, taken from the machine and confirmed at own-it; every moment stored with its offset from day one | New Zealand changes offset twice a year; a timestamp with no zone is wrong for half the year and nobody can say which half |
+| Browser baseline | Baseline "widely available": features every major browser has supported for at least 30 months; checked by the lint step from a browserslist in the repo; a business overrides it the day an older device turns up | A non-technical builder cannot know what the tablet in the workshop can run; the baseline decides so they never have to |
 | Serve script | Node, single file, no dependencies, serves one app and its master file | Nothing to install beyond Node, which the tests check already installs |
 | Test runner | Playwright, Chromium | Already installed by the tests check; one runner for smoke and behaviour |
 | Formatting and lint | Prettier and ESLint with the recommended rules, run by the validate script | Taste is not a review topic |
+| Types | JSDoc on every data shape, checked by TypeScript's `checkJs` from the validate script: the checking without the compiler. TypeScript source only at Proper app, where the framework's build step already exists | Most of the benefit, none of the build |
 | Proper-app framework | Decided per business when the first app reaches the stage, recorded in `docs/context/engineering.md`; the choice is made once for all apps | A framework is a ten-year decision; one per business |
 | Hosting | The business's existing platform where it has one (Microsoft 365: Azure Static Web Apps with Entra sign-in); otherwise decided at the stage | Sign-in people already have beats a new password |
 | Database | Decided at the stage; never before two writers exist | The master file is enough for longer than people expect |
+
+### Value forms
+
+One row per kind of value. Converted on the way in, stored one way,
+formatted on the way out, so no file, form or report ever holds two
+spellings of the same thing. A kind of value not here gets a row in the
+business's `docs/context/engineering.md` before it gets a column in a file.
+
+| Kind | Stored as | Shown as | Why |
+|---|---|---|---|
+| Money | Whole cents as an integer; the currency named once per file (NZD) | `$1,234.50` via the browser's number formatter | Floats drop cents; GST on floats drifts |
+| A date with no time (due, delivered) | ISO date, `2026-10-21` | The business's format via the browser's date formatter | `12/03` is March to one person and December to another |
+| A moment (when something happened) | ISO with the offset, `2026-10-21T09:30:00+13:00`; never without one | Local time in the business's zone | What the clock said and where; the offset is what survives daylight saving |
+| Time zone | The business's zone name, once, in the business notes; never per row | n/a | Needed the day someone travels or a supplier is overseas |
+| Duration (hours on a job) | Whole minutes as an integer | `7h 30m` | Otherwise "1:30", "1.5" and "90" share a column |
+| Quantity | A number with the unit in the column name, `Length (m)` | With its unit | A column of bare numbers is a column of guesses |
+| Identifier | The glossary's format, exactly, as text | As is | Excel drops leading zeros and prefixes from anything it thinks is a number |
+| Name, free text | As typed, trimmed; never split into parts the business does not use | As is | "Harbour Services Ltd" has no first name |
+| Email, phone | Email lowercased and trimmed; phone as typed, with the country code when known | As typed | Matching fails on case and spaces |
+| Yes or no | `true` or `false` in files | Yes or No | "Y", "yes", "TRUE" and "1" in one column |
+| Rate, percentage | The decimal, `0.15`, named as a rate | `15%` | 15 against 0.15 is a hundredfold error |
+| Empty | An empty cell means unknown; never `0`, `-` or `N/A` | Blank, or "not recorded" | `0` is a value; it adds up |
+| File reference | Path relative to the shared drive root, forward slashes | The file name | Drive letters differ per machine |
 
 ### Library allow-list
 
@@ -125,6 +154,12 @@ are followed better than principles.
   `textContent`.
 - Floats for money. Whole cents.
 - `new Date("12/03/2026")`. ISO strings in, formatted on the way out.
+- A timestamp saved without its offset. `new Date().toISOString()` is
+  fine; a bare `09:30` or `2026-10-21 09:30` is not.
+- A browser feature newer than the baseline because it worked on the
+  builder's laptop.
+- Putting every row into the page. Past a few hundred, render what is on
+  screen.
 - Browser storage as the database once a second person uses the app.
 - Prices, staff names, stages or any business list typed into code. Read
   the master file.
@@ -142,6 +177,9 @@ are followed better than principles.
 - Writing a file in place. Write beside it, then rename.
 - A new framework, build step, package or database "while we're at it".
   Only at the stage, only stated, only with the option to defer.
+- TypeScript source before there is a build step. JSDoc gets the checking
+  without it.
+- Removing the stage banner without a stage move.
 - Asking the builder a question the bar already answers.
 
 ## 5. What we lean on
@@ -182,7 +220,7 @@ in the plugin's changelog.
   one line, asks the builder only for business knowledge (the own-it
   questions), adds one test, and proposes the next rung once.
 - **Next** picks the rung from the ledger, does it, records it; states a
-  stage move when a trigger is met.
+  stage move when a trigger is met, and the banner changes with it.
 - **Check** runs the machine checks the bar demands and reports PASS, FAIL
   or SKIP per check.
 

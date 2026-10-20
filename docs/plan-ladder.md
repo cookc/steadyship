@@ -78,12 +78,14 @@ missing rung. Assess, review, status and ask all look at one list.
    drive is unreachable or the file is open in Excel; never loses what was
    typed; writes that cannot half-complete; UTF-8 with BOM so Excel reads
    it.
-8. **The new-app template** carrying the free habits: structure, theme
-   tokens from the business brand file, the escaping helper, the data layer
-   with validation, error display, print styles, a smoke test, a README.
+8. **The new-app template** carrying the free habits: structure, the
+   stage banner, theme tokens from the business brand file, the escaping
+   helper, the data layer with validation and the value forms, error
+   display, print styles, a smoke test, a README, JSDoc shapes.
 9. **Machine checks** in the generated repo's `scripts/validate.sh`: format,
-   lint, secret scan, dependency allowlist, escaping check, accessibility
-   scan, screenshots at three widths, a row-count budget. Review cites them.
+   lint, browser-baseline check, JSDoc type check, secret scan, dependency
+   allowlist, escaping check, accessibility scan, screenshots at three
+   widths, a row-count budget. Review cites them.
 10. **The reference app**: the demo job board taken to Owned tool and kept
     in the plugin as the exemplar.
 
