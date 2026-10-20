@@ -55,11 +55,13 @@ $gitBefore = [bool](Find-Tool git)
 Ensure-Tool git  Git.Git           'Git for Windows' 'https://git-scm.com/download/win'
 Ensure-Tool node OpenJS.NodeJS.LTS 'Node.js'         'https://nodejs.org'
 
-# Claude desktop
-$claudeDir = Join-Path $env:LOCALAPPDATA 'AnthropicClaude'
-$claudeStore = $null
-try { $claudeStore = Get-AppxPackage -Name '*Claude*' -ErrorAction SilentlyContinue } catch { }
-if ((Test-Path $claudeDir) -or $claudeStore) { Ok 'Claude desktop is installed' }
+# Claude desktop: today a Store (MSIX) app that keeps its data in %LOCALAPPDATA%\Claude;
+# older installs lived in %LOCALAPPDATA%\AnthropicClaude.
+$claudeInstalled = $false
+foreach ($d in @('Claude', 'AnthropicClaude')) { if (Test-Path (Join-Path $env:LOCALAPPDATA $d)) { $claudeInstalled = $true } }
+try { if (Get-AppxPackage -Name '*Claude*' -ErrorAction SilentlyContinue) { $claudeInstalled = $true } } catch { }
+if (Get-Process -Name Claude -ErrorAction SilentlyContinue) { $claudeInstalled = $true }
+if ($claudeInstalled) { Ok 'Claude desktop is installed' }
 else { Todo 'install Claude desktop from https://claude.ai/download (if it is already installed, ignore this)' }
 
 if (-not $gitBefore -and (Find-Tool git)) {
