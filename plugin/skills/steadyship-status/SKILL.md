@@ -19,7 +19,8 @@ Steadyship work in plain language for a non-technical reader.
    owner"; otherwise say "whoever set Steadyship up". (The setup owner
    holds the accounts and did the one-time setup. They are not an
    engineering reviewer: judgement comes from the skills.)
-2. List every file in `docs/assessment/` except `README.md`, `TEMPLATE.md`
+2. List every file in `docs/assessment/` except `README.md`, `TEMPLATE.md`,
+   files whose name starts with `_` (Steadyship's own sample and template),
    and `SUMMARY.md`. For each, read the lines that start with `**Stage:**`,
    `**Relied on by:**`, `**Owner:**` and `**Next rung:**` (an older file
    may lack the last two: say "not assessed against the ladder yet").

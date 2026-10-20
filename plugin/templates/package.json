@@ -3,9 +3,19 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "smoke": "playwright test --config playwright.config.ts tests/smoke"
+    "smoke": "playwright test --config playwright.config.ts tests/smoke",
+    "test": "bash scripts/validate.sh",
+    "checks": "bash scripts/checks.sh"
   },
   "devDependencies": {
-    "@playwright/test": "^1.50.0"
-  }
+    "@playwright/test": "^1.50.0",
+    "prettier": "^3.6.2",
+    "eslint": "^10.13.0",
+    "@eslint/js": "^10.0.1",
+    "eslint-plugin-compat": "^6.0.2",
+    "typescript": "^5.8.3"
+  },
+  "browserslist": [
+    "baseline widely available"
+  ]
 }

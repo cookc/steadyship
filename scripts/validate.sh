@@ -18,7 +18,7 @@ if grep -rnI "Chris\|cookc" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json
   echo "real-person or account names found in plugin/ (above)"; exit 1
 fi
 echo "-- templates carry no customer apps"
-[ "$(ls plugin/templates/apps)" = "_sample" ] || { echo "plugin/templates/apps must contain only _sample"; exit 1; }
+[ "$(ls plugin/templates/apps | tr '\n' ' ')" = "_sample _template " ] || { echo "plugin/templates/apps must contain only _sample and _template"; exit 1; }
 echo "-- template steadyship.md names no business"
 if grep '^Business: ' plugin/templates/steadyship.md | grep -v '^Business: {{BUSINESS_NAME}}$'; then
   echo "plugin/templates/steadyship.md names a business (above)"; exit 1

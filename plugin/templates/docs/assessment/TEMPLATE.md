@@ -118,7 +118,7 @@ evidence; the first rung not done is the next one.
 |---|---|---|
 | 1 Name it | | this file |
 | 2 Own it | | an owner named above; the own-it facts recorded |
-| 3 Test it | | `tests/<app>.spec.ts` exists and its last run passed |
+| 3 Test it | | `tests/<app>/` exists and its last run passed |
 | 4 Move its data | | data in one master file on the shared drive, one writer |
 | 5 Share it | | a second person can open it |
 | 6 Protect it | | backup confirmed; sign-in where hosted |

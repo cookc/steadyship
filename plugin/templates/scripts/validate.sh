@@ -11,4 +11,6 @@ for f in apps/*/index.html; do
   echo "-- tests for $name"
   scripts/test.sh "$name"
 done
+echo "-- the bar's machine checks"
+scripts/checks.sh
 echo "OK"

@@ -31,7 +31,8 @@ Never change any file: this skill only reads.
    path each session), look for a folder with the same last name beside the
    repository folder; say which path you used.
    Identify the app from the request (`apps/<name>/`); if unclear, Glob
-   `apps/*/index.html` and pick the closest name, saying which.
+   `apps/*/index.html` (skipping `_sample` and `_template`) and pick the
+   closest name, saying which.
 
 2. **Read the app and the context**, in one turn:
    - the app in full (`apps/<name>/index.html` and any other files in it);

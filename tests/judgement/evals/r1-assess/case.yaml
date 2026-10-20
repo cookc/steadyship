@@ -10,7 +10,7 @@ context:
   scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
 execution:
   model: sonnet
-  max_turns: 40
+  max_turns: 50
   timeout_seconds: 600
   allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
 runs: 1

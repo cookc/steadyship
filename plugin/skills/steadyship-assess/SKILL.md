@@ -44,6 +44,7 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    - `tests/**/*` (which apps have a test of their own)
    - the shared drive: `<shared drive>/**/*` (spreadsheets, CSVs, notes,
      and any sub-folders such as quotes or invoices).
+   Folders under `apps/` whose name starts with `_` (`_sample`, `_template`) are Steadyship's own: skip them.
    If the business notes or shared drive are missing, say so and assess from
    the apps alone.
 

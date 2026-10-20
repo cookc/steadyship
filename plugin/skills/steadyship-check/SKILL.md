@@ -31,7 +31,7 @@ several, say "This folder isn't a Steadyship repository" and stop.
 1. Say in one line what is about to happen: three one-minute checks
    (environment, shared drive, tests), results recorded in
    `docs/spikes/RESULTS.md`. If `apps/` has no app yet (other than
-   `_sample`), say the tests check will be skipped until one is copied in.
+   `_sample` and `_template`, Steadyship's own), say the tests check will be skipped until one is copied in.
    The first tests run installs a test browser and can take a few minutes;
    say so.
 2. Run `bash scripts/check.sh`, adding `--app <name>` if the user named

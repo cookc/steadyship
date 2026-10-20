@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New app</title>
+    <link rel="stylesheet" href="../../lib/theme.css" />
+  </head>
+  <body>
+    <!-- The stage banner. Only a stage move changes it (see the bar). -->
+    <div class="stage-banner" data-stage="prototype" role="note">
+      Prototype. Not for anything the business depends on. Built by BUILDER, MONTH YEAR.
+    </div>
+    <main>
+      <h1>New app</h1>
+      <p id="intro">One sentence on what this app is for.</p>
+
+      <div id="messages" aria-live="polite"></div>
+
+      <form id="add" class="row no-print" autocomplete="off">
+        <label><span>Identifier</span><input name="id" required placeholder="e.g. J-1043" /></label>
+        <label><span>Name</span><input name="name" required /></label>
+        <label><span>Amount</span><input name="amount" inputmode="decimal" placeholder="0.00" /></label>
+        <label><span>Due</span><input name="due" type="date" /></label>
+        <button type="submit">Add</button>
+      </form>
+
+      <div class="table-wrap">
+        <table id="list">
+          <thead>
+            <tr>
+              <th>Identifier</th>
+              <th>Name</th>
+              <th class="num">Amount</th>
+              <th>Due</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p id="count" class="no-print"></p>
+    </main>
+    <footer>New app · version 0.1.0 · <span id="where"></span></footer>
+
+    <script src="../../lib/papaparse.min.js"></script>
+    <script src="../../lib/steadyship.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

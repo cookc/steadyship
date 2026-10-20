@@ -39,7 +39,8 @@ when it happens and change its stage and banner.
    a folder with the same last name beside the repository and say so).
    Identify the app (`apps/<name>/`); if unclear, Glob `apps/*/index.html`
    and pick the closest name, saying which. If the request names no app,
-   read every `docs/assessment/*.md` `**Next rung:**` line and reply with
+   read every `docs/assessment/*.md` `**Next rung:**` line (skipping files
+   starting with `_`) and reply with
    one line per app ("job board: next is 2 Own it"), then stop.
 
 2. **Read**, in one turn: the app in full; `docs/assessment/<name>.md`
@@ -89,7 +90,12 @@ when it happens and change its stage and banner.
    test pass by fixing the test, never by changing the app; if the app
    itself has a bug, report it as a finding and leave the test failing on
    that one assertion with a comment. If no shell, say the test is written
-   but not yet run. Mark rung 3 done (or "written, not run").
+   but not yet run. In the same rung, format the app once so the
+   repository's format check passes from now on (`npx prettier --write
+   apps/<name>` if a shell is available) and, if its script is inside
+   `index.html`, say in one line that moving it to `app.js` would let the
+   lint check see it; do not move it. Run `bash scripts/checks.sh <name>`
+   and quote any FAIL line. Mark rung 3 done (or "written, not run").
 
    **4 Move its data.** Needs the serve script: if
    `scripts/serve.mjs` is not in this repository and

@@ -14,7 +14,9 @@ tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
          tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/serve.mjs \
-         lib/papaparse.min.js lib/README.md lib/LICENSE-papaparse \
+         lib/papaparse.min.js lib/README.md lib/LICENSE-papaparse lib/theme.css lib/steadyship.js lib/globals.d.ts \
+         apps/_template/index.html apps/_template/app.js apps/_template/data.json apps/_template/README.md \
+         tests/_template/_template.spec.ts scripts/checks.sh eslint.config.mjs tsconfig.json .prettierrc .prettierignore docs/context/engineering.md \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
          docs/assessment/_sample.md docs/context/business/README.md docs/context/engineering.md docs/spikes/README.md docs/spikes/RESULTS.md \
@@ -23,7 +25,7 @@ for f in steadyship.md README.md .gitignore .gitattributes package.json playwrig
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
   [ -f "$DIR/$f" ] || fail "missing $f"
 done
-for s in scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
+for s in scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/checks.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
   [ -x "$DIR/$s" ] || fail "$s not executable"
 done
 # GitHub Actions "${{ secrets.X }}" is legitimate; only {{UPPER_CASE}} placeholders count.
@@ -110,7 +112,7 @@ git init -q --bare "$OUT/bare.git"
 
 if [ "${STEADYSHIP_TEST_SMOKE:-0}" = "1" ]; then
   echo "-- generated repo smoke: running (npm ci + scripts/validate.sh)"
-  ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "generated validate.sh"
+  ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh > "$OUT/validate.log" 2>&1 && tail -1 "$OUT/validate.log" | grep -q '^OK$' ) || { tail -25 "$OUT/validate.log"; fail "generated validate.sh"; }
   ( cd "$DIR" && export HOME="$OUT/home5" && scripts/check.sh --shared-drive "$OUT" --app _sample | tail -1 | grep -q '^RESULT: PASS$' ) || fail "check.sh with the sample app"
   grep -q '^| tests | PASS | [0-9-]* | _sample opened without errors' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record the tests row"
   echo "-- generated repo smoke: PASS"

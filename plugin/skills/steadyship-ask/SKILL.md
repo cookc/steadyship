@@ -134,6 +134,12 @@ the next person learns why it was built this way.
    honours the decision: no new browser permissions, file pickers, name
    lists or sync logic unless the decision needs them, and say what was
    left out and why.
+   **A new app starts from the template.** When the change is a new app,
+   copy `apps/_template/` to `apps/<name>/` (and `tests/_template/` to
+   `tests/<name>/`), then change what the app is for; the template already
+   carries the banner, the theme, the escaping helper, the value forms, the
+   edge checks, the messages, the long-list table, a README and tests.
+   Never start a new app from a blank file.
    **The lines you write meet the bar.** Before writing, list to yourself
    the bar rows the change touches (where the data lives, a new kind of
    value, a library, an edge where data comes in, a list that can grow)

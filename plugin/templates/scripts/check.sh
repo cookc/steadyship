@@ -5,7 +5,7 @@
 #   tests        - open one app in a test browser                  (scripts/smoke.sh)
 # Usage: scripts/check.sh [--shared-drive <folder>] [--app <name>] [--no-record]
 # The shared drive comes from steadyship.md unless given; the app is the first folder in apps/
-# (other than _sample) unless given. Rows are written to docs/spikes/RESULTS.md unless --no-record.
+# (other than _sample and _template, Steadyship's own) unless given. Rows are written to docs/spikes/RESULTS.md unless --no-record.
 # Last line: "RESULT: PASS" (no check failed; skips are listed) or "RESULT: FAIL <checks>".
 set -uo pipefail
 cd "$(dirname "$0")/.." || { echo "RESULT: FAIL could not find the repository folder"; exit 1; }
@@ -53,7 +53,7 @@ esac
 
 echo "== 3/3 Tests: open one app in a test browser =="
 if [ -z "$APP" ]; then
-  for d in apps/*/; do d="${d%/}"; d="${d#apps/}"; [ "$d" = "_sample" ] && continue; [ -f "apps/$d/index.html" ] && { APP="$d"; break; }; done
+  for d in apps/*/; do d="${d%/}"; d="${d#apps/}"; case "$d" in _*) continue;; esac; [ -f "apps/$d/index.html" ] && { APP="$d"; break; }; done
 fi
 if [ -z "$APP" ]; then
   RES[tests]=SKIP; NOTE[tests]="no app in apps/ yet"; echo "    no app in apps/ yet; skipped"
