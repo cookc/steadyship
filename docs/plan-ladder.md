@@ -80,8 +80,8 @@ missing rung. Assess, review, status and ask all look at one list.
    it.
 8. **The new-app template** carrying the free habits: structure, the
    stage banner, theme tokens from the business brand file, the escaping
-   helper, the data layer with validation and the value forms, error
-   display, print styles, a smoke test, a README, JSDoc shapes.
+   helper, the data layer with validation and the value forms, the table
+   helper that renders only the rows on screen, error display, print styles, a smoke test, a README, JSDoc shapes.
 9. **Machine checks** in the generated repo's `scripts/validate.sh`: format,
    lint, browser-baseline check, JSDoc type check, secret scan, dependency
    allowlist, escaping check, accessibility scan, screenshots at three
