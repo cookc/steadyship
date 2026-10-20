@@ -9,6 +9,7 @@ apps/**/data/
 apps/**/*.xlsx
 apps/**/*.csv
 apps/**/*.json
+!apps/*/data.json
 !apps/_sample/**
 # native CAD
 *.dwg

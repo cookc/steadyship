@@ -13,7 +13,8 @@ fail() { echo "FAIL: $*"; exit 1; }
 tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
-         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh \
+         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/serve.mjs \
+         lib/papaparse.min.js lib/README.md lib/LICENSE-papaparse \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
          docs/assessment/_sample.md docs/context/business/README.md docs/context/engineering.md docs/spikes/README.md docs/spikes/RESULTS.md \
@@ -45,6 +46,11 @@ git -C "$DIR" ls-files --error-unmatch .steadyship/manifest >/dev/null || fail "
 [ "$(git -C "$DIR" branch --show-current)" = "main" ] || fail "branch is not main"
 [ -z "$(git -C "$DIR" status --short)" ] || fail "tree not clean after init"
 git -C "$DIR" ls-files --eol scripts | grep -q 'w/crlf' && fail "CRLF in scripts" || true
+# an app's data manifest is tracked; its data files are not
+mkdir -p "$DIR/apps/x"; echo '{"master":"Jobs.csv"}' > "$DIR/apps/x/data.json"; echo 'a,b' > "$DIR/apps/x/Jobs.csv"
+[ -z "$(git -C "$DIR" check-ignore apps/x/data.json)" ] || fail "apps/x/data.json must not be ignored"
+[ -n "$(git -C "$DIR" check-ignore apps/x/Jobs.csv)" ] || fail "apps/x/Jobs.csv must be ignored"
+rm -rf "$DIR/apps/x"
 
 # second run into a non-empty dir must refuse
 set +e; "$ROOT/plugin/scripts/init.sh" "$DIR" --business x --setup-owner x --sponsor x --github-owner x --repo-name x --shared-drive x >"$OUT/again.log" 2>&1; rc=$?; set -e

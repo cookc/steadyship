@@ -99,7 +99,7 @@ Opinions, versioned here, overridable per business.
 | Choice | Default | Reason |
 |---|---|---|
 | Prototype and Owned tool stack | Vanilla HTML, CSS and JavaScript, one folder per app | What the builders already make; no build; opens from a folder |
-| CSV handling | Papa Parse, pinned | Quoting, commas and encodings are a solved problem |
+| CSV handling | Papa Parse, pinned, vendored in the repository's `lib/` | Quoting, commas and encodings are a solved problem; a local copy works offline and never changes under an app |
 | Dates | Native `Intl` and ISO strings; a date library only when arithmetic across time zones appears | Most date bugs come from parsing, not arithmetic |
 | Identifiers | The glossary's format, exactly; a new one is the next number in the master file, in that format. Random identifiers only for things nobody will ever read or type, and then `crypto.randomUUID()`, which every major browser has had since 2022 | Business identifiers belong to the business; `J-1043` is typed over the phone, a UUID is not |
 | Time zone | The business's zone name (`Pacific/Auckland`) recorded once in the business notes at setup, taken from the machine and confirmed at own-it; every moment stored with its offset from day one | New Zealand changes offset twice a year; a timestamp with no zone is wrong for half the year and nobody can say which half |

@@ -32,6 +32,8 @@ echo "-- CI Playwright pin matches the template lockfile"
 PIN="$(sed -n 's/.*playwright@\([0-9][0-9.]*\) install.*/\1/p' .github/workflows/validate.yml | head -1)"
 LOCK="$(grep -A1 -m1 '"node_modules/@playwright/test"' plugin/templates/package-lock.json | sed -n 's/.*"version": *"\([^"]*\)".*/\1/p')"
 [ -n "$PIN" ] && [ "$PIN" = "$LOCK" ] || { echo "CI pins playwright@$PIN but the template lockfile has $LOCK"; exit 1; }
+echo "-- the serve script"
+tests/test-serve.sh
 echo "-- generate a customer repo and test it"
 if [ "${STEADYSHIP_FULL:-0}" = "1" ]; then STEADYSHIP_TEST_SMOKE=1 tests/test-init.sh; else tests/test-init.sh; fi
 echo "OK"
