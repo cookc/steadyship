@@ -24,18 +24,20 @@ for your setup and follow it top to bottom. New here? Start with
 | Mac or Linux | Claude Code in a terminal | [Mac or Linux, Claude Code](docs/quickstart/mac-linux-claude-code.md) |
 
 Every page has the same four steps: get the computer ready, add the plugin,
-set it up for your business, and (if you have no apps to hand) try the demo
-business. The last two are the same on every setup; only the first two
-differ.
+set it up for your business (one prompt checks the setup, one lists and
+assesses your apps, one reviews an app), and, if you have no apps to hand,
+try the demo business. The last two are the same on every setup; only the
+first two differ.
 
 ## What you get
 
 - A repository of your own, self-contained: it works even without the plugin.
 - A status check: what apps you have, what each is for, what is at risk.
-- Spikes: one-minute checks that answer one question each about your own
-  setup (can Claude reach GitHub from here, read the shared drive, run an
-  app?) with a plain PASS, FAIL or SKIP, recorded so nobody has to wonder
-  again. A FAIL is the problem found before anything was built on it.
+- One prompt, "Check this computer": three one-minute checks of your own
+  setup (can Claude reach GitHub from here, read and write the shared
+  drive, open one of your apps?), each a plain PASS, FAIL or SKIP, recorded
+  so nobody has to wonder again. A FAIL is the problem found before
+  anything was built on it.
 - An assessment of each app, written into `docs/assessment/`, from prototype
   to something the business can run on.
 - Reviews, and the questions an engineer would ask before a change is built,
@@ -44,7 +46,7 @@ differ.
 ## For developers
 
 - `plugin/` is the Claude plugin: `skills/` (`steadyship-init`, `-demo`,
-  `-status`, `-spike`, `-assess`, `-review`, `-ask`), the scaffolder
+  `-status`, `-check`, `-assess`, `-review`, `-ask`), the scaffolder
   `scripts/init.sh`, `templates/` for the generated customer repository, and
   `demo/` (the mock customer, see `plugin/demo/README.md`).
 - `.claude-plugin/marketplace.json` makes this repository the plugin

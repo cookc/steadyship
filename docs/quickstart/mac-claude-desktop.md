@@ -38,42 +38,33 @@ Plugins, **Add**, **Upload plugin**, and choose the zip.
    GitHub repository is an optional last step; it only happens if you say
    yes.
 3. Copy your apps into the new folder's `apps/`, one folder per app. Finder is fine for this.
-4. Then say these, one at a time, waiting for each to finish:
-   1. **Run steadyship status**
-   2. **run spike 0**
-   3. **run spike b**
-   4. **run spike c, the app is <one of your apps>**
-   5. **What apps do we have and where is the same information kept twice?**
-   6. **review the <app>**
-5. From then on, ask for changes the way you normally would. Steadyship asks
+4. Say **Check this computer**. Three one-minute checks run in one go: can
+   Claude reach GitHub from here, can it read and write the shared drive
+   your apps depend on, can it open one of your apps in a test browser.
+   Each ends in a plain `PASS`, `FAIL` or `SKIP`, and the results are
+   written into the repository so nobody has to wonder again. A `FAIL` is
+   good news arriving early: the thing that would have bitten you three
+   months in, found before anything was built on top of it.
+5. Say **What apps do we have and where is the same information kept
+   twice?** Steadyship lists your apps by name and writes an assessment of
+   each into `docs/assessment/`.
+6. Say **Review the <app>**, using one of the app names from that list, for
+   a plain Yes / No / Prototype verdict on whether the team can rely on it.
+7. From then on, ask for changes the way you normally would. Steadyship asks
    one or two questions first (what the new thing attaches to, where its data
    should live, whether something you already have does it), records the
    answer, and then builds.
-
-**What a spike is, and why it is worth a minute.** "Spike" is engineering
-slang for a short, throwaway experiment that answers one question before
-you commit to anything. Each Steadyship spike answers one question about
-*your* setup, on your computer, in about a minute: can Claude reach GitHub
-from here? Can it read the shared drive your apps depend on, and write to
-it, without touching anything else? Can it open one of your apps and tell
-you whether it works? Each ends in one word, `PASS`, `FAIL` or `SKIP`, and
-the result is written into the repository so nobody has to wonder again. A
-`FAIL` is good news arriving early: it is the thing that would have bitten
-you three months in, found before anything was built on top of it.
-
-The "what apps do we have" question is answered from the assessment
-Steadyship writes into `docs/assessment/`, and the review gives a plain
-Yes / No / Prototype verdict on whether an app is good enough for the team
-to rely on.
 
 ## 4. Just looking? Try the demo business
 
 No apps to hand yet? Demo Boatworks is a made-up boat builder with six apps
 its staff built with Claude, and the spreadsheets they run on. In a new,
 empty folder say **Try Steadyship with the demo business**, then the same
-prompts as step 3 (use `job-board` as the app for spike c and the review).
+prompts as step 3 from "Check this computer" on. Its app list includes
+`job-board`, so **Review the job board** is a good first review.
 
-Two Mac-specific notes. Spike 0 may say persistence is "unknown" the first
-time: run it again in a new chat to get the answer. Spike c may FAIL because
-the test browser cannot be downloaded in that environment; Steadyship records
-that and the tests run on GitHub instead once the repository is there.
+Two Mac-specific notes. The environment check may say persistence is
+"unknown" the first time: run "Check this computer" again in a new chat to
+get the answer. The tests check may FAIL because the test browser cannot be
+downloaded in that environment; Steadyship records that and the tests run on
+GitHub instead once the repository is there.

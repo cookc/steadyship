@@ -1,4 +1,4 @@
-# Spike d — one app, hosted, behind sign-in, opened by someone else
+# Hosting check — one app, hosted, behind sign-in, opened by someone else
 
 **Question:** can one existing app be served from somewhere that isn't a
 laptop, require a Microsoft sign-in, and be opened by a second staff member?
@@ -15,7 +15,7 @@ can open it, without paying for the Standard tier.
 
 ## Steps ({{SETUP_OWNER}})
 
-1. Pick the app: the simplest one that passed spike c. Call it `<name>`.
+1. Pick the app: the simplest one that passed the tests check. Call it `<name>`.
 2. Azure portal → Create → Static Web App: Plan **Free**; Source **GitHub**;
    repo `{{REPO_NAME}}`, branch `main`; Build preset **Custom**; app location
    `apps/<name>`; output location empty. Create. (Azure adds a workflow
@@ -39,13 +39,13 @@ the app URL. The app should load.
 
 ## What Claude does
 
-Nothing to run. This spike is done by {{SETUP_OWNER}} in the Azure portal and GitHub. If asked to run spike d, reply with the Pass criteria and the 'If it fails' options from this runbook, and ask which outcome occurred.
+Nothing to run. This check is done by {{SETUP_OWNER}} in the Azure portal and GitHub. If asked to check hosting, reply with the Pass criteria and the 'If it fails' options from this runbook, and ask which outcome occurred.
 
 ## Pass
 
 Second staff member sees the app; an uninvited signed-in account gets 403;
 a logged-out browser is redirected to login.
-Paste: `| d | PASS | <date> | SWA Free, invited roles, url: <url> |`
+Paste: `| hosting | PASS | <date> | SWA Free, invited roles, url: <url> |`
 
 ## If it fails
 

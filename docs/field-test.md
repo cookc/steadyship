@@ -56,16 +56,15 @@ do not type and do not pre-empt. Order:
    real shared drive path and the sponsor's name. Decline GitHub for now
    (local only) unless they already have an account and want it.
 4. Copy their two chosen apps into `apps/` (File Explorer, their hands).
-5. "Run steadyship status", "run spike 0", "run spike b", "run spike c, the
-   app is <one of theirs>".
-   Spike b against the real shared drive is the single most important
-   result of the day: a mapped drive, a SharePoint-synced folder and
-   OneDrive "files on demand" placeholders can each behave differently.
-   Spike c on one of their apps tells us whether their code runs at all
-   under a test browser.
+5. "Check this computer". The shared-drive check against the real drive is
+   the single most important result of the day: a mapped drive, a
+   SharePoint-synced folder and OneDrive "files on demand" placeholders can
+   each behave differently. The tests check on one of their apps tells us
+   whether their code runs at all under a test browser.
 6. "What apps do we have and where is the same information kept twice?"
    Then read the `docs/assessment/` files with them.
-7. "Review <one of their apps>", the Yes / No / Prototype verdict. Ask them
+7. "Review <one of their apps>", using a name from the list the previous
+   answer gave, for the Yes / No / Prototype verdict. Ask them
    to explain the verdict back in their own words.
 
 What we are watching for: where they stop reading and start guessing; which
@@ -102,10 +101,9 @@ Ask, and write the answers down verbatim:
 | A2 plugin | | | |
 | A3 setup | | | |
 | A4 copy apps | | | |
-| A5 status | | | |
-| A5 spike 0 | | | |
-| A5 spike b (real drive) | | | |
-| A5 spike c (their app) | | | |
+| A5 check: environment | | | |
+| A5 check: shared drive (real) | | | |
+| A5 check: tests (their app) | | | |
 | A6 assessment | | | |
 | A7 review | | | |
 | B real change | | | |
@@ -120,7 +118,8 @@ touch.
 
 - Every quick-start prompt completes on their own repository with no typing
   by us.
-- Spike b passes on the real shared drive, and nothing on it was altered.
+- The shared-drive check passes on the real drive, and nothing on it was
+  altered.
 - At least one skill answer changed what the test user decided to build or
   rely on, in their words.
 - The test user can say who the sponsor is and what "prototype" means for
@@ -134,8 +133,8 @@ Anything short of this is not a failure of the test, it is the finding.
 |---|---|
 | Plugins hidden on the Team plan | Org admin enables plugins before the day; otherwise the demo on the setup owner's personal account, and note it |
 | Marketplace install or update fails | Upload plugin from the USB zip |
-| No winget, or antivirus blocks the Playwright browser | Spike c records FAIL with the CI fallback; carry on |
-| Shared drive is a synced folder with placeholders | Spike b tells us; record exactly what the drive is |
+| No winget, or antivirus blocks the Playwright browser | The tests check records FAIL with the CI fallback; carry on |
+| Shared drive is a synced folder with placeholders | The shared-drive check tells us; record exactly what the drive is |
 | Their app reads a file the assessment cannot find | Ask where it really lives; that is a finding about master files |
 | Session overruns | Stop at 90 minutes; Part C always happens |
 

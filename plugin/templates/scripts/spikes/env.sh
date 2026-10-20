@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Spike 0: what can this environment do? Reports findings; only a missing git fails it.
+# Environment check: what can this environment do? Reports findings; only a missing git fails it.
 set -uo pipefail
 cd "$(dirname "$0")/../.." || { echo "RESULT: FAIL could not find the repository folder"; exit 1; }
 
@@ -58,7 +58,7 @@ elif [ -f "$RMARK" ]; then
   date +%Y-%m-%d > "$MARK" 2>/dev/null || true
 else
   if date +%Y-%m-%d > "$MARK" 2>/dev/null; then
-    echo "unknown: persistence — first run; run spike 0 again in a NEW session to find out"
+    echo "unknown: persistence — first run; run "Check this computer" again in a NEW chat to find out"
     pers=unknown
   else
     echo "unknown: persistence — could not write to $HOME"
@@ -111,5 +111,5 @@ echo "== Working directory =="
 echo "ok: working directory is $(pwd)"
 if [ -f steadyship.md ]; then echo "ok: steadyship.md is present here"; else echo "missing: steadyship.md is not in this folder"; fi
 
-echo "Spike 0 summary: tools $tools/6, network $net/5, persistence $pers, gh $gh"
+echo "Environment summary: tools $tools/6, network $net/5, persistence $pers, gh $gh"
 echo "RESULT: PASS"

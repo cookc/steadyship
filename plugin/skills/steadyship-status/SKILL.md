@@ -1,6 +1,6 @@
 ---
 name: steadyship-status
-description: Use when asked for "steadyship status", to prove the plugin is installed, or to see how far the assessment and spikes have got. Reads docs/assessment and docs/spikes/RESULTS.md and reports in plain language.
+description: Use when asked for "steadyship status", to prove the plugin is installed, or to see how far the assessment and checks have got. Reads docs/assessment and docs/spikes/RESULTS.md and reports in plain language.
 ---
 
 # Steadyship status
@@ -23,7 +23,7 @@ Steadyship work in plain language for a non-technical reader.
    and `SUMMARY.md`. For each, read the line that starts with `**Stage:**`
    and the line that starts with `**Relied on by:**`.
 3. Read `docs/spikes/RESULTS.md` if it exists. If it does not exist,
-   report spikes as 'not started' and make the next step 'Ask the setup owner to set
+   report checks as 'not started' and make the next step 'Ask the setup owner to set
    up docs/spikes/RESULTS.md'. Count rows whose Result
    column is PASS, FAIL, SKIP (could not be attempted yet; the Note says
    what is missing), or blank (not run).
@@ -32,15 +32,18 @@ Steadyship work in plain language for a non-technical reader.
    **Steadyship is installed and working.**
 
    Apps assessed: N (list each as "name — stage — relied on by").
-   Spikes: X passed, Y failed, S waiting on setup, Z not yet run.
-   Next step: if any spike row is blank, "Run spike <letter of the first blank row, reading RESULTS.md top to bottom (the table starts with 0)>"
-   and, if any row is FAIL, add "then go through the failed spike(s) with
-   the setup owner: <letters>". If no rows are blank and any is SKIP: "Ask
-   the setup owner to finish the setup for spike <letters> (<the Note>),
-   then run it again." If no rows are blank or SKIP and any is FAIL: "Go through the
-   failed spike(s) with the setup owner: <letters>". If all rows are PASS: "Review
-   RESULTS.md with the sponsor and the setup owner and decide the next stage." (If RESULTS.md
-   is missing, see step 3.)
+   Checks: X passed, Y failed, S waiting on setup, Z not yet run.
+   Next step: if any of the rows environment, shared-drive or tests is
+   blank: 'Say "Check this computer" (three one-minute checks of this
+   setup; the results are recorded for you)'. Otherwise, if any row is
+   FAIL: 'Go through the failed check(s) with the setup owner: <names>'.
+   Otherwise, if any row is SKIP: 'Ask the setup owner to finish the setup
+   for <names> (<the Note>), then run it again'. Otherwise, if github,
+   hosting or team is blank: 'When the business is ready: check GitHub
+   (needs the repository on GitHub), check hosting, check the team'. If
+   all rows are PASS: 'Review RESULTS.md with the sponsor and the setup
+   owner and decide the next stage.' (If RESULTS.md is missing, see step 3.)
+   Name checks by their row names, never by letters.
    Setup owner: the setup owner's name (see step 1).
 
 ## Rules

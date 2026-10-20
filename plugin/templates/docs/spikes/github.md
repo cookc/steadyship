@@ -1,4 +1,4 @@
-# Spike a — commit and push without a terminal
+# GitHub check — commit and push without a terminal
 
 **Question:** can a local Claude session on the builder's machine push to the
 private GitHub repo using credentials set up once, and do those credentials
@@ -36,7 +36,7 @@ local session, `{{REPO_NAME}}` folder attached.
    and expiring in 30 days. **The token passes through the chat** and so
    sits in the transcript and tool logs. Tell Claude never to put it in a
    URL, a file or the remote (a token in the remote URL lands in
-   `.git/config` on the builder's disk). Revoke the token after the spike;
+   `.git/config` on the builder's disk). Revoke the token after the check;
    the 30-day expiry is only the backstop. V0 uses {{SETUP_OWNER}}'s token, not the
    builder's — a recorded V0 shortcut, to be replaced by per-builder sign-in later.
    **Alternative, if available (unverified):** {{SETUP_OWNER}} opens a terminal they
@@ -46,7 +46,7 @@ The last command should list branches; if it does, setup is done.
 
 ## Builder runs
 
-Type: `run spike a` (or, without the plugin: "Run `bash
+Say: `check GitHub` (or, without the plugin: "Run `bash
 scripts/spikes/git-push.sh` and tell me in plain language if it passed.")
 
 ## What Claude does
@@ -58,15 +58,15 @@ commit, pushes it, deletes it. Last line `RESULT: PASS` or `RESULT: FAIL`.
 
 `RESULT: PASS`. **Then close the session, open a new one, and run it
 again.** Both must pass — the second proves credentials persist.
-Paste: `| a | PASS | <date> | persisted across sessions: yes/no |`
+Paste: `| github | PASS | <date> | persisted across sessions: yes/no |`
 
 ## If it cannot be attempted yet
 
 `RESULT: SKIP no GitHub link yet` → the repository has no GitHub address;
 the one-time setup above has not been done. Paste
-`| a | SKIP | <date> | no GitHub link yet |` and ask {{SETUP_OWNER}} to do
+`| github | SKIP | <date> | no GitHub link yet |` and ask {{SETUP_OWNER}} to do
 the setup (or to tell Claude "set up GitHub for this repository"). Then
-run the spike again. This is not a failure.
+run the check again. This is not a failure.
 
 ## If it fails
 

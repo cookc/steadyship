@@ -1,4 +1,4 @@
-# Spike 0 — what can this environment do?
+# Environment check — what can this environment do?
 
 **Question:** in the place where Claude runs our scripts, which tools are
 installed, which websites can it reach, and does it remember files from one
@@ -9,7 +9,7 @@ the `{{REPO_NAME}}` folder attached. Nothing to set up first.
 
 ## Builder runs
 
-Type: `run spike 0` (or, without the plugin: "Run `bash
+Say: `Check this computer` (runs this together with the shared drive and tests checks; or, without the plugin: "Run `bash
 scripts/spikes/env.sh` and tell me in plain language what this environment
 can do.").
 
@@ -25,14 +25,14 @@ is `RESULT: PASS` or `RESULT: FAIL`, and the line before it is a summary.
 
 `RESULT: PASS` means the check ran and the report is complete. Blocked or
 missing items are findings, not failures. Paste:
-`| 0 | PASS | <date> | <the summary line> |`
+`| environment | PASS | <date> | <the summary line> |`
 
 **Run it twice.** The first run leaves a marker file in the environment's
 home and one in this folder, and reports persistence as `unknown`. Run it
 again in a NEW session (close the first one). The second run says either
 "survived" (persistence yes: tools installed once stay installed) or "did
 NOT survive" (persistence no: the test tools and the GitHub tool are
-reinstalled every session, and spike a's credentials will not persist).
+reinstalled every session, and GitHub credentials will not persist).
 Record the second run's summary line in the note.
 
 ## If it fails
@@ -40,4 +40,4 @@ Record the second run's summary line in the note.
 - "git is missing" → this environment cannot run Steadyship's checks. Tell
   {{SETUP_OWNER}}; nothing else will work here.
 - Many `blocked:` lines → the environment limits which websites it can
-  reach. Send the output to {{SETUP_OWNER}}; later spikes (a, c, d) depend on it.
+  reach. Send the output to {{SETUP_OWNER}}; the GitHub, tests and hosting checks depend on it.

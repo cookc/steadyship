@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Spike (a): can this session commit and push to the shared private repo?
+# GitHub check: can this session commit and push to the shared private repo?
 # No args. Pushes a marker commit to a throwaway branch and deletes it.
 # The repo is always put back on the branch (or commit) it started on.
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "RESULT: FAIL not inside a git repository"; exit 1; }
-REMOTE="$(git remote get-url origin 2>/dev/null)" || { echo "RESULT: SKIP no GitHub link yet — the one-time setup in docs/spikes/a-git.md has not been done (ask Claude to 'set up GitHub for this repository')"; exit 2; }
+REMOTE="$(git remote get-url origin 2>/dev/null)" || { echo "RESULT: SKIP no GitHub link yet — the one-time setup in docs/spikes/github.md has not been done (ask Claude to 'set up GitHub for this repository')"; exit 2; }
 # Never print credentials that may be embedded in the URL.
 echo "Remote: $(printf '%s' "$REMOTE" | sed -E 's#//[^/@]*@#//#')"
 # Per-command identity only when none is configured (never persisted).
 if [ -z "$(git config user.email)" ]; then
-  GIT_ID=(-c user.name="Steadyship spike" -c user.email="steadyship-spike@example.invalid")
+  GIT_ID=(-c user.name="Steadyship check" -c user.email="steadyship-check@example.invalid")
 else
   GIT_ID=()
 fi
@@ -35,7 +35,7 @@ fail() { cleanup; echo "RESULT: FAIL $1"; exit 1; }
 
 echo "Checking we can read the remote ..."
 git ls-remote --heads origin >/dev/null 2>&1 || fail "cannot read the remote (no credentials or no network)"
-git diff --cached --quiet || fail "you have changes staged — ask {{SETUP_OWNER}} before running this spike"
+git diff --cached --quiet || fail "you have changes staged — ask {{SETUP_OWNER}} before running this check"
 echo "Creating a throwaway branch $BR with one marker commit ..."
 git checkout -q -b "$BR" || fail "could not create a branch"
 BR_MADE=1

@@ -1,4 +1,4 @@
-# Spike c — run a real smoke test and say what happened
+# Tests check — run a real smoke test and say what happened
 
 **Question:** inside the builder's local session, can Claude install the
 test tools, run the smoke test against one real app, and report the result
@@ -10,7 +10,7 @@ folder attached, with at least one real app copied to `apps/<name>/` by
 
 ## Builder runs
 
-Type: `run spike c` and when asked which app, give its folder name.
+Say: `Check this computer` (or `check the tests, the app is <name>`). Without a name, the first app in `apps/` is used.
 (Without the plugin: "Run `bash scripts/smoke.sh apps/<name>/index.html` and
 tell me in plain language whether the app passed.")
 
@@ -23,15 +23,15 @@ minutes).
 ## Pass
 
 `RESULT: PASS`, and Claude's explanation is something the builder can
-repeat back. Paste: `| c | PASS | <date> | app: <name>; install took <minutes> min (or "not measured") |`
+repeat back. Paste: `| tests | PASS | <date> | app: <name>; install took <minutes> min (or "not measured") |`
 Replace every `<…>` before pasting.
 
-`RESULT: FAIL the app has errors` is **also a pass for the spike** (the
+`RESULT: FAIL the app has errors` is **also a pass for the check** (the
 tooling worked; the app has a real error — note it in the app's
-assessment). Paste: `| c | PASS | <date> | tooling ok; app has real errors — note in its assessment |`
+assessment). Paste: `| tests | PASS | <date> | tooling ok; app has real errors — note in its assessment |`
 
-Only `the app has errors` counts as a spike pass. `could not start` (test
-browser) and `could not find` (app path) are spike FAILs.
+Only `the app has errors` counts as a pass. `could not start` (test
+browser) and `could not find` (app path) are check FAILs.
 
 ## If it fails
 

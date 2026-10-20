@@ -61,7 +61,7 @@ rebuild.
 wrong with home-made apps is not the code; it is the setup around it. The
 shared drive that turns out to be read-only from one PC. The app that only
 ever worked on the laptop it was built on. So before any of the above,
-Steadyship runs a handful of one-minute checks it calls spikes, each
+one prompt, "Check this computer", runs three one-minute checks, each
 answering one question about your setup with a plain PASS, FAIL or SKIP:
 can it reach GitHub from here, can it read and write the shared drive your
 apps depend on, can it open one of your apps and tell you whether it works.

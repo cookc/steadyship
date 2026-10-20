@@ -1,23 +1,24 @@
-# Spike results — go/no-go
+# Check results
 
-Filled in on the partner's machine. One row per spike. Result is PASS,
-FAIL, SKIP (could not be attempted yet — the note says what is missing),
-or blank (not run). The `steadyship-status` skill reads this table.
+One row per check. Result is PASS, FAIL, SKIP (could not be attempted yet;
+the note says what is missing), or blank (not run). "Check this computer"
+fills the first three rows itself; the other three are recorded when they
+are run. The `steadyship-status` skill reads this table.
 
-| Spike | Result | Date | Note |
+| Check | Result | Date | Note |
 |---|---|---|---|
-| 0 | | | |
-| e | | | |
-| a | | | |
-| b | | | |
-| c | | | |
-| d | | | |
+| environment | | | |
+| shared-drive | | | |
+| tests | | | |
+| github | | | |
+| hosting | | | |
+| team | | | |
 
 ## Decision ({{SETUP_OWNER}}, after all rows are filled)
 
 Every PASS, or a FAIL with its fallback accepted below, means the setup can go ahead.
 A FAIL without an accepted fallback means stop and talk to {{SETUP_OWNER}}.
 
-| Spike | Fallback accepted? | What changes |
+| Check | Fallback accepted? | What changes |
 |---|---|---|
 | | | |

@@ -46,7 +46,7 @@ Run:
       --github-owner "<github owner>" --repo-name "<repo name>" --shared-drive "<shared drive>"
 
 If the shared drive is "none", pass `--shared-drive none` and tell the
-person that spike b will be marked "not applicable".
+person that the shared drive check will be skipped.
 
 Pass every value in double quotes. If the shared drive path ends in a
 backslash (for example `Z:\`), drop the trailing backslash (`Z:`) or write
@@ -70,7 +70,7 @@ FAIL (e.g. a value was left blank), fix the value if you can, otherwise stop.
 
 Say: "Your Steadyship repository is ready at <dir>. It is self-contained —
 it works even without this plugin." Then list the three things in it that
-matter now: `docs/spikes/README.md` (the go/no-go checks), `docs/assessment/README.md`
+matter now: `docs/spikes/README.md` (the checks), `docs/assessment/README.md`
 (how to assess each app), `steadyship.md` (the facts you gave me).
 
 ## 4. GitHub (offer; never do it silently)
@@ -140,7 +140,7 @@ Otherwise ask once: "Shall I create the private GitHub repository
     repository; the stored credential (`~/.git-credentials`) lives outside
     the repository.
 
-Then: "Next step: open `docs/spikes/README.md` and run spike 0 (a short check of what this environment can do), then spike e."
+Then: "Next step: copy your apps into `apps/`, one folder each, then say Check this computer (three one-minute checks of this setup; results are recorded for you)."
 
 ## Rules
 

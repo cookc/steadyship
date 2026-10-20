@@ -18,7 +18,7 @@ if runs git; then ok "Git ($(git --version))"; else
   esac
 fi
 if runs node; then ok "Node.js ($(node --version))"
-else note "Node.js is not installed; only spike c (running an app's tests) needs it: https://nodejs.org"; fi
+else note "Node.js is not installed; only the tests check (opening an app in a test browser) needs it: https://nodejs.org"; fi
 
 if runs claude; then
   ok "Claude Code ($(claude --version 2>&1 | head -1))"

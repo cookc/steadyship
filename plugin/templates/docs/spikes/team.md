@@ -1,4 +1,4 @@
-# Spike e — org-wide plugin install
+# Team check — org-wide plugin install
 
 **Question:** when the Team owner sets the Steadyship plugin to "Installed
 by default", does it appear for a second member without them doing anything,
@@ -33,12 +33,12 @@ RESULTS.md and replies starting **"Steadyship is installed and working."**
 ## Pass
 
 The reply starts with that sentence and reports at least 1 app assessed
-(`_sample`). Paste into RESULTS.md: `| e | PASS | <date> | appeared for <builder> after restart |`
+(`_sample`). Paste into RESULTS.md: `| team | PASS | <date> | appeared for <builder> after restart |`
 
 ## If it cannot be attempted yet
 
-One person with one account cannot run this spike. Paste
-`| e | SKIP | <date> | needs a Team owner and a second account |` and come
+One person with one account cannot run this check. Paste
+`| team | SKIP | <date> | needs a Team owner and a second account |` and come
 back to it when both are available. This is not a failure.
 
 ## If it fails

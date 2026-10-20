@@ -1,4 +1,4 @@
-# Spike b — the shared drive, from file tools and from a script
+# Shared drive check — from file tools and from a script
 
 **Question:** can a local session see the real NAS/SharePoint folder where
 the spreadsheets live (1) through Claude's file tools and (2) from a bash
@@ -14,7 +14,7 @@ Part 1 — type: "In the attached {{SHARED_DRIVE}} folder, list the first five f
 a file called steadyship-spike.txt containing today's date, read it back to
 me, then delete it."
 
-Part 2 — type: `run spike b` and when asked for the path, give the folder
+Part 2 — say: `Check this computer` (or `check the shared drive`); if the drive is not visible and Claude asks for the path, give the folder
 name as you attached it (Claude will work out how the VM sees it; if it
 can't, that is the finding). Without the plugin: "Run
 `bash scripts/spikes/nas-rw.sh <the folder path>` and tell me in plain
@@ -28,8 +28,8 @@ Part 1 uses file tools only. Part 2 runs `scripts/spikes/nas-rw.sh <dir>`.
 ## Pass
 
 Part 1: all four actions work. Part 2: `RESULT: PASS`.
-Paste: `| b | PASS | <date> | file tools: ok; script: ok |`
-If Part 1 passes and Part 2 fails, record `| b | FAIL | <date> | file tools: ok; script: not visible |` — this is the known Windows mapped-drive bug.
+Paste: `| shared-drive | PASS | <date> | file tools: ok; script: ok |`
+If Part 1 passes and Part 2 fails, record `| shared-drive | FAIL | <date> | file tools: ok; script: not visible |` — this is the known Windows mapped-drive bug.
 
 ## If it fails
 

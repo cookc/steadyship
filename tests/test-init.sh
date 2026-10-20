@@ -13,16 +13,16 @@ fail() { echo "FAIL: $*"; exit 1; }
 tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
-         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh \
+         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/check.sh \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
          docs/assessment/_sample.md docs/spikes/README.md docs/spikes/RESULTS.md \
-         docs/spikes/0-env.md docs/spikes/a-git.md docs/spikes/b-nas.md docs/spikes/c-tests.md docs/spikes/d-hosting.md \
-         docs/spikes/e-plugin.md docs/spikes/hosting/staticwebapp.config.json \
+         docs/spikes/environment.md docs/spikes/github.md docs/spikes/shared-drive.md docs/spikes/tests.md docs/spikes/hosting.md \
+         docs/spikes/team.md docs/spikes/hosting/staticwebapp.config.json \
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
   [ -f "$DIR/$f" ] || fail "missing $f"
 done
-for s in scripts/validate.sh scripts/smoke.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
+for s in scripts/validate.sh scripts/smoke.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
   [ -x "$DIR/$s" ] || fail "$s not executable"
 done
 # GitHub Actions "${{ secrets.X }}" is legitimate; only {{UPPER_CASE}} placeholders count.
@@ -83,6 +83,17 @@ set +e; "$ROOT/plugin/scripts/init.sh" 'C:\Users\x\repo' --business b --setup-ow
 # a tool whose --version fails (Windows' Store placeholder python3) must count as missing, not ok
 FAKE="$OUT/fakebin"; mkdir -p "$FAKE"; printf '#!/bin/sh\necho "Python was not found; run without arguments to install from the Microsoft Store"; exit 9009\n' > "$FAKE/python3"; chmod +x "$FAKE/python3"
 ( cd "$DIR" && export HOME="$OUT/home4" && mkdir -p "$HOME" && PATH="$FAKE:$PATH" scripts/spikes/env.sh | grep '^missing: python3 (a shortcut exists' >/dev/null ) || fail "env.sh should treat a non-running python3 shortcut as missing"
+# the combined check: shared drive given, no app yet -> environment PASS, shared-drive PASS, tests SKIP, rows recorded
+( cd "$DIR" && export HOME="$OUT/home5" && mkdir -p "$HOME" && scripts/check.sh --shared-drive "$OUT" > "$OUT/check.log" 2>&1 ) || { cat "$OUT/check.log"; fail "check.sh should PASS with a visible shared drive and no app"; }
+tail -1 "$OUT/check.log" | grep -q '^RESULT: PASS$' || fail "check.sh last line should be RESULT: PASS"
+grep -q '^| environment | PASS | [0-9-]* | ' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record the environment row"
+grep -q '^| shared-drive | PASS | [0-9-]* | read, write and delete ok' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record the shared-drive row"
+grep -q '^| tests | SKIP | [0-9-]* | no app in apps/ yet' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record tests as SKIP without an app"
+[ "$(grep -c '^| environment |' "$DIR/docs/spikes/RESULTS.md")" = 1 ] || fail "check.sh must replace the row, not add one"
+grep -q '^| github | | | |' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh must leave the other rows alone"
+# the recorded Windows-style drive is reported as not visible here, and that is a FAIL, not a crash
+( cd "$DIR" && export HOME="$OUT/home5" && scripts/check.sh --no-record > "$OUT/check2.log" 2>&1 ) || true; tail -1 "$OUT/check2.log" | grep -q '^RESULT: FAIL shared-drive$' || { cat "$OUT/check2.log"; fail "check.sh with an invisible drive should FAIL shared-drive only"; }
+grep -q '^| shared-drive | PASS |' "$DIR/docs/spikes/RESULTS.md" || fail "--no-record must not touch RESULTS.md"
 # spike a without a GitHub link is SKIP (not set up), never FAIL
 ( cd "$DIR" && { scripts/spikes/git-push.sh || true; } | tail -1 | grep -q '^RESULT: SKIP' ) || fail "git-push without a remote should SKIP"
 git init -q --bare "$OUT/bare.git"
@@ -91,6 +102,8 @@ git init -q --bare "$OUT/bare.git"
 if [ "${STEADYSHIP_TEST_SMOKE:-0}" = "1" ]; then
   echo "-- generated repo smoke: running (npm ci + scripts/validate.sh)"
   ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "generated validate.sh"
+  ( cd "$DIR" && export HOME="$OUT/home5" && scripts/check.sh --shared-drive "$OUT" --app _sample | tail -1 | grep -q '^RESULT: PASS$' ) || fail "check.sh with the sample app"
+  grep -q '^| tests | PASS | [0-9-]* | _sample opened without errors' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record the tests row"
   echo "-- generated repo smoke: PASS"
   "$ROOT/plugin/demo/populate.sh" "$DIR" "$OUT/share" | tail -1 | grep -q '^RESULT: PASS' || fail "fixture populate"
   ( cd "$DIR" && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "fixture apps smoke"

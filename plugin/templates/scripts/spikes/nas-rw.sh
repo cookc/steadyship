@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Spike (b): can a script in Claude's VM read and write the shared drive?
+# Shared drive check: can a script in Claude's VM read and write the shared drive?
 # Usage: scripts/spikes/nas-rw.sh <directory on the shared drive>
 set -uo pipefail
 DIR="${1:-}"

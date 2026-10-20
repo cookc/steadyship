@@ -73,17 +73,17 @@ Ten minutes, whenever suits:
 You'll type a handful of plain sentences into Claude, one at a time:
 
 - "Set up Steadyship for [the business]"
-- "Run steadyship status", "run spike 0", "run spike b", "run spike c"
+- "Check this computer"
 - "What apps do we have and where is the same information kept twice?"
-- "Review the [app]"
+- "Review the [one of your apps, by the name in that list]"
 - And the change you want, in your own words.
 
-A "spike" is a one-minute check that answers one question about your setup,
-with a plain PASS, FAIL or SKIP: can it reach the internet from here, can it
-read and write your shared drive, can it open one of your apps and tell you
-whether it works. The answer gets written down so nobody has to wonder again.
-A FAIL is not a problem on the day; it's the thing that would have bitten
-you three months in, found early.
+"Check this computer" runs three one-minute checks, each answering one
+question about your setup with a plain PASS, FAIL or SKIP: can it reach the
+internet from here, can it read and write your shared drive, can it open one
+of your apps and tell you whether it works. The answers get written down so
+nobody has to wonder again. A FAIL is not a problem on the day; it's the
+thing that would have bitten you three months in, found early.
 
 When Steadyship asks you a question before building, answer it the way you'd
 answer a colleague. If you don't know, say so; it will recommend something.

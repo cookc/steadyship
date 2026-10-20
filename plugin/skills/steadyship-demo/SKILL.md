@@ -67,15 +67,15 @@ Plainly: the demo is at `<folder>/demo-boatworks` (and its spreadsheets at
 spreadsheets, and the business's own notes. Then give these next prompts, in
 order, for the person to say (work from the demo folder):
 
-1. "Run steadyship status"
-2. "run spike 0"
-3. "run spike b" (the shared folder is `<folder>/demo-boatworks-shared-drive`)
-4. "run spike c, the app is job-board"
-5. "What apps do we have and where is the same information kept twice?"
+1. "Check this computer" (three one-minute checks: environment, the
+   spreadsheets folder, and opening one app in a test browser; the first
+   run installs a test browser and can take a few minutes, which is normal)
+2. "What apps do we have and where is the same information kept twice?"
+3. "Review the job board" (any name from the list in the previous answer works)
 
 Then say: "From now on I'll work inside `<folder>/demo-boatworks` for this conversation; if a later answer says a folder isn't a Steadyship repository, tell me and I'll point it there."
 
-Also say: "I'm skipping spike e (plugin install across a team) and spike a (uploading to GitHub) in the demo, because the demo has no GitHub repository. If status suggests them, ignore that here." And: "The first `run spike c` installs a test browser inside this environment and can take a few minutes — that's normal."
+Also say: "The demo has no GitHub repository, so the GitHub, hosting and team checks don't apply here; if status suggests them, ignore that."
 
 ## Rules
 
