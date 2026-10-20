@@ -153,3 +153,44 @@ spike e stays a question for them.
   RESULTS.md?".
 - **Plugin updates**: "Check for updates" failed on a device without GitHub
   connected, so the VM ran 0.4.2 while 0.4.3 was published.
+
+## Second VM, built from the CLI (20 Oct 2026)
+
+The first VM was built in the portal. The second, `steadyship-win2`, was
+built from this box with the Azure CLI (installed as a user tool:
+`uv tool install azure-cli`, then `az login --use-device-code`, which the
+owner approves in a browser). The free trial allows 4 cores per region and a
+deallocated VM still holds them, so the second VM went to Australia
+Southeast rather than deleting the first.
+
+    az vm create -g steadyship-rehearsal -n steadyship-win2 \
+      --image microsoftwindowsdesktop:windows-11:win11-25h2-pro:latest \
+      --size Standard_D4s_v5 --location australiasoutheast \
+      --security-type TrustedLaunch --enable-secure-boot true --enable-vtpm true \
+      --license-type Windows_Client --admin-username steadyship --admin-password "$PW" \
+      --public-ip-sku Standard --nsg-rule NONE --nsg steadyship-win2-nsg \
+      --vnet-name steadyship-win2-vnet --subnet default
+    az vm auto-shutdown -g steadyship-rehearsal -n steadyship-win2 \
+      --location australiasoutheast --time 2300 --email "<owner email>"
+    # then set the schedule's properties.timeZoneId to "New Zealand Standard Time" with az resource update
+
+`$PW` is generated in the shell (`openssl rand -base64 21`, plus a symbol)
+and never printed; the owner then sets a real password with the portal's
+Reset password, so no credential passes through the session. `--nsg-rule
+NONE` leaves no inbound rule: access is Tailscale only.
+
+Tailscale goes on through Run Command (`az vm run-command invoke … --scripts
+@file.ps1`): install the MSI, then `tailscale up --unattended`, which prints
+a login link for the owner. **Expect to do the login twice.** The first,
+from Run Command (SYSTEM), is dropped the moment the owner signs in to the
+desktop; run `tailscale up --unattended` again from Run Command to get a
+second link, approve it, and then run the same command once more from a
+PowerShell window inside the desktop session, after which it sticks. Run
+Command is also the way to look inside the VM without touching the desktop
+(`git --version`, `Test-Path …`).
+
+Findings so far on the fresh machine: `scripts/setup-windows.ps1`, pasted as
+the README gives it, installed Git 2.55 and Node 24 and downloaded the
+fallback zip with no questions asked. The CLI's error reporting hides the
+real deployment error behind a traceback; `--debug` piped through
+`grep '"message"'` shows it (here: `QuotaExceeded`).
