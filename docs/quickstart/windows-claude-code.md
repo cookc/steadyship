@@ -52,6 +52,10 @@ then `/plugin install steadyship@steadyship`. Restart Claude Code afterwards.
    GitHub repository is an optional last step; it only happens if you say
    yes.
 3. Copy your apps into the new folder's `apps/`, one folder per app.
+   If you have notes on how the business works (a process guide, a
+   glossary, who uses what), put them in `docs/context/business/` as `.md`
+   files, or ask Steadyship to write them from your Word documents.
+   Steadyship reads them before every assessment, review and change.
 4. Say **Check this computer**. Three one-minute checks run in one go: can
    Claude reach GitHub from here, can it read and write the shared drive
    your apps depend on, can it open one of your apps in a test browser.

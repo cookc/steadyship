@@ -69,9 +69,13 @@ FAIL (e.g. a value was left blank), fix the value if you can, otherwise stop.
 ## 3. Report
 
 Say: "Your Steadyship repository is ready at <dir>. It is self-contained —
-it works even without this plugin." Then list the three things in it that
-matter now: `docs/spikes/README.md` (the checks), `docs/assessment/README.md`
-(how to assess each app), `steadyship.md` (the facts you gave me).
+it works even without this plugin." Then list the four things in it that
+matter now: `apps/` (copy each of your apps in, one folder each),
+`docs/context/business/` (your own notes on how the business works: stages,
+glossary, who uses what, which spreadsheet is the master; any `.md` files
+you already have can go straight in, and Steadyship reads them before every
+assessment, review and change), `docs/spikes/README.md` (the checks), and
+`steadyship.md` (the facts you gave me).
 
 ## 4. GitHub (offer; never do it silently)
 
@@ -114,7 +118,19 @@ Otherwise ask once: "Shall I create the private GitHub repository
     - 403: "the token lacks Administration (repository creation)
       permission, or the owner is an organisation that doesn't allow it".
     - 422: "a repository with that name already exists - shall I use it?"
-      If yes, skip creation and continue with the remote and push.
+      If yes, skip creation and continue with the visibility check, the
+      remote and the push.
+
+    **Before any push, prove the repository is private.** Business files
+    must never land in a public repository because someone did not
+    understand what was being set up. Run
+    `printf 'header = "Authorization: Bearer %s"\n' "$T" | curl -sS -K - -H "Accept: application/vnd.github+json" https://api.github.com/repos/<github owner>/<repo name> -o /tmp/gh-repo.json -w '%{http_code}'`
+    and read `"private"` from `/tmp/gh-repo.json`. Only `"private": true`
+    allows the push. If it is `false`, stop before `git remote add`, say:
+    "That repository is public, so I will not upload anything to it. On
+    GitHub open it, Settings, scroll to Danger zone, Change visibility,
+    make it private, then tell me and I'll continue." If the check itself
+    fails, stop and say the visibility could not be confirmed.
     Then run `git remote add origin https://github.com/<github owner>/<repo name>.git`,
     run `git config --global credential.helper store` (the token is then
     kept in `~/.git-credentials` in the person's home inside this
@@ -130,8 +146,10 @@ Otherwise ask once: "Shall I create the private GitHub repository
     reach GitHub's API and offer the website path: "create an empty
     **private** repository named `<repo name>` at github.com/new, no
     README, then tell me when it's done". Once they confirm, do only the
-    `git remote add`, credential and `git push` steps above. A 4xx answer
-    never triggers this fallback.
+    visibility check (if that is also unreachable, ask them to read the
+    word next to the repository name on GitHub, "Private" or "Public", and
+    continue only on "Private"), then the `git remote add`, credential and
+    `git push` steps above. A 4xx answer never triggers this fallback.
   - Never use `-v`, `--trace` or `set -x` with the token, never paste the
     full command back, and never print `$T`.
   - Report the result. If anything fails, show the last two lines of the
@@ -147,6 +165,9 @@ Then: "Next step: copy your apps into `apps/`, one folder each, then say Check t
 - Never create or push to GitHub without a yes given in answer to the
   question in step 4 of this conversation — an earlier general instruction
   like 'put it on GitHub' does not count.
+- Never push to a repository that has not been confirmed private in this
+  conversation, and never create a public one: `"private":true` in the API
+  call and `--private` with `gh` are not optional.
 - Never put tokens, passwords or keys in any file or in your replies.
 - Do not edit the generated files by hand; if something is wrong, say so
   and stop. The templates are fixed in the plugin.

@@ -73,11 +73,11 @@ if command -v gh >/dev/null 2>&1; then
   echo "ok: gh already present"; gh=present
 elif [ "$github_ok" = 1 ] && [ "$api_ok" = 1 ]; then
   arch=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
-  exe=""
+  exe=""; ext="tar.gz"
   case "$(uname -s)" in
-    Darwin) pat="macOS_${arch}\.zip"; unpack() { unzip -q -o "$1" -d "$2"; } ;;
+    Darwin) pat="macOS_${arch}\.zip"; ext="zip"; unpack() { unzip -q -o "$1" -d "$2"; } ;;
     MINGW*|MSYS*|CYGWIN*)  # Git Bash on Windows: no unzip, so let PowerShell expand the archive
-      pat="windows_${arch}\.zip"; exe=".exe"
+      pat="windows_${arch}\.zip"; exe=".exe"; ext="zip"   # Expand-Archive refuses any extension but .zip
       unpack() { powershell.exe -NoProfile -Command "Expand-Archive -Force -LiteralPath '$(cygpath -w "$1")' -DestinationPath '$(cygpath -w "$2")'" >/dev/null 2>&1; } ;;
     *)      pat="linux_${arch}\.tar\.gz"; unpack() { tar -xzf "$1" -C "$2"; } ;;
   esac
@@ -86,8 +86,8 @@ elif [ "$github_ok" = 1 ] && [ "$api_ok" = 1 ]; then
     | grep -o "https://[^\"]*${pat}" | head -1)
   if [ -z "$url" ]; then
     echo "blocked: could not install gh (no download found for $(uname -s)/$arch)"
-  elif curl -sSL -m 60 -o "$tmp/gh.pkg" "$url" 2>/dev/null \
-    && unpack "$tmp/gh.pkg" "$tmp" 2>/dev/null \
+  elif curl -sSL -m 60 -o "$tmp/gh.$ext" "$url" 2>/dev/null \
+    && unpack "$tmp/gh.$ext" "$tmp" 2>/dev/null \
     && mkdir -p "$HOME/.local/bin" \
     && cp "$tmp"/gh_*/bin/gh$exe "$HOME/.local/bin/gh$exe" 2>/dev/null \
     && chmod +x "$HOME/.local/bin/gh$exe"; then

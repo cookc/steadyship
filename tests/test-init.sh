@@ -16,7 +16,7 @@ for f in steadyship.md README.md .gitignore .gitattributes package.json playwrig
          tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/check.sh \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
-         docs/assessment/_sample.md docs/spikes/README.md docs/spikes/RESULTS.md \
+         docs/assessment/_sample.md docs/context/business/README.md docs/spikes/README.md docs/spikes/RESULTS.md \
          docs/spikes/environment.md docs/spikes/github.md docs/spikes/shared-drive.md docs/spikes/tests.md docs/spikes/hosting.md \
          docs/spikes/team.md docs/spikes/hosting/staticwebapp.config.json \
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
