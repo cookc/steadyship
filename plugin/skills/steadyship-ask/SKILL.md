@@ -87,6 +87,15 @@ Grep. No Write, no Edit, no code in the reply.
    - end with: "Nothing has been changed yet — I'll build it as soon as you
      answer."
 
+   **The questions must be readable before the person answers.** If the
+   environment offers a question widget (a tool that shows options with
+   buttons), the widget is all the person sees: put each question, its
+   choices in everyday words and your recommended answer with its reason
+   *inside the widget's text and options*, not in a message it replaces.
+   Never write "as I recommend below" or "see above": there is no below.
+   If the widget cannot hold the full text, do not use it; ask in the
+   message body instead.
+
 5. **Stop.** End your turn after asking. Do not build in the same turn, even
    if you are confident of the answer.
 
@@ -122,7 +131,14 @@ the next person learns why it was built this way.
 5. Reply: what changed, where its data is stored now (and what that means:
    "only on this computer's browser" or "in <file> on the shared drive"),
    what was recorded in `docs/context/decisions.md`, and whether it was
-   committed.
+   committed. If the change added anything the person did not ask for by
+   name (a shared file, a folder picker, a sign-in, a library, a test), add
+   **one line per addition**: what it is and why it is worth having, in
+   plain words ("a folder picker, so the hours file is the same one on
+   every computer instead of a copy in each browser"). Keep it to one
+   line each and end with "ask 'why' and I'll explain any of these
+   properly": the person did not know to ask for it, so they cannot tell
+   whether it was worth it unless you say.
 
 ## Rules
 
