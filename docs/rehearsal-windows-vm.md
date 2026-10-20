@@ -194,3 +194,28 @@ the README gives it, installed Git 2.55 and Node 24 and downloaded the
 fallback zip with no questions asked. The CLI's error reporting hides the
 real deployment error behind a traceback; `--debug` piped through
 `grep '"message"'` shows it (here: `QuotaExceeded`).
+
+## Third run: fresh machine, 20 Oct 2026, plugin 0.5.0 to 0.5.2
+
+The quick start (`docs/quickstart/windows-claude-desktop.md`) on
+`steadyship-win2` with nothing installed, the owner's Max account, apps
+copied in from `Z:\demo-boatworks-apps` and spreadsheets on
+`Z:\demo-boatworks-shared-drive`.
+
+| Step | Result |
+|---|---|
+| Setup script | PASS first time: Git 2.55, Node 24, fallback zip, one "to do" (Claude desktop) |
+| Claude desktop | Installed by the owner from claude.ai; it is now a Store (MSIX) app under `WindowsApps`, data in `%LOCALAPPDATA%\Claude`. Script detection fixed to match. |
+| Add marketplace | "This marketplace is already added" on this account, the known sync defect; a new machine does not clear it. Upload plugin with the release zip worked, replacing the synced 0.4.6 with 0.5.0. |
+| Set up Steadyship for Demo Boatworks | Ran the **demo** skill, because the name matches its triggers. Use a non-demo name for a real business; recorded as a finding, not changed. |
+| Set up Steadyship for Harbour Boatworks | PASS: asked one question at a time, accepted all answers in one message, verified the shared drive, pointed at the next step. |
+| Check this computer | All three PASS on first run, test browser installed by itself. `gh` did not install: Expand-Archive refuses a `.pkg` name. Fixed in 0.5.1. |
+| What apps do we have… | Found the planted defects (UTC date, browser-only storage, stale prices, mismatched codes, "Demo Boatworks" titles), wrote `docs/assessment/`, and suggested `docs/context/business/` for notes, which the templates did not have. Added in 0.5.1. |
+| Review the quote builder | Verdict with evidence and a second opinion from an independent reviewer on a different model; "I haven't changed anything." |
+| Make the job board record hours | The ask step stopped before building, but Claude desktop rendered it as a two-button widget whose text said "as I recommend below" with nothing below: the person chose blind. Fixed in 0.5.2 (questions go inside the widget or the widget is not used). After "Yes": `Hours.csv` on the shared drive, Shop Timer writes, Job Board reads, decision recorded, two commits, nothing uploaded, limits stated plainly (Chrome or Edge only, folder picked once per browser). |
+
+Other notes: Tailscale needed logging in twice (see the CLI section);
+`net use Z:` succeeded without a prompt on the second try because Windows
+had cached the credential from the first; Run Command cannot read `Z:`
+(per-user mapping) or run `git` in the user's repository (dubious
+ownership), so look at files by path instead.
