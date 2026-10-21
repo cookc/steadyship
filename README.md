@@ -43,7 +43,7 @@ first two differ.
   to something the business can run on.
 - Reviews, and the questions an engineer would ask before a change is built,
   with the answers recorded in `docs/context/decisions.md`.
-- Prototypes built as asked, with nothing in the way. When someone else is
+- Prototypes built exactly as asked. When someone else is
   about to rely on one, "Promote the <app>" audits it, asks a few questions
   about the business, and rebuilds it unattended to the engineering
   standard with its behaviour pinned. Before that, two ten-minute

@@ -76,12 +76,18 @@ cannot run on their machine for reasons outside the product (plugins hidden
 on the Team plan and no admin to hand): run it on the setup owner's personal
 account and note that the real-drive results are missing.
 
-## Part B, the real change (20 min)
+## Part B, the real change, then a promotion (30 min)
 
-They ask for the change in their own words. The ask skill should ask one or
-two questions and stop. We watch whether the questions make sense to them,
-what they answer, what gets built, and whether they read the decision it
-recorded.
+They ask for the change in their own words. Their apps arrive as prototypes
+(no assessment file says otherwise), so the ask skill should say its one
+signpost line and build, with no questions. We watch whether that line
+registers. Then "Set up my data" and "Set up my security": we watch which
+of the eight questions they cannot answer, and whether the written notes
+read as theirs. Then "Promote the <app>" on the app they most want the team
+to use: whether the five questions make sense, whether they are happy to
+walk away while it runs, and whether the morning note tells them what they
+need. If the change was to an app that had already been promoted, the ask
+skill asks its one or two questions first; we watch those the same way.
 
 ## Part C, debrief (20 min)
 

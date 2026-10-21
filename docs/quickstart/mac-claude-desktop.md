@@ -65,7 +65,7 @@ Plugins, **Add**, **Upload plugin**, and choose the zip.
    before the code. They run on a stronger model, and say so.
 9. **Promote the <app>** when other people are about to use it. Steadyship
    audits what you built, asks up to five questions about the business in
-   one message, then works through to the end on its own: the same
+   one message, then gets on with it unattended: the same
    behaviour for the same inputs, data and settings in files on the drive,
    tests, an owner, and a note in plain words of what changed and why.
    For an app people already rely on, changes get the engineer's one or

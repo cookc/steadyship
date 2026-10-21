@@ -126,8 +126,8 @@ few habits.
 - **It doesn't get in the way of experiments.** While something is a
   prototype, build as you do today. Steadyship builds what you ask and says
   one line: when someone else is about to rely on it, say "promote it".
-  That is when the engineering happens, in one go, mostly while you are
-  doing something else: it audits what you built, asks a few questions
+  That is when the engineering happens, mostly while you are doing
+  something else: it audits what you built, asks a few questions
   about the business, and rebuilds it to the standard with the same
   behaviour for the same inputs and a note of what changed and why.
 - **Two conversations before the first promotion.** Your data (which file

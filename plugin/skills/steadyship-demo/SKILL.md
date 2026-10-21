@@ -72,6 +72,12 @@ order, for the person to say (work from the demo folder):
    run installs a test browser and can take a few minutes, which is normal)
 2. "What apps do we have and where is the same information kept twice?"
 3. "Review the job board" (any name from the list in the previous answer works)
+4. Build something: "Build me a tool that ..." in your own words. It is a
+   prototype, so Steadyship just builds it.
+5. "Set up my data", then "Set up my security": two short conversations
+   about the business, written down for every later change.
+6. "Promote the <what you built>": a few questions, then the engineering
+   on its own.
 
 Then say: "From now on I'll work inside `<folder>/demo-boatworks` for this conversation; if a later answer says a folder isn't a Steadyship repository, tell me and I'll point it there."
 
