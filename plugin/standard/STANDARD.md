@@ -33,7 +33,9 @@ asking and without announcing, except for one line when it adds something.
 | Theme tokens for colour, spacing and type; never a hard-coded value | Brand, dark mode and consistency across apps become a one-file change |
 | Data never enters the page as raw HTML; one escaping helper, used everywhere | The most common hole in home-made apps; a CSV cell is enough to trigger it |
 | One form per kind of value: converted on the way in, stored one way, formatted on the way out. The forms are the value table in section 3; a kind of value not in that table gets a row there before it gets a column in a file | Floats for dollars, guessing dd/mm and a timestamp with no time zone are regrets within a month, and they are only the first three |
-| Checked at every edge: a file read, a form submitted, a paste, a value from the address bar, a file written. Each edge has a written shape; whatever fails it is reported with the row and the reason, never dropped or guessed | Silent data loss is the failure nobody notices until it matters; the edges are where it happens |
+| Checked at every edge: a file read, a form submitted, a paste, a value from the address bar, a file written. Each edge has a written shape; whatever fails it is reported with the row and the reason, never dropped or guessed. Refusing is for what cannot be read without guessing, never for what the format commonly contains: if a format is in, its common contents are in | Silent data loss is the failure nobody notices until it matters; the edges are where it happens. A tool that refuses every real file is not safe, it is unused |
+| A rule that can be wrong lives apart from the page: in a module with no DOM, with tests that run without a browser. The page is wiring | A rule tested through the page is tested slowly and rarely; a rule in a module is tested in a second, on every change, and a second builder can read it on its own |
+| Output that leaves the app (a file for a machine, an invoice, a message, a report someone acts on) is re-read and checked against the inputs before it is offered, by code, and the engineer looks at the produced thing before calling it done | The builder will not ask "is this right?"; the file is what the business acts on, and a wrong one costs a plate, a customer or a day |
 | Errors in plain words, in the page; never swallowed, never an alert box; what the person typed is kept | A person who loses ten minutes of typing stops trusting the app |
 | No secrets, prices, staff lists or any business data typed into code | Code is copied; data belongs in the master file |
 | A stage banner at the top of the page until the app is a proper app. Prototype: "Prototype. Not for anything the business depends on. Built by <name>, <month year>." Owned tool: "Owned by <name>. Its data lives in <file>. Problems go to <name>." Only a stage move changes it | The person reading the page is the one about to rely on it; the banner tells them what they are relying on, and names who to ask |
@@ -58,7 +60,7 @@ asking and without announcing, except for one line when it adds something.
 | **Hosting?** | A file on a laptop | Shared drive, or the serve script on one machine | Hosted, with sign-in and backup; the business's platform if it has one | Same, released together |
 | **Sign-in?** | None | None if it stays on the shared drive; required the day it is hosted | Required; roles if anyone must be kept out of something | Single sign-on across apps |
 | **Who changed what?** | Don't care | A log line per write (who, when, what), once more than one person writes | Audit kept with the data | Same |
-| **Tests?** | None required | Smoke test, plus one test per change | A test per behaviour that matters, run on every commit | Tests across apps |
+| **Tests?** | None required; a rule in a module has its Node test from the first line | Smoke test, plus one test per change: a rule gets a Node test, a page behaviour gets a Playwright test | A test per behaviour that matters, run on every commit | Tests across apps |
 | **Failures?** | Don't care | Says plainly when the drive is unreachable, the file is open in Excel, or a row is malformed; never loses what was typed; writes cannot half-complete | Errors reported somewhere a person sees them | Monitoring |
 | **Offline?** | n/a | Keeps working for reading; queues or refuses writes, and says which | Designed in if the environment needs it (asked at own-it) | Same |
 | **Backups?** | None | The master file is inside the business's existing backup; confirmed, and restored once | Automated, restore tested | Same, with retention |
@@ -67,7 +69,7 @@ asking and without announcing, except for one line when it adds something.
 | **Performance?** | n/a | A stated budget for the master file (default 5,000 rows, about where a CSV over a shared drive takes seconds to open); past a few hundred rows, only the rows on screen are rendered (a virtualised list, a few dozen lines of code); never loads the whole shared drive | A database with paging once the file budget is passed; startup measured on the slowest machine in use | Same |
 | **Consistency with other apps?** | n/a | Brand file for logo and colours; glossary terms; same navigation pattern | Shared components | Shared design system |
 | **Accessibility?** | n/a | The free habits (semantic HTML, contrast, targets, keyboard) | Checked by an automated scan on every change | Full standard if the business supplies to government |
-| **Code structure?** | One file is fine | Split by concern past roughly 300 lines; no copy-paste between apps | Shared module only when duplication is shown across two apps | Shared packages |
+| **Code structure?** | The template's parts: page, module, verifier, script; the parts the app needs and no more | Split by concern past roughly 300 lines; no copy-paste between apps | Shared module only when duplication is shown across two apps | Shared packages |
 | **Formatting and lint?** | Don't care | Enforced by the repo's validate script | Same, on every commit | Same |
 | **Browsers?** | Whatever the builder uses | The browsers the business actually uses, asked at own-it and written in the README (default: current Edge and Chrome, Safari on iPhone and iPad); the baseline in section 3 unless the business overrides it | Tested in each named browser by the smoke test (Chromium and WebKit under Playwright) | Same |
 | **Types?** | No | JSDoc on the data shapes, checked by TypeScript's checker without a build step | TypeScript source, since the framework brings the build step anyway | Same |
@@ -105,8 +107,9 @@ Opinions, versioned here, overridable per business.
 | Time zone | The business's zone name (`Pacific/Auckland`) recorded once in the business notes at setup, taken from the machine and confirmed at own-it; every moment stored with its offset from day one | New Zealand changes offset twice a year; a timestamp with no zone is wrong for half the year and nobody can say which half |
 | Browser baseline | Baseline "widely available": features every major browser has supported for at least 30 months; checked by the lint step from a browserslist in the repo; a business overrides it the day an older device turns up | A non-technical builder cannot know what the tablet in the workshop can run; the baseline decides so they never have to |
 | Long tables | The template's table helper, which renders only the rows on screen; every list in an app goes through it from the first row, so nothing changes when the file grows | Rendering five thousand rows freezes the browser, and the builder only finds out the week the file gets big |
+| App shape | One scaffold, `apps/_template/`, made of parts that compose: a **page** over a master file (recording things), a **module** with no DOM for a rule that can be wrong (working something out), a **verifier** that re-reads produced output against the inputs (producing something that leaves the app), and a **script** entry point for a job that runs without a page. The ask skill picks the parts from the request; parts not needed are deleted, never left as dead code | One size does not fit a job board and a cut planner, and three templates would drift apart; parts give each app the shape its risk needs and keep one set of checks |
 | Serve script | Node, single file, no dependencies, serves one app and its master file | Nothing to install beyond Node, which the tests check already installs |
-| Test runner | Playwright, Chromium | Already installed by the tests check; one runner for smoke and behaviour |
+| Test runner | Playwright, Chromium, for the page; Node's own test runner (`node --test`) for modules, no browser | Already installed by the tests check; a module test runs in a second, which is why it gets written |
 | Formatting and lint | Prettier and ESLint with the recommended rules, run by the validate script | Taste is not a review topic |
 | Types | JSDoc on every data shape, checked by TypeScript's `checkJs` from the validate script: the checking without the compiler. TypeScript source only at Proper app, where the framework's build step already exists | Most of the benefit, none of the build |
 | Proper-app framework | Decided per business when the first app reaches the stage, recorded in `docs/context/engineering.md`; the choice is made once for all apps | A framework is a ten-year decision; one per business |
@@ -119,6 +122,9 @@ One row per kind of value. Converted on the way in, stored one way,
 formatted on the way out, so no file, form or report ever holds two
 spellings of the same thing. A kind of value not here gets a row in the
 business's `docs/context/engineering.md` before it gets a column in a file.
+A value the app needs that exists only inside free text (a sheet size
+inside a description, a date inside a note) gets its own column in the
+master file, proposed to the builder; it is never parsed out of the text.
 
 | Kind | Stored as | Shown as | Why |
 |---|---|---|---|
@@ -175,6 +181,15 @@ are followed better than principles.
 - Reading the whole shared drive to find one file.
 - Tests that need the shared drive, tests that `sleep`, tests that check
   the code instead of the behaviour.
+- A rule tested only through the page. The page test proves the wiring;
+  the module test proves the rule.
+- Refusing a file for holding what its format commonly holds (an arc in a
+  drawing, a quoted comma in a CSV) and calling it safety.
+- Offering a produced file (machine code, an invoice, a statement) that no
+  code has re-read against the inputs.
+- Parsing a value out of free text when it should be a column.
+- The business's name, or any name from the business notes, typed into
+  code. The page reads it from the notes; the code never knows it.
 - Writing a file in place. Write beside it, then rename.
 - A new framework, build step, package or database "while we're at it".
   Only at the stage, only stated, only with the option to defer.
@@ -222,7 +237,9 @@ in the plugin's changelog.
   independent reviewer as its brief. "Not yet" names the failing rows.
 - **Ask** checks the rows a change touches, applies the stage default in
   one line, asks the builder only for business knowledge (the own-it
-  questions), adds one test, and proposes the next rung once.
+  questions), picks the template parts the app needs, gets a real sample
+  of any file that comes in, adds one test, looks at any produced output
+  itself, and proposes the next rung once.
 - **Next** picks the rung from the ledger, does it, records it; states a
   stage move when a trigger is met, and the banner changes with it.
 - **Check** runs the machine checks the bar demands and reports PASS, FAIL

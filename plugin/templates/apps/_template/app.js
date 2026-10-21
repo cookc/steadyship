@@ -2,6 +2,7 @@
 /* The app. One state object, one render function, data through Steadyship's
    helpers. Nothing here types in a colour, a price or a business list. */
 const S = window.Steadyship;
+// The rules live in logic.js (window.Logic) and are tested in Node; this file is wiring.
 
 /** What this app's records look like. One form per kind of value (see the bar). */
 const SHAPE = {
@@ -34,7 +35,10 @@ function render() {
     return tr;
   });
   const count = document.getElementById('count');
-  if (count) count.textContent = `${state.rows.length} row(s)`;
+  if (count) {
+    const t = Logic.total(state.rows);
+    count.textContent = `${state.rows.length} row(s), ${S.money(t.cents)}${t.unknown.length ? ` (${t.unknown.length} with no amount)` : ''}`;
+  }
   const where = document.getElementById('where');
   if (where)
     where.textContent = state.live ? `data: ${MASTER} on the shared drive` : 'sample data (opened by double-click)';

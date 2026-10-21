@@ -77,7 +77,20 @@ Grep. No Write, no Edit, no code in the reply.
      any copy that already disagrees with it.
    - **Prototype or relied on.** Will people depend on this every day? Then
      it needs a home that isn't one laptop.
-   - **Build or buy.** Does something they already use do this?
+   - **Build or buy.** Does something they already use do this? For a
+     tool that plans, nests, prices or schedules, say in one line what
+     already does it (the machine's own software, the supplier's portal,
+     the accounting package) before offering to build.
+   - **A file comes in.** If the change reads a file from outside (a
+     drawing, a bank export, a supplier's price list), ask for a real one
+     from the business before building. A described or generated sample
+     is not the real one: the real one has the arcs, the blank cells and
+     the odd encoding. Build to what the format commonly contains, and
+     refuse only what cannot be read without guessing.
+   - **A value inside free text.** If a value the change needs exists only
+     inside a description or a note in the master file (a sheet size, a
+     due date), propose a column for it in that file. Never parse it out
+     of the text.
 
    Never ask a question the bar already answers (which library, where a
    value's form comes from, whether to add a test): those are decided,
@@ -134,12 +147,30 @@ the next person learns why it was built this way.
    honours the decision: no new browser permissions, file pickers, name
    lists or sync logic unless the decision needs them, and say what was
    left out and why.
-   **A new app starts from the template.** When the change is a new app,
-   copy `apps/_template/` to `apps/<name>/` (and `tests/_template/` to
-   `tests/<name>/`), then change what the app is for; the template already
-   carries the banner, the theme, the escaping helper, the value forms, the
-   edge checks, the messages, the long-list table, a README and tests.
-   Never start a new app from a blank file.
+   **A new app starts from the template, and takes the parts it needs.**
+   When the change is a new app, copy `apps/_template/` to `apps/<name>/`
+   (and `tests/_template/` to `tests/<name>/`), then change what the app
+   is for; the template already carries the banner, the theme, the
+   escaping helper, the value forms, the edge checks, the messages, the
+   long-list table, a README and tests. Never start a new app from a blank
+   file. Then pick the parts, from what the request is for:
+   - *recording things* (a list people add to): the page over a master
+     file; that is the template as it stands;
+   - *working something out* (a rule that can be wrong: a price, a layout,
+     a schedule, a total): the rule goes in `logic.js`, with no DOM, with
+     its tests in `tests/<name>/logic.test.mjs` run by Node; the page only
+     calls it;
+   - *producing something that leaves the app* (a file for a machine, an
+     invoice, a message): a function makes it and a second function
+     re-reads it against the inputs; the page offers the output only when
+     the check is clean, and the message says what was checked;
+   - *a job with no page* (runs on a schedule, over many files): a script
+     in `scripts/<name>.mjs` that calls the module.
+   Most apps are two parts. Delete the parts the app does not use; say
+   which parts it has in the README. Also create
+   `docs/assessment/<name>.md` from `docs/assessment/TEMPLATE.md` with
+   what is known (stage Prototype, owner nobody yet, the data table from
+   the decision), so the ladder exists from day one.
    **The lines you write meet the bar.** Before writing, list to yourself
    the bar rows the change touches (where the data lives, a new kind of
    value, a library, an edge where data comes in, a list that can grow)
@@ -149,11 +180,17 @@ the next person learns why it was built this way.
    the rest of the app to the bar: note what still falls short in the
    assessment's profile instead. Each default applied gets one line in
    the reply.
-   **One test per change.** If `tests/<app>/` exists, add one Playwright
-   test for the behaviour you added and run `bash scripts/test.sh <app>`
-   if a shell is available; if the app has no tests of its own yet, run
-   the smoke test only and let the next-rung line below propose the
-   test rung.
+   **One test per change.** If `tests/<app>/` exists, add one test for
+   the behaviour you added: a rule gets a Node test in
+   `tests/<app>/*.test.mjs`, a page behaviour gets a Playwright test; run
+   `bash scripts/test.sh <app>` if a shell is available. If the app has
+   no tests of its own yet, run the smoke test only and let the next-rung
+   line below propose the test rung.
+   **Look at what it produced.** If the app produces something that
+   leaves it, run it on the real inputs and read the output yourself (the
+   file, the numbers, the drawing) against the inputs before replying;
+   say in one line what you looked at and what you found. The builder
+   will not ask "is this right?", so the engineer asks it here.
 3. If `docs/assessment/<app>.md` exists, update its Data table and
    storage line so it no longer describes the app as it was, and any
    profile row or ladder rung the change moved.

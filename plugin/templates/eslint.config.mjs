@@ -21,6 +21,9 @@ const browser = {
   URL: 'readonly',
   Papa: 'readonly',
   Steadyship: 'readonly',
+  Logic: 'readonly',
+  globalThis: 'readonly',
+  module: 'readonly', // a module part's export guard, used only under Node
 };
 
 export default [

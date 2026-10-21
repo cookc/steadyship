@@ -46,6 +46,19 @@ for dir in apps/*/; do
   # README and tests of its own
   [ -f "$dir/README.md" ] && report "$app" readme PASS || report "$app" readme FAIL "no apps/$app/README.md"
   [ -d "tests/$app" ] && report "$app" own-tests PASS || report "$app" own-tests FAIL "no tests/$app/"
+  # a module (the rules) has Node tests; a page past the limit has its rules in a module
+  if [ -f "$dir/logic.js" ]; then
+    ls "tests/$app"/*.test.mjs >/dev/null 2>&1 && report "$app" rule-tests PASS || report "$app" rule-tests FAIL "logic.js has no tests/$app/*.test.mjs (node --test)"
+  else
+    n="$(cat "$dir"/*.js 2>/dev/null | wc -l | tr -d ' ')"
+    [ "${n:-0}" -le 300 ] && report "$app" logic-apart PASS || report "$app" logic-apart FAIL "$n lines of script and no logic.js: the rules belong in a module with Node tests"
+  fi
+  # the business's name belongs in the notes, not the code
+  biz="$(sed -n 's/^Business: *//p' steadyship.md | head -1)"
+  if [ -n "$biz" ]; then
+    hits="$(grep -nF "$biz" "$dir"/*.js 2>/dev/null | head -1)"
+    [ -z "$hits" ] && report "$app" no-business-name PASS || report "$app" no-business-name FAIL "the business's name is typed into code: $hits"
+  fi
   # format, lint, types (only when the tools are installed: npm install)
   if have prettier; then
     if node_modules/.bin/prettier --check "$dir" >/dev/null 2>&1; then report "$app" format PASS; else report "$app" format FAIL "run: npx prettier --write apps/$app"; fi

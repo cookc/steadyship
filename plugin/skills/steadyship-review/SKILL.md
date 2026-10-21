@@ -85,7 +85,12 @@ Never change any file: this skill only reads.
      they see the same thing? (With browser storage, no.)
    - **Tests**: if a shell is available, run `bash scripts/test.sh <name>`
      now and quote its last line; it is the one claim in the review that
-     is proven rather than read. If no shell, say whether `tests/<name>/`
+     is proven rather than read.
+   - **What it produces**: if the app produces something that leaves it
+     (a machine file, an invoice, a statement), produce one from the real
+     inputs and read it against them yourself: every input accounted for,
+     every number traceable, nothing the inputs do not justify. A
+     produced file nobody has re-read is a risk on its own. If no shell, say whether `tests/<name>/`
      exists and what `docs/assessment/` says about the last run, and
      write "tests: not run here".
    - **Against the bar**: from the bar and the assessment's engineering
@@ -102,7 +107,8 @@ Never change any file: this skill only reads.
    and no verdict. Prefer a reviewer agent from a companion plugin if one
    is listed (`feature-dev:code-reviewer`, or a `pr-review-toolkit`
    reviewer); otherwise a general agent, a different model if you can
-   choose. Say which one ran.
+   choose. Say which one ran, by name, and when it was the general agent
+   say so plainly ("the companion reviewer is not installed here").
    Reconcile: say where it agreed and where it differed. If no `Agent` tool
    is available, write "Second opinion: not run" and carry on.
 

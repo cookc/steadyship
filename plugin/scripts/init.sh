@@ -105,8 +105,13 @@ mkdir -p "$TARGET/.steadyship" || fail "could not create .steadyship"
 
 if [ "$DO_GIT" = "1" ]; then
   echo "Creating the first commit ..."
+  # A repository-local identity, so every later commit on this machine works without a global one;
+  # the setup owner can change it with: git config user.name / user.email
+  SLUG="$(printf '%s' "$SETUP_OWNER" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-//;s/-$//')"
   ( cd "$TARGET" \
     && git init -q -b main \
+    && git config user.name "$SETUP_OWNER" \
+    && git config user.email "${SLUG:-setup-owner}@steadyship.invalid" \
     && git add -A \
     && git -c user.name="Steadyship" -c user.email="steadyship@example.invalid" \
          commit -q -m "chore: initialise Steadyship repository (template v$VERSION)" ) \

@@ -80,8 +80,10 @@ when it happens and change its stage and banner.
    `apps/<name>/README.md` (what it is for, who owns it, how to open it,
    where its data lives, the browsers it is used on); mark rung 2 done.
 
-   **3 Test it.** No question. Create `tests/<name>/<name>.spec.ts` under
-   Playwright with three tests: it opens with no console errors; the main
+   **3 Test it.** No question. If the app has rules in a module
+   (`logic.js`), give them `tests/<name>/logic.test.mjs` under Node's test
+   runner first: one test per rule, made-up data. Then create
+   `tests/<name>/<name>.spec.ts` under Playwright with three tests: it opens with no console errors; the main
    screen shows real data (an identifier you read from the page's data or
    the master file, quoted exactly); one happy path (the main action a
    person takes, and what visibly changes). Use the smoke test in

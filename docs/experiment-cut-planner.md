@@ -171,6 +171,40 @@ and need rows for it.
 - Turns, wall time, cost.
 - Anything Chris was tempted to say and did not.
 
+## Run 2 protocol (changes after run 1)
+
+Decided 21 Oct 2026 after the run 1 review. The checklist above is unchanged
+so the runs compare; new items are scored as a separate block on both runs.
+
+- **Plugin changes first.** The bar gained: a rule that can be wrong lives
+  apart from the page with Node tests; output that leaves the app is
+  re-read against the inputs and the engineer looks at it; refusing is for
+  ambiguity, not for what a format commonly contains; a value inside free
+  text gets a column; the template is one scaffold with parts (page,
+  module, verifier, script) picked per app. init sets a git identity; ask
+  creates the assessment file for a new app and asks for a real input
+  file; checks flag the business name in code and a page past 300 lines
+  with no module.
+- **Same drawing, now with arcs.** The transom cut-out, the console side
+  and the chine bracket have rounded corners (polyline bulges), and the
+  console side repeats its first point, as CAD exports do.
+- **Both arms get the review prompt.** Prompt 6, "Review the cut planner.",
+  goes to Arm A too, as a builder without the plugin would type it. The
+  next-rung part stays Arm B only.
+- **Order swapped, two runs each.** B, A, B, A. Fresh folders each run; the
+  demo set up fresh for each B run.
+- **Blind scoring.** A separate model instance scores every run from the
+  transcripts and files with the arm labels removed, using the checklist
+  verbatim; run 1 is re-scored the same way so the baseline is comparable.
+  Chris's run 1 scores stay in the table above as the unblinded reference.
+- **Cost of care.** Wall time per prompt and per run is recorded for both
+  arms.
+- **New items** (scored on all runs, separate block): N1 rules live in a
+  module with tests that run without a browser; N2 the produced file is
+  re-read by code against the inputs before it is offered; N3 reads the
+  drawing's arcs rather than refusing them; N4 asked for a real drawing
+  before building; N5 the engineer said what it looked at in the output.
+
 ## Results
 
 Run 21 Oct 2026 (VM clock 20 Oct, NZ afternoon), Claude desktop on the Windows
