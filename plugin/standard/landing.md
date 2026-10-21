@@ -11,9 +11,13 @@ commit, when a shell is available.
 2. `git worktree list --porcelain`: the first `worktree` line is the main
    checkout. If the current folder is that checkout, nothing to do.
 3. In the main checkout, `git -C <main checkout> status --porcelain`. If
-   it prints anything, do not merge: say "your main folder has unsaved
-   changes, so this stays on its own branch for now; say *finish* once
-   those are saved" and stop here.
+   every line it prints is under `docs/` (Steadyship's own records: check
+   results, assessments, decisions), commit them there first:
+   `git -C <main checkout> add docs && git -C <main checkout> commit -m
+   "docs: Steadyship records"`. If anything else is listed, do not merge:
+   say "your main folder has unsaved changes to <files>, so this stays on
+   its own branch for now; say *finish* once those are saved" and stop
+   here.
 4. `git -C <main checkout> merge --no-ff <branch> -m "<the commit's one
    line>"`. On a conflict, abort the merge (`git -C <main checkout> merge
    --abort`), say which files conflicted in plain words, and stop here.
