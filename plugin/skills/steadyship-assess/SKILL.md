@@ -39,8 +39,18 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    Then Glob, all in one turn:
    - `apps/*/index.html` (and `apps/**/*.html`, `apps/**/*.js` if there are more files)
    - `docs/context/business/**/*`
+   - `docs/context/data.md`, `docs/context/security.md` and
+     `docs/context/shape.md` where present: the owner's rules for data,
+     for who may see what, and the shape every app shares; an app that
+     keeps a second copy of a thing `data.md` gives a master, breaks a
+     `security.md` rule, or departs from `shape.md`'s parts or "owns"
+     table is a finding, quoted against the rule
+   - `docs/context/engineering.md` (the facts the standard cannot know:
+     time zone, browsers, platform, rows this business overrides)
+   - `tests/**/*` (which apps have a test of their own)
    - the shared drive: `<shared drive>/**/*` (spreadsheets, CSVs, notes,
      and any sub-folders such as quotes or invoices).
+   Folders under `apps/` whose name starts with `_` (`_sample`, `_template`) are Steadyship's own: skip them.
    If the business notes or shared drive are missing, say so and assess from
    the apps alone.
 
@@ -52,7 +62,10 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    as spelled** (job numbers, customer names, product/model names, part
    codes, stage names).
 
-3. **Read every business source.** Every business note in full: the official
+3. **Read every business source.** Also read the bar, the engineering
+   standard every app is held to: `${CLAUDE_PLUGIN_ROOT}/standard/STANDARD.md`
+   (if it cannot be read, say "couldn't read the bar" once and judge the
+   profile from the template's row names alone). Every business note in full: the official
    stage/step list (count it), the glossary rules for how each thing is
    written (customer, job, product/model, part, operation, price, quote, any
    serial/ID number), stated rules such as how long a quote is valid, how
@@ -127,6 +140,23 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    reconciled; no sign-in (anyone with the file sees everything); anything
    else you saw. Say plainly what is lost if a laptop dies tomorrow.
 
+7b. **Engineering profile and ladder.** For each app, from what you have
+   already read (no new reads except `tests/`), answer every row of the
+   template's two profile tables in a few words each, with the evidence as
+   `file:line`: "Today" is what the code does; "Meets?" is yes, no, partly
+   or n/a, judged at the app's current stage by the bar (a Prototype meets
+   most stage rows by definition; the free habits apply at every stage).
+   Where `docs/context/engineering.md` overrides a row, judge by the
+   override and say so in the cell. Then fill the ladder: a rung is done
+   only with evidence (1 Name it: this file; 2 Own it: a named owner in
+   the business notes; 3 Test it: a test of its own under `tests/`; 4 Move
+   its data: the data in one master file on the shared drive, not in the
+   page or the browser; 5 Share it: a second person can open it; 6 Protect
+   it: backup confirmed, sign-in where hosted). **Next rung** is the first
+   rung not done, with its one question (2: who is responsible for this
+   app? 4: which file is the master?). Never ask these questions here;
+   assess only reads.
+
 8. **Write it down.** Read `docs/assessment/TEMPLATE.md` and
    `docs/assessment/SUMMARY.md` (if `SUMMARY.md` is still the blank
    template, fill it; if it already has content, update it). Then, in one
@@ -138,8 +168,10 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
      Data table; Shared concepts with the local name and where stored;
      **Duplication spotted** as bullets in exactly this shape:
      `- <concept or screen> — also in <app or file> — same data / same logic / differs how: <exact difference>`;
-     Exposure; If it vanished tomorrow; Verdict in plain words; Candidate
-     next step (one of the template's options).
+     Exposure; If it vanished tomorrow; the Engineering profile (both
+     tables, every row) and the Ladder with its **Next rung** line, from
+     step 7b; `**Owner:**` from the business notes or "unknown"; Verdict
+     in plain words; Candidate next step (one of the template's options).
    - `docs/assessment/SUMMARY.md` for the sponsor: the apps table, the three
      things that matter most, the "same information in more than one place"
      table (every concept from step 4, with which one should be right), if a
@@ -167,6 +199,10 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
 
    **What I'd do first**: one to three steps, the first being the one app
    most relied on, and which file should be the single master for its data.
+
+   **Where each app stands**: one or two lines: the stage every app is at,
+   what none of them has yet (an owner, a test of its own, data outside the
+   page), and that each app's file ends with its ladder and next rung.
 
    End with: "The full picture — every row that differs, every copied
    function, every risk — is in docs/assessment/SUMMARY.md and one file

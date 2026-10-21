@@ -75,7 +75,17 @@ matter now: `apps/` (copy each of your apps in, one folder each),
 glossary, who uses what, which spreadsheet is the master; any `.md` files
 you already have can go straight in, and Steadyship reads them before every
 assessment, review and change), `docs/spikes/README.md` (the checks), and
-`steadyship.md` (the facts you gave me).
+`steadyship.md` (the facts you gave me). If `steadyship.md` says
+`Time zone: not yet confirmed`, add one line: "I couldn't tell this
+computer's time zone; I'll ask when it first matters."
+
+Then, in Claude desktop only (bash runs in a separate environment, or
+`claude` is not on the PATH), one line, once: "Optional: Steadyship gives
+better reviews and tidier code with six companion plugins by Anthropic,
+installed from the same Plugins list: feature-dev, code-review,
+pr-review-toolkit, security-guidance, frontend-design and code-simplifier.
+It works without them." In Claude Code the setup script has already
+installed them; say nothing.
 
 ## 4. GitHub (offer; never do it silently)
 
@@ -158,7 +168,14 @@ Otherwise ask once: "Shall I create the private GitHub repository
     repository; the stored credential (`~/.git-credentials`) lives outside
     the repository.
 
-Then: "Next step: copy your apps into `apps/`, one folder each, then say Check this computer (three one-minute checks of this setup; results are recorded for you)."
+Then say, in these words or close: "Next step: copy your apps into
+`apps/`, one folder each, then say *Check this computer* (three
+one-minute checks of this setup; results are recorded for you). After
+that, build whatever you like in `apps/`; I stay out of the way while
+something is a prototype. When someone else is about to rely on one, say
+*promote the <app>*. Before the first promotion I'll want two short
+conversations, *set up my data* and *set up my security*: ten minutes
+each, and they are the decisions that are expensive to undo later."
 
 ## Rules
 

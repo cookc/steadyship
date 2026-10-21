@@ -1,0 +1,38 @@
+schema_version: "1.1"
+name: s4-next-test
+description: >
+  Rung 3 on the job board (assessment/job-board.md is copied into the repo by
+  the scaffold). "Add a test to the job board app" must write the app's own
+  Playwright test under tests/job-board/ (no shell here, so it says the test is
+  written but not run), mark the rung done in the assessment, record the step in decisions.md, and offer
+  the next rung (moving its data) with its question.
+tags: [judgement, next]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]   # no shell in the harness: the test is written, not run
+runs: 1
+graders:
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: wrote-own-test, tool: Write, input_match: 'tests/job-board/', min: 1}
+  - {type: tool_used, name: app-unchanged, tool: Edit, input_match: 'apps/job-board/index\.html', min: 0, max: 0}
+  - type: regex
+    name: rung-marked-done
+    flags: i
+    target: {source: file, path: docs/assessment/job-board.md}
+    pattern: '\|\s*3 Test it\s*\|\s*(yes|written)'
+  - type: regex
+    name: next-rung-moved-on
+    target: {source: file, path: docs/assessment/job-board.md}
+    pattern: '\*\*Next rung:\*\*\s*[^\n]*(2 Own it|4 Move)'
+  - {type: file_exists, name: decision-file, path: docs/context/decisions.md}
+  - {type: regex, name: offers-next-rung, flags: i, pattern: '\*\*Next[^\n]{0,200}(owner|responsible|master|move[^\n]{0,20}data)'}
+  - type: llm
+    name: llm-test-described
+    criteria: >
+      The reply says a test was added for the job board and whether it was run
+      and passed, in plain language, and offers the next step as a question
+      rather than doing it.

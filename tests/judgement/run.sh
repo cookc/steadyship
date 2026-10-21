@@ -2,7 +2,8 @@
 # Judgement eval harness: assess / ask / review cases on mock businesses (s* = Demo Boatworks,
 # r* = Rimu Joinery), with and without the Steadyship plugin (claude plugin eval --ablation with-without).
 # Usage: tests/judgement/run.sh [--runs N] [--cases GLOB] [--model M] [--max-cost-usd USD]
-#                              [--arms with|both] [-j N]   (defaults: 1, all, sonnet, 8, both, 1)
+#                              [--arms with|both] [-j N] [--keep]   (defaults: 1, all, sonnet, 8, both, 1)
+#   --keep leaves each run's /tmp/claude-eval-* dir (trace and written files) for inspection.
 #   --case is an alias of --cases; --ablation with-without|none is the raw form of --arms both|with.
 # Costs money and takes minutes: NOT part of scripts/validate.sh or CI.
 # Output: tests/judgement/results/<UTC timestamp>/{result.json,report.html,summary.md,eval.log}
@@ -14,7 +15,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 J="$ROOT/tests/judgement"
-RUNS=1; CASE=""; MODEL=sonnet; MAXCOST=8; ABLATION=with-without; JOBS=1; EXTRA=()
+RUNS=1; CASE=""; MODEL=sonnet; MAXCOST=8; ABLATION=with-without; JOBS=1; KEEP=0; EXTRA=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --runs) RUNS="$2"; shift 2;;
@@ -26,6 +27,7 @@ while [ $# -gt 0 ]; do
     --model) MODEL="$2"; shift 2;;
     --max-cost-usd) MAXCOST="$2"; shift 2;;
     --ablation) ABLATION="$2"; shift 2;;
+    --keep) KEEP=1; shift;;
     --) shift; EXTRA=("$@"); break;;   # anything after -- goes to claude plugin eval (e.g. --keep-temp)
     *) echo "unknown option: $1" >&2; exit 2;;
   esac
@@ -70,5 +72,8 @@ python3 "$J/summarise.py" "$OUT/result.json" | tee "$OUT/summary.md"
 # score the reply plus the files the run wrote, from each run's trace, then drop the temp dirs.
 { echo; echo "Rows including the files each run wrote (assess replies are short by design):"; echo;
   python3 "$J/regrade-with-files.py" "$OUT/result.json"; } | tee -a "$OUT/summary.md"
-grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u | while read -r d; do case "$d" in /tmp/claude-eval-*) rm -rf "$d";; esac; done
+if [ "$KEEP" = 1 ]; then echo "kept run dirs:"; grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u
+else
+  grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u | while read -r d; do case "$d" in /tmp/claude-eval-*) chmod -R u+rwx "$d" 2>/dev/null; rm -rf "$d";; esac; done
+fi
 ln -sfn "$(basename "$OUT")/summary.md" "$J/results/latest.md"

@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "target": "es2022",
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "types": [],
+    "noImplicitAny": false
+  },
+  "include": [
+    "lib/globals.d.ts",
+    "apps/**/*.js",
+    "lib/steadyship.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib/papaparse.min.js"
+  ]
+}

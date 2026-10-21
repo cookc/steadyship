@@ -5,8 +5,18 @@ const ASK = 'https://github.com/cookc/steadyship/issues/new?title=I%20want%3A%20
 
 const groups = [
   {
+    heading: 'Hack, then promote',
+    intro: 'While something is a prototype, Steadyship stays out of the way. The engineering happens when someone is about to rely on it.',
+    items: [
+      ['Prototypes built as asked', 'Say what you want and it builds it, with one line at the end: when someone else is about to rely on this, say "promote it". No questions, nothing in the way.'],
+      ['Your data and your security, written down once', 'Two ten-minute conversations before the first promotion, about the business and nothing technical: which file is the master for what, who writes it, what must never be lost; who may see what, where files live, what happens when someone leaves. They run on a stronger model, because they are the decisions that are expensive to undo.'],
+      ['Promote: the engineering in one go', 'It audits what you built, asks up to five questions about the business in one message, then works through on its own: the same behaviour for the same inputs, pinned by tests before anything is rebuilt; data and settings in files on the drive; an owner; a note in plain words of what changed, why, and what it looked at. The previous version is one step back.'],
+      ['Finish: the gate for changes', 'Change a relied-on app yourself and say "finish". It checks the change against the standard and your notes, fixes what needs no decision, adds the missing test, writes the changelog line and makes it part of the app.'],
+    ],
+  },
+  {
     heading: 'Before anything is built',
-    intro: 'An engineer asks a couple of things before starting. So does Steadyship, and it stops at a couple.',
+    intro: 'For an app people already rely on, an engineer asks a couple of things before starting. So does Steadyship, and it stops at a couple.',
     items: [
       ['Asks what you don\'t know to ask', 'You say "Make the job board track hours." It has already read your build guide, your other apps and your spreadsheets, so it knows time is booked per step and asks whether hours should go against the whole job or each step. It suggests an answer. You decide, and it builds.'],
       ['Checks the ground first', 'Most of what goes wrong with home-made apps is the setup around them, not the code. Say "Check this computer" and in about a minute it tells you whether it can reach GitHub, read and write the shared drive your apps depend on, and open one of your apps. The result is recorded, so nobody has to wonder again.'],

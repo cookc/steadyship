@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Steadyship scaffolder: creates a self-contained customer repository from plugin/templates.
 # Usage: init.sh <target-dir> --business NAME --setup-owner NAME --sponsor NAME \
-#        --github-owner OWNER --repo-name NAME --shared-drive PATH [--no-git]
+#        --github-owner OWNER --repo-name NAME --shared-drive PATH [--time-zone ZONE] [--no-git]
 # Last line: "RESULT: PASS created <dir>" or "RESULT: FAIL <reason>". Never touches GitHub.
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -19,7 +19,7 @@ if printf '%s' "$TARGET" | grep -Eq '^[A-Za-z]:[\\/]'; then
     fail "Windows-style paths cannot be used here — give the folder as this environment sees it (ask Claude to run pwd)"
   fi
 fi
-BUSINESS=""; SETUP_OWNER=""; SPONSOR=""; GITHUB_OWNER=""; REPO_NAME=""; SHARED_DRIVE=""; DO_GIT=1
+BUSINESS=""; SETUP_OWNER=""; SPONSOR=""; GITHUB_OWNER=""; REPO_NAME=""; SHARED_DRIVE=""; TIME_ZONE=""; DO_GIT=1
 need() { [ $# -ge 2 ] || fail "$1 needs a value"; case "$2" in --*) fail "$1 needs a value (got $2)";; esac; }
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -29,6 +29,7 @@ while [ $# -gt 0 ]; do
     --github-owner) need "$@"; GITHUB_OWNER="$2"; shift 2;;
     --repo-name) need "$@"; REPO_NAME="$2"; shift 2;;
     --shared-drive) need "$@"; SHARED_DRIVE="$2"; shift 2;;
+    --time-zone) need "$@"; TIME_ZONE="$2"; shift 2;;
     --no-git) DO_GIT=0; shift;;
     *) fail "unknown option: $1";;
   esac
@@ -37,6 +38,14 @@ for v in BUSINESS SETUP_OWNER SPONSOR GITHUB_OWNER REPO_NAME SHARED_DRIVE; do
   [ -n "${!v}" ] || fail "missing --$(echo "$v" | tr '_' '-' | tr '[:upper:]' '[:lower:]')"
 done
 [ -d "$TEMPLATES" ] || fail "templates not found at $TEMPLATES"
+# The business's time zone, as a zone name (Pacific/Auckland): taken from this
+# computer unless given; the own-it rung confirms it with a person.
+if [ -z "$TIME_ZONE" ] && command -v node >/dev/null 2>&1; then
+  TIME_ZONE="$(node -e 'process.stdout.write(Intl.DateTimeFormat().resolvedOptions().timeZone||"")' 2>/dev/null || true)"
+fi
+[ -n "$TIME_ZONE" ] || { [ -f /etc/timezone ] && TIME_ZONE="$(head -1 /etc/timezone 2>/dev/null)"; }
+[ -n "$TIME_ZONE" ] || TIME_ZONE="$(timedatectl show -p Timezone --value 2>/dev/null || true)"
+[ -n "$TIME_ZONE" ] && [ "$TIME_ZONE" != "UTC" ] && [ "$TIME_ZONE" != "Etc/UTC" ] || TIME_ZONE="not yet confirmed"
 VERSION="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$MANIFEST")"
 [ -n "$VERSION" ] || fail "could not read plugin version from $MANIFEST"
 MARKETPLACE="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p' "$MANIFEST")"
@@ -69,6 +78,7 @@ SUBS=(
   "{{GITHUB_OWNER}}|$(esc "$GITHUB_OWNER")"
   "{{REPO_NAME}}|$(esc "$REPO_NAME")"
   "{{SHARED_DRIVE}}|$(esc "$SHARED_DRIVE")"
+  "{{TIME_ZONE}}|$(esc "$TIME_ZONE")"
   "{{TEMPLATE_VERSION}}|$(esc "$VERSION")"
   "{{PLUGIN_MARKETPLACE}}|$(esc "$MARKETPLACE")"
 )
@@ -95,8 +105,13 @@ mkdir -p "$TARGET/.steadyship" || fail "could not create .steadyship"
 
 if [ "$DO_GIT" = "1" ]; then
   echo "Creating the first commit ..."
+  # A repository-local identity, so every later commit on this machine works without a global one;
+  # the setup owner can change it with: git config user.name / user.email
+  SLUG="$(printf '%s' "$SETUP_OWNER" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-//;s/-$//')"
   ( cd "$TARGET" \
     && git init -q -b main \
+    && git config user.name "$SETUP_OWNER" \
+    && git config user.email "${SLUG:-setup-owner}@steadyship.invalid" \
     && git add -A \
     && git -c user.name="Steadyship" -c user.email="steadyship@example.invalid" \
          commit -q -m "chore: initialise Steadyship repository (template v$VERSION)" ) \

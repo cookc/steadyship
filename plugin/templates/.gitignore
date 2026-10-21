@@ -9,6 +9,7 @@ apps/**/data/
 apps/**/*.xlsx
 apps/**/*.csv
 apps/**/*.json
+!apps/*/data.json
 !apps/_sample/**
 # native CAD
 *.dwg
@@ -20,6 +21,8 @@ apps/**/*.json
 *.sldprt
 *.sldasm
 *.f3d
+# test fixtures are the exception: a pinned drawing or sheet under tests/ is part of the test
+!tests/**
 .DS_Store
 Thumbs.db
 .git-credentials

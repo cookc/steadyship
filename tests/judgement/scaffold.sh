@@ -28,6 +28,8 @@ SHARE="$HOME/$SLUG-shared-drive"
 mkdir -p "$SHARE"
 "$FX/populate.sh" "$REPO" "$SHARE" | tail -1 | grep -q '^RESULT: PASS' \
   || { echo "scaffold: populate.sh failed" >&2; exit 1; }
+# A case may start part-way up the ladder: <case>/assessment/*.md are prior assessments.
+if [ -d "$HERE/assessment" ]; then cp "$HERE"/assessment/*.md docs/assessment/; fi
 git add -A
 git -c user.name="Steadyship" -c user.email="steadyship@example.invalid" \
   commit -q -m "chore: add $BUSINESS apps, business docs"

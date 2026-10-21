@@ -31,7 +31,7 @@ several, say "This folder isn't a Steadyship repository" and stop.
 1. Say in one line what is about to happen: three one-minute checks
    (environment, shared drive, tests), results recorded in
    `docs/spikes/RESULTS.md`. If `apps/` has no app yet (other than
-   `_sample`), say the tests check will be skipped until one is copied in.
+   `_sample` and `_template`, Steadyship's own), say the tests check will be skipped until one is copied in.
    The first tests run installs a test browser and can take a few minutes;
    say so.
 2. Run `bash scripts/check.sh`, adding `--app <name>` if the user named
@@ -61,7 +61,12 @@ several, say "This folder isn't a Steadyship repository" and stop.
    SKIP, say what is missing and that the check runs again once it is
    there. If the environment check reports persistence as "unknown", say
    in one line that the next run in a new chat will answer it.
-4. Say the results are recorded in `docs/spikes/RESULTS.md`, then give the
+4. Commit the results, if a shell is available: `git add docs/spikes/RESULTS.md`
+   and `git commit -m "docs: check results recorded"` (an uncommitted
+   file in the main folder blocks every later landing; the results are
+   Steadyship's own record, so they are committed without asking). Then
+   land it: `${CLAUDE_PLUGIN_ROOT}/standard/landing.md`.
+   Say the results are recorded in `docs/spikes/RESULTS.md`, then give the
    next step: if no app is in `apps/` yet, "copy your apps into `apps/`,
    one folder each, and say Check this computer again"; otherwise "say:
    What apps do we have and where is the same information kept twice?".

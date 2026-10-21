@@ -13,16 +13,20 @@ fail() { echo "FAIL: $*"; exit 1; }
 tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
-         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/check.sh \
+         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/serve.mjs scripts/look.mjs \
+         lib/papaparse.min.js lib/README.md lib/LICENSE-papaparse lib/theme.css lib/steadyship.js lib/globals.d.ts \
+         apps/_template/index.html apps/_template/app.js apps/_template/data.json apps/_template/README.md apps/_template/CHANGELOG.md \
+         docs/context/README.md tests/_template/fixtures/README.md \
+         tests/_template/_template.spec.ts scripts/checks.sh eslint.config.mjs tsconfig.json .prettierrc .prettierignore docs/context/engineering.md \
          scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh apps/_sample/index.html \
          docs/assessment/README.md docs/assessment/TEMPLATE.md docs/assessment/SUMMARY.md \
-         docs/assessment/_sample.md docs/context/business/README.md docs/spikes/README.md docs/spikes/RESULTS.md \
+         docs/assessment/_sample.md docs/context/business/README.md docs/context/engineering.md docs/spikes/README.md docs/spikes/RESULTS.md \
          docs/spikes/environment.md docs/spikes/github.md docs/spikes/shared-drive.md docs/spikes/tests.md docs/spikes/hosting.md \
          docs/spikes/team.md docs/spikes/hosting/staticwebapp.config.json \
          docs/spikes/hosting/azure-static-web-apps.yml .github/workflows/validate.yml; do
   [ -f "$DIR/$f" ] || fail "missing $f"
 done
-for s in scripts/validate.sh scripts/smoke.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
+for s in scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/checks.sh scripts/check.sh scripts/spikes/git-push.sh scripts/spikes/nas-rw.sh scripts/spikes/env.sh; do
   [ -x "$DIR/$s" ] || fail "$s not executable"
 done
 # GitHub Actions "${{ secrets.X }}" is legitimate; only {{UPPER_CASE}} placeholders count.
@@ -34,6 +38,8 @@ VER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/
 grep -q "^Template version: $VER\$" "$DIR/steadyship.md" || fail "template version $VER not written"
 MP="$(sed -n 's#.*"repository": *"https://github.com/\([^"]*\)".*#\1#p' "$ROOT/plugin/.claude-plugin/plugin.json")"
 grep -q "^Plugin marketplace: $MP\$" "$DIR/steadyship.md" || fail "plugin marketplace $MP not written"
+grep -qE "^Time zone: ([A-Za-z]+/[A-Za-z_/+-]+|not yet confirmed)$" "$DIR/steadyship.md" || fail "time zone line missing or malformed"
+grep -q "^| Time zone | " "$DIR/docs/context/engineering.md" || fail "engineering.md lacks the time zone row"
 grep -q 'Setup owner:\*\* Sam Setup' "$DIR/docs/assessment/README.md" || fail "README role line"
 for f in .gitignore .gitattributes .github/workflows/validate.yml; do [ -f "$DIR/$f" ] || fail "missing $f"; done
 [ -f "$DIR/.steadyship/manifest" ] || fail "manifest missing"
@@ -43,6 +49,11 @@ git -C "$DIR" ls-files --error-unmatch .steadyship/manifest >/dev/null || fail "
 [ "$(git -C "$DIR" branch --show-current)" = "main" ] || fail "branch is not main"
 [ -z "$(git -C "$DIR" status --short)" ] || fail "tree not clean after init"
 git -C "$DIR" ls-files --eol scripts | grep -q 'w/crlf' && fail "CRLF in scripts" || true
+# an app's data manifest is tracked; its data files are not
+mkdir -p "$DIR/apps/x"; echo '{"master":"Jobs.csv"}' > "$DIR/apps/x/data.json"; echo 'a,b' > "$DIR/apps/x/Jobs.csv"
+[ -z "$(git -C "$DIR" check-ignore apps/x/data.json)" ] || fail "apps/x/data.json must not be ignored"
+[ -n "$(git -C "$DIR" check-ignore apps/x/Jobs.csv)" ] || fail "apps/x/Jobs.csv must be ignored"
+rm -rf "$DIR/apps/x"
 
 # second run into a non-empty dir must refuse
 set +e; "$ROOT/plugin/scripts/init.sh" "$DIR" --business x --setup-owner x --sponsor x --github-owner x --repo-name x --shared-drive x >"$OUT/again.log" 2>&1; rc=$?; set -e
@@ -51,9 +62,10 @@ set +e; "$ROOT/plugin/scripts/init.sh" "$DIR" --business x --setup-owner x --spo
 # special characters survive substitution
 SP="$OUT/special"
 "$ROOT/plugin/scripts/init.sh" "$SP" --business "A & B's \"Boats\" | x" --setup-owner "O'Neil" --sponsor S \
-  --github-owner g --repo-name r --shared-drive '\\nas\share' --no-git >/dev/null || fail "special-char init"
+  --github-owner g --repo-name r --shared-drive '\\nas\share' --time-zone Pacific/Auckland --no-git >/dev/null || fail "special-char init"
 grep -qF "Business: A & B's \"Boats\" | x" "$SP/steadyship.md" || fail "special business"
 grep -qF "Setup owner: O'Neil" "$SP/steadyship.md" || fail "special setup owner"
+grep -q "^Time zone: Pacific/Auckland$" "$SP/steadyship.md" || fail "explicit --time-zone not written"
 grep -qF 'Shared drive: \\nas\share' "$SP/steadyship.md" || fail "special shared drive"
 grep -rqE '\{\{[A-Z_]+\}\}' "$SP" && fail "placeholders remain in special run" || true
 
@@ -101,7 +113,7 @@ git init -q --bare "$OUT/bare.git"
 
 if [ "${STEADYSHIP_TEST_SMOKE:-0}" = "1" ]; then
   echo "-- generated repo smoke: running (npm ci + scripts/validate.sh)"
-  ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh | tail -1 | grep -q '^OK$' ) || fail "generated validate.sh"
+  ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh > "$OUT/validate.log" 2>&1 && tail -1 "$OUT/validate.log" | grep -q '^OK$' ) || { tail -25 "$OUT/validate.log"; fail "generated validate.sh"; }
   ( cd "$DIR" && export HOME="$OUT/home5" && scripts/check.sh --shared-drive "$OUT" --app _sample | tail -1 | grep -q '^RESULT: PASS$' ) || fail "check.sh with the sample app"
   grep -q '^| tests | PASS | [0-9-]* | _sample opened without errors' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record the tests row"
   echo "-- generated repo smoke: PASS"

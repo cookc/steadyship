@@ -18,13 +18,13 @@ if grep -rnI "Chris\|cookc" plugin/ | grep -v 'plugin/.claude-plugin/plugin.json
   echo "real-person or account names found in plugin/ (above)"; exit 1
 fi
 echo "-- templates carry no customer apps"
-[ "$(ls plugin/templates/apps)" = "_sample" ] || { echo "plugin/templates/apps must contain only _sample"; exit 1; }
+[ "$(ls plugin/templates/apps | tr '\n' ' ')" = "_sample _template " ] || { echo "plugin/templates/apps must contain only _sample and _template"; exit 1; }
 echo "-- template steadyship.md names no business"
 if grep '^Business: ' plugin/templates/steadyship.md | grep -v '^Business: {{BUSINESS_NAME}}$'; then
   echo "plugin/templates/steadyship.md names a business (above)"; exit 1
 fi
-echo "-- placeholders are the allowed eight"
-ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}}'
+echo "-- placeholders are the allowed nine"
+ALLOWED='{{BUSINESS_NAME}} {{GITHUB_OWNER}} {{PLUGIN_MARKETPLACE}} {{REPO_NAME}} {{SETUP_OWNER}} {{SHARED_DRIVE}} {{SPONSOR}} {{TEMPLATE_VERSION}} {{TIME_ZONE}}'
 for p in $(grep -rhoE '\{\{[A-Za-z_]+\}\}' plugin/templates | sort -u); do
   case " $ALLOWED " in *" $p "*) ;; *) echo "unexpected placeholder $p"; exit 1;; esac
 done
@@ -32,6 +32,8 @@ echo "-- CI Playwright pin matches the template lockfile"
 PIN="$(sed -n 's/.*playwright@\([0-9][0-9.]*\) install.*/\1/p' .github/workflows/validate.yml | head -1)"
 LOCK="$(grep -A1 -m1 '"node_modules/@playwright/test"' plugin/templates/package-lock.json | sed -n 's/.*"version": *"\([^"]*\)".*/\1/p')"
 [ -n "$PIN" ] && [ "$PIN" = "$LOCK" ] || { echo "CI pins playwright@$PIN but the template lockfile has $LOCK"; exit 1; }
+echo "-- the serve script"
+tests/test-serve.sh
 echo "-- generate a customer repo and test it"
 if [ "${STEADYSHIP_FULL:-0}" = "1" ]; then STEADYSHIP_TEST_SMOKE=1 tests/test-init.sh; else tests/test-init.sh; fi
 echo "OK"
