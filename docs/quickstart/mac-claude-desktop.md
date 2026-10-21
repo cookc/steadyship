@@ -54,10 +54,23 @@ Plugins, **Add**, **Upload plugin**, and choose the zip.
    each into `docs/assessment/`.
 6. Say **Review the <app>**, using one of the app names from that list, for
    a plain Yes / No / Prototype verdict on whether the team can rely on it.
-7. From then on, ask for changes the way you normally would. Steadyship asks
-   one or two questions first (what the new thing attaches to, where its data
-   should live, whether something you already have does it), records the
-   answer, and then builds.
+7. From then on, build whatever you like in `apps/`, the way you do today.
+   While something is a prototype Steadyship stays out of the way: it builds
+   what you ask and says one line, that when someone else is about to rely
+   on it you should say **Promote the <app>**.
+8. Before the first promotion, two short conversations: **Set up my data**
+   and **Set up my security**. Ten minutes each, questions about the
+   business and nothing technical, written into the folder. They are the
+   two things that are expensive to change later, which is why they come
+   before the code. They run on a stronger model, and say so.
+9. **Promote the <app>** when other people are about to use it. Steadyship
+   audits what you built, asks up to five questions about the business in
+   one message, then works through to the end on its own: the same
+   behaviour for the same inputs, data and settings in files on the drive,
+   tests, an owner, and a note in plain words of what changed and why.
+   For an app people already rely on, changes get the engineer's one or
+   two questions first, and **finish** checks and lands a change you made
+   yourself.
 
 ## 4. Just looking? Try the demo business
 

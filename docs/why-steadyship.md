@@ -123,9 +123,19 @@ few habits.
 - **No terminal, and no Git to learn.** The folder is a repository
   underneath, but nobody in the business has to know that. Steadyship
   commits from a state you have approved.
-- **It doesn't get in the way of experiments.** While you are trying
-  something out, build as you do today. It asks at most once, and only when
-  the answer would be expensive to get wrong.
+- **It doesn't get in the way of experiments.** While something is a
+  prototype, build as you do today. Steadyship builds what you ask and says
+  one line: when someone else is about to rely on it, say "promote it".
+  That is when the engineering happens, in one go, mostly while you are
+  doing something else: it audits what you built, asks a few questions
+  about the business, and rebuilds it to the standard with the same
+  behaviour for the same inputs and a note of what changed and why.
+- **Two conversations before the first promotion.** Your data (which file
+  is the master for what, who writes it, what must never be lost) and your
+  security (who may see what, where files live, what happens when someone
+  leaves). Ten minutes each, nothing technical, written down and re-read
+  before every later change. They are the two things that cannot be cheaply
+  changed once real information is in the apps.
 
 ## What it looks like day to day
 

@@ -158,4 +158,6 @@ foundation conversations (data, security) happen once on a stronger model;
 one message of product questions; `steadyship-finish` is the gate before a
 change lands on a relied-on app; the shape every app shares is written at
 the first promotion and upheld from then on. The rungs above stand; promote
-does 2 to 4 in one go.
+does 2 to 4 in one go. Built, tested on the VM (run 3) and merged as
+0.7.0; the look script, the test-first rule and the engineer agent were
+added after run 3 and have had one VM test each or none.

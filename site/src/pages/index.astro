@@ -26,7 +26,8 @@ const brings = [
 ];
 
 const features = [
-  { title: 'Asks before it builds', body: 'If a change would be expensive to get wrong, it asks about it first and suggests an answer. Once you decide, it builds, and records why.' },
+  { title: 'Stays out of your prototypes', body: 'While something is a prototype it builds what you ask, nothing in the way. When someone else is about to rely on it, say "promote it" and the engineering happens in one go, mostly unattended.' },
+  { title: 'Asks before it builds', body: 'For an app people rely on, if a change would be expensive to get wrong, it asks about it first and suggests an answer. Once you decide, it builds, and records why.' },
   { title: 'Gives a straight verdict', body: 'Yes, No or Not yet on whether the team can rely on an app, with the evidence. A second, independent reviewer checks the first one\'s work.' },
   { title: 'Finds the same thing kept twice', body: 'It reads every app and every spreadsheet, and shows you where the same price, job or customer is kept in two places and already disagrees.' },
   { title: 'Checks the ground first', body: 'Before anything is built, it checks that it can reach GitHub, read and write the shared drive, and open one of your apps. It takes a minute, and the result is recorded.' },
@@ -47,6 +48,7 @@ const steps = [
   { prompt: 'Set up Steadyship for Harbour Boatworks', note: 'Four questions, about two minutes.' },
   { prompt: 'Check this computer', note: 'Three checks in about a minute, all recorded.' },
   { prompt: 'Review the job board', note: 'A verdict the owner can act on.' },
+  { prompt: 'Promote the cut planner', note: 'A few questions, then the engineering, unattended.' },
 ];
 ---
 <Base title="Steadyship" description="An engineer in the conversation. A Claude plugin for businesses whose own people build their apps: it asks what you don't know to ask, judges what you can't judge, and brings in real engineering the moment an app starts to matter.">
