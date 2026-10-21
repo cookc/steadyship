@@ -21,6 +21,27 @@ Businesses override rows in their own `docs/context/engineering.md` (for
 example: "we are a Microsoft 365 shop, so sign-in means Entra and hosting
 means SharePoint or Azure"). The override wins.
 
+## When the bar applies
+
+Steadyship does not shape prototypes. The bar is applied at three moments,
+and each reads the business's **foundations** first: `docs/context/data.md`
+(the owner's map of their information and the rules apps follow),
+`docs/context/security.md` (who may see what, and the rules that keep it so)
+and `docs/context/shape.md` (the shape every app shares, written at the
+first promotion).
+
+- **Prototype.** Nothing is applied. A change to a prototype, or a new app,
+  is built as asked, with one signpost line: say *promote the <app>* when
+  someone else is about to rely on it.
+- **Promotion.** Every row at Owned tool, on a rebuild from the template
+  that behaves the same as the prototype for the same inputs, except where
+  an answer to a product question said otherwise.
+- **Finish.** The rows a change touches, on the change alone, before it
+  becomes part of a relied-on app.
+
+Review and assess read the foundations too, and report where an app has
+drifted from them.
+
 ## 1. Free habits: from line one, at every stage
 
 These cost nothing, so there is no over-engineering argument against them,
@@ -115,6 +136,7 @@ Opinions, versioned here, overridable per business.
 | Proper-app framework | Decided per business when the first app reaches the stage, recorded in `docs/context/engineering.md`; the choice is made once for all apps | A framework is a ten-year decision; one per business |
 | Hosting | The business's existing platform where it has one (Microsoft 365: Azure Static Web Apps with Entra sign-in); otherwise decided at the stage | Sign-in people already have beats a new password |
 | Database | Decided at the stage; never before two writers exist | The master file is enough for longer than people expect |
+| Model | The builder's own model for building and finishing. A stronger model, forced by the skill, for the data and security conversations and for promotion, with one plain line saying so | Those are the decisions that cost most to undo; the token cost is visible to the builder and the cost of a bad decision is not |
 
 ### Value forms
 
@@ -197,6 +219,14 @@ are followed better than principles.
   without it.
 - Removing the stage banner without a stage move.
 - Asking the builder a question the bar already answers.
+- Promoting a prototype before the data and security conversations have
+  happened. They are the retrofits that cost most.
+- A promotion that changes behaviour nobody asked for. Same inputs, same
+  outputs, except where an answer said otherwise; the changelog names every
+  exception.
+- Asking the owner anything technical in the data or security
+  conversation. If they would have no opinion without knowing what code
+  is, it is not their question.
 
 ## 5. What we lean on
 
@@ -235,13 +265,31 @@ in the plugin's changelog.
 - **Review** judges against the stage the business wants to rely on, runs
   the tests first and cites the result, and hands this file to the
   independent reviewer as its brief. "Not yet" names the failing rows.
-- **Ask** checks the rows a change touches, applies the stage default in
+- **Ask** first reads the app's stage. For a prototype or a new app it
+  says the signpost line and builds as asked, nothing more. From Owned
+  tool it checks the rows a change touches, applies the stage default in
   one line, asks the builder only for business knowledge (the own-it
   questions), picks the template parts the app needs, gets a real sample
   of any file that comes in, adds one test, looks at any produced output
   itself, and proposes the next rung once.
+- **Data** and **security** each hold one guided conversation with the
+  owner, in the owner's words, and write `docs/context/data.md` and
+  `docs/context/security.md` with the facts, the rules and the triggers
+  that re-open them. Both force the stronger model.
+- **Promote** audits a prototype, asks the product questions its audit
+  raises in one message, then without further questions writes or checks
+  the shape, characterises the prototype's behaviour in tests, rebuilds it
+  from the template at Owned tool against every row and the foundations,
+  verifies, writes the changelog entry and moves the stage. It forces the
+  stronger model.
+- **Finish** reviews the change on the current branch against the rows it
+  touches and the foundations, fixes what needs no product decision, adds
+  the missing test, runs the validation, writes the changelog entry and
+  merges it into the main branch.
 - **Next** picks the rung from the ledger, does it, records it; states a
-  stage move when a trigger is met, and the banner changes with it.
+  stage move when a trigger is met, and the banner changes with it, and proposes
+  the data or security conversation first when one is missing or a review
+  trigger has been met.
 - **Check** runs the machine checks the bar demands and reports PASS, FAIL
   or SKIP per check.
 

@@ -41,6 +41,12 @@ Never change any file: this skill only reads.
      "couldn't read the bar" once and judge from the assessment's profile);
    - `docs/context/engineering.md` (facts the bar cannot know and rows
      this business overrides; an override wins);
+   - `docs/context/data.md`, `docs/context/security.md` and
+     `docs/context/shape.md` where present (the owner's rules for data,
+     for who may see what, and the shape every app shares; an app that
+     breaks one of their rules fails that row, and the verdict names the
+     rule); where one is missing, say so in one line and which sentence
+     creates it;
    - every business note: `docs/context/business/**/*` (the official
      stage/status list, the glossary's rules for how each identifier is
      written, which file is the master for what, who uses which app);

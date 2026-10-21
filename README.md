@@ -47,7 +47,9 @@ first two differ.
 ## For developers
 
 - `plugin/` is the Claude plugin: `skills/` (`steadyship-init`, `-demo`,
-  `-status`, `-check`, `-assess`, `-review`, `-ask`), the scaffolder
+  `-status`, `-check`, `-assess`, `-review`, `-ask`, `-next`, `-data`,
+  `-security`, `-promote`, `-finish`), `standard/` (the bar and the landing
+  routine), the scaffolder
   `scripts/init.sh`, `templates/` for the generated customer repository, and
   `demo/` (the mock customer, see `plugin/demo/README.md`).
 - `.claude-plugin/marketplace.json` makes this repository the plugin

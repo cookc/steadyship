@@ -146,3 +146,16 @@ scratch copy of the demo (rungs 2, 3 and 4 in turn, with a person answering);
 a fresh-VM run of the quick start including a rung; confirm that hook-based
 plugins and other plugins' agents are reachable from Claude desktop; README
 and the website's features page updated to what then exists.
+
+## Revised 22 Oct 2026: hack, then promote
+
+The cut-planner experiment (`docs/experiment-cut-planner.md`) showed the
+plugin's cost is paid at the start of a build and its value later. The
+design in `docs/superpowers/specs/2026-10-22-hack-then-promote-design.md`
+moves Steadyship out of prototyping: prototypes are built as asked; two
+foundation conversations (data, security) happen once on a stronger model;
+`steadyship-promote` turns a prototype into an Owned tool unattended after
+one message of product questions; `steadyship-finish` is the gate before a
+change lands on a relied-on app; the shape every app shares is written at
+the first promotion and upheld from then on. The rungs above stand; promote
+does 2 to 4 in one go.

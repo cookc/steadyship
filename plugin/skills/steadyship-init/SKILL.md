@@ -168,7 +168,14 @@ Otherwise ask once: "Shall I create the private GitHub repository
     repository; the stored credential (`~/.git-credentials`) lives outside
     the repository.
 
-Then: "Next step: copy your apps into `apps/`, one folder each, then say Check this computer (three one-minute checks of this setup; results are recorded for you)."
+Then say, in these words or close: "Next step: copy your apps into
+`apps/`, one folder each, then say *Check this computer* (three
+one-minute checks of this setup; results are recorded for you). After
+that, build whatever you like in `apps/`; I stay out of the way while
+something is a prototype. When someone else is about to rely on one, say
+*promote the <app>*. Before the first promotion I'll want two short
+conversations, *set up my data* and *set up my security*: ten minutes
+each, and they are the decisions that are expensive to undo later."
 
 ## Rules
 

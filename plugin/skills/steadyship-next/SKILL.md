@@ -43,9 +43,22 @@ when it happens and change its stage and banner.
    starting with `_`) and reply with
    one line per app ("job board: next is 2 Own it"), then stop.
 
-2. **Read**, in one turn: the app in full; `docs/assessment/<name>.md`
-   (if missing, say "I haven't assessed this app yet; say 'assess the
-   apps' first" and stop); `docs/context/business/**/*`;
+2. **Foundations first.** If `docs/context/data.md` or
+   `docs/context/security.md` is missing, the next step for every app is
+   that conversation: say which is missing, one line on why it comes
+   before any rung ("the data notes say which file is the master for each
+   thing; every rung after Own it depends on that"), the sentence that
+   starts it ("set up my data" / "set up my security"), and stop. If
+   both exist, read their `## Review` lines: when a trigger has been met
+   (a master past 5,000 rows per `scripts/checks.sh`'s file-budget line,
+   two writers named in an assessment's data table, personal data in a
+   data table that `data.md` does not name, more than six months since
+   it was written), propose re-opening that conversation in one line
+   before the rung, and carry on with the rung.
+   **Read**, in one turn: the app in full; `docs/assessment/<name>.md`
+   (if missing, say "the <name> is a prototype nobody has assessed; if
+   someone else is about to rely on it, say *promote the <name>*; if you
+   just want it catalogued, say *assess the apps*" and stop); `docs/context/business/**/*`;
    `docs/context/engineering.md`; `docs/context/decisions.md` if present;
    the bar at `${CLAUDE_PLUGIN_ROOT}/standard/STANDARD.md`; Glob
    `tests/<name>/**` and the shared drive `<shared drive>/**/*`.

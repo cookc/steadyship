@@ -1,6 +1,6 @@
 ---
 name: steadyship-ask
-description: Use BEFORE making any change request in a Steadyship repository — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the job board do" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. ALSO use on the user's answer to such a question ("the second one", "against each step", "go ahead", "just do it the simple way"): it records the decision in docs/context/decisions.md, builds as agreed and says where the data is stored. Not for questions, status, assessments, reviews or spikes.
+description: Use BEFORE making any change request in a Steadyship repository (for a prototype it only says one signpost line and builds as asked) — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the job board do" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. ALSO use on the user's answer to such a question ("the second one", "against each step", "go ahead", "just do it the simple way"): it records the decision in docs/context/decisions.md, builds as agreed and says where the data is stored. Not for questions, status, assessments, reviews or spikes.
 ---
 
 # Steadyship ask
@@ -16,6 +16,20 @@ until the user has answered." Hold to it: in this turn you only Read, Glob and
 Grep. No Write, no Edit, no code in the reply.
 
 **Work fast.** Make independent reads in the same turn.
+
+## Prototypes are built as asked
+
+Steadyship does not shape prototypes. After step 1, read
+`docs/assessment/<app>.md` for the app being changed. If it is missing, or
+its `**Stage:**` is Prototype, or the request is for a new app: say one
+line, "This is a prototype, so I'll just build it. When someone else is
+about to rely on it, say *promote the <app>* and I'll give it the care
+that needs.", then build exactly what was asked, the way an ordinary
+conversation would: no questions, no template, no bar rows, no decision
+record, no assessment file. Commit if a shell is available (`git add -A`,
+one line), then land it: `${CLAUDE_PLUGIN_ROOT}/standard/landing.md`.
+Nothing else in this skill applies. The rest of this file is for apps at
+Owned tool or above.
 
 ## Steps
 
@@ -195,8 +209,11 @@ the next person learns why it was built this way.
    storage line so it no longer describes the app as it was, and any
    profile row or ladder rung the change moved.
 4. Commit, if a shell is available: `git add -A` and a one-line message
-   saying what changed and for whom; never push. If no shell, say the
-   change is not yet committed and that the setup owner should commit it.
+   saying what changed and for whom; never push; add the entry to
+   `apps/<app>/CHANGELOG.md` first (newest first, in the builder's words).
+   Then land it: `${CLAUDE_PLUGIN_ROOT}/standard/landing.md`. If no
+   shell, say the change is not yet committed and that the setup owner
+   should commit it.
 5. Reply, short (about ten lines): what changed, in one or two lines;
    where its data is stored now and what that means ("only on this
    computer's browser" or "in <file> on the shared drive"); **one line per

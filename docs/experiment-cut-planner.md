@@ -205,6 +205,71 @@ so the runs compare; new items are scored as a separate block on both runs.
   drawing's arcs rather than refusing them; N4 asked for a real drawing
   before building; N5 the engineer said what it looked at in the output.
 
+## Run 3 protocol (hack, then promote)
+
+Decided 22 Oct 2026 after the run 2 review. The design is in
+`docs/superpowers/specs/2026-10-22-hack-then-promote-design.md`. Arm C is a
+different approach, not a rerun: the plugin stays out of the way while the
+cut planner is a prototype, then promotes it in one unattended step. The
+checklist's 30 items are unchanged so the runs compare.
+
+- **One arm, C**, Sonnet, Claude desktop on the VM, the demo business set
+  up fresh, the plugin from `feat/ladder` at the commit that carries this
+  protocol. Worktree toggle left at its default (on): landing is part of
+  what is being tested.
+- **Fresh state.** Before the run: the demo shared-drive folder on the
+  share is reset to the demo's files plus the three inputs (no settings
+  file, no outputs, no 3000 x 1500 row); old repositories and experiment
+  folders on the VM are deleted, not hidden.
+- **Prompts 1 to 5** exactly as in run 2. Expected: the signpost line and a
+  plain build. Record time to the first usable layout (prompt 2's reply).
+- **Then:** "Set up my data." and "Set up my security.", each answered from
+  the sheet below in one message. Record whether the model shown for those
+  turns is the stronger one (the transcript's `model` field).
+- **Then:** "Promote the cut planner." Answer from the sheet in one message;
+  leave it to run; record wall time from the answer to the morning note
+  and how many times it stopped to ask (target: none).
+- **Week-later** prompt 7 in a new conversation, then "Finish."
+- **Scoring:** the 30 items blind-scored as before, on the final state;
+  plus, scored separately and not added to the 60: F1 the data notes
+  exist and the promoted app follows them (master named there, no second
+  copy); F2 the security notes exist and the app follows them (nothing
+  personal in fixtures, no secret); F3 the shape exists and the app's row
+  is in it; F4 same inputs, same outputs between the prototype and the
+  promoted app on J-1041 (sheet count, placements, machine file), except
+  as answered; F5 builder-attended minutes (time the builder had to be
+  present: every turn except the unattended build) against B1's 93 and
+  A1's 28 to the same point.
+- **Abandon the approach if** the promoted app scores no better than the
+  plain arm's week-later (43), or F4 fails without an answer explaining it.
+
+### Answer sheet for run 3 (use only what is asked; do not volunteer)
+
+Data: the masters are `Jobs.csv` (jobs), `Customers.csv` (customers),
+`Parts.csv` (parts and sheet stock, with supplier cost), `Price List
+2026.csv` (what we charge) and the `Quotes` folder; the office writes jobs
+and quotes, one person at a time; the workshop lead keeps `Parts.csv`;
+what must never be lost: jobs, quotes, customers; personal: customers'
+contact names and phone numbers, nothing about staff on the drive; keep
+quotes and invoices seven years; sheet size: yes, give it its own columns;
+missing: invoices live in the accounting package; nothing in notebooks
+that matters.
+
+Security: about 18 people; the workshop may see jobs, parts and drawings
+but not quotes, what we charge, or customers' phone numbers; the drive is
+a NAS in the office, the office staff know its password; two office
+laptops go home; drawings go to the designer and the metal cutter by
+email, quotes go to customers as PDF; passwords are in the owner's head
+and a notebook, not in a file; the NAS is copied to a USB drive weekly by
+the owner, never restored; when someone leaves the NAS password changes
+and the owner takes over their apps; not on GitHub.
+
+Promote: the router's software only runs the file, it does not nest;
+layouts and machine files live with the job on the drive; sheet size
+columns yes; bad input: skip the bad part and say so; the CNC operator
+uses it, one at a time, from next month, a wrong layout scraps a plate
+worth about $500, Edge on the shop PC; keep the prototype's behaviour.
+
 ## Results
 
 Run 21 Oct 2026 (VM clock 20 Oct, NZ afternoon), Claude desktop on the Windows

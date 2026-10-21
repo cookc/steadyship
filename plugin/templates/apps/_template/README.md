@@ -16,6 +16,4 @@ only if this app produces something that leaves it. A script entry point
 (`scripts/<name>.mjs` calling the module) is the fourth part, for a job
 that runs without a page. Delete the parts this app does not need.
 
-## Changelog
-
-- 0.1.0 — created from Steadyship's template.
+**What changed:** see `CHANGELOG.md` beside this file.

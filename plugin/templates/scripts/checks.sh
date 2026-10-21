@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Usage: scripts/checks.sh [app-folder-name]
 # The machine checks the bar demands, per app: escaping, outside scripts, secrets, the stage
-# banner, alert boxes, UTC dates, a README, tests of its own, format, lint, types, the file budget.
+# banner, alert boxes, UTC dates, a README, a changelog, tests of its own, format, lint, types, the
+# file budget; and once per repository: the foundations (data, security, shape) and types.
 # A check that fails on a Prototype is reported as NOTE (nothing to fix yet); from Owned tool it
 # is a FAIL. The last line is "RESULT: PASS" or "RESULT: FAIL <n> check(s)".
 set -uo pipefail
@@ -45,6 +46,7 @@ for dir in apps/*/; do
   [ -z "$hits" ] && report "$app" local-dates PASS || report "$app" local-dates FAIL "toISOString() gives the UTC date, wrong for part of every day: $(echo "$hits" | head -1)"
   # README and tests of its own
   [ -f "$dir/README.md" ] && report "$app" readme PASS || report "$app" readme FAIL "no apps/$app/README.md"
+  [ -f "$dir/CHANGELOG.md" ] && report "$app" changelog PASS || report "$app" changelog FAIL "no apps/$app/CHANGELOG.md (what changed, for the people who use it)"
   [ -d "tests/$app" ] && report "$app" own-tests PASS || report "$app" own-tests FAIL "no tests/$app/"
   # a module (the rules) has Node tests; a page past the limit has its rules in a module
   if [ -f "$dir/logic.js" ]; then
@@ -79,6 +81,18 @@ for dir in apps/*/; do
     else report "$app" file-budget SKIP "master file ${master:-unnamed} not visible from here"; fi
   fi
 done
+# the foundations, once for the repository: the data and security conversations are notes until an
+# app is relied on; the shape is written at the first promotion and is required from then on
+owned=0; for a in docs/assessment/*.md; do case "$(basename "$a")" in README.md|TEMPLATE.md|SUMMARY.md|_*) continue;; esac
+  st="$(sed -n 's/^\*\*Stage:\*\* *\([A-Za-z ]*[A-Za-z]\).*/\1/p' "$a" | head -1)"; [ -n "$st" ] && [ "$st" != Prototype ] && owned=1; done
+for f in data security; do
+  if [ -f "docs/context/$f.md" ]; then echo "repository $f-notes: PASS"
+  elif [ $owned = 1 ]; then echo "repository $f-notes: FAIL docs/context/$f.md is missing and an app is relied on (say: set up my $f)"; fails=$((fails+1))
+  else echo "repository $f-notes: NOTE docs/context/$f.md not written yet (say: set up my $f)"; fi
+done
+if [ -f docs/context/shape.md ]; then echo "repository shape: PASS"
+elif [ $owned = 1 ]; then echo "repository shape: FAIL docs/context/shape.md is missing and an app is relied on (the first promotion writes it)"; fails=$((fails+1))
+else echo "repository shape: NOTE docs/context/shape.md is written at the first promotion"; fi
 # types, once for the repository: only files that opt in with // @ts-check are checked
 if have tsc; then
   out="$(node_modules/.bin/tsc -p tsconfig.json 2>&1)"; rc=$?

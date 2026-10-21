@@ -39,6 +39,12 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    Then Glob, all in one turn:
    - `apps/*/index.html` (and `apps/**/*.html`, `apps/**/*.js` if there are more files)
    - `docs/context/business/**/*`
+   - `docs/context/data.md`, `docs/context/security.md` and
+     `docs/context/shape.md` where present: the owner's rules for data,
+     for who may see what, and the shape every app shares; an app that
+     keeps a second copy of a thing `data.md` gives a master, breaks a
+     `security.md` rule, or departs from `shape.md`'s parts or "owns"
+     table is a finding, quoted against the rule
    - `docs/context/engineering.md` (the facts the standard cannot know:
      time zone, browsers, platform, rows this business overrides)
    - `tests/**/*` (which apps have a test of their own)
