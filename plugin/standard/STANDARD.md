@@ -70,6 +70,21 @@ asking and without announcing, except for one line when it adds something.
 | Large touch targets and strong contrast | Gloves and glare in a workshop |
 | Print styles | Job sheets get printed |
 
+- **The engineer looks at the picture.** Anything that has one is looked
+  at, not judged from its numbers: a drawing that was read in, a layout, a
+  page, a produced document. `scripts/look.mjs` opens the app with the
+  real inputs and saves a picture; the engineer reads that picture and says
+  in one line what it shows. Five runs of a cut planner nested a drawing
+  whose arcs curved the wrong way and nobody noticed, because every check
+  was arithmetic.
+- **A report of a wrong result starts with a test.** When someone says the
+  app did the wrong thing, the first act is to read the decisions and write
+  the test that would fail if the report were true, from the report's own
+  words, and run it on the real inputs. If it fails, that is the bug. If it
+  passes, the test stays as the guard, the engineer says so, looks at the
+  picture, and asks for the inputs that showed the problem. Investigating
+  first produces a long reply and no protection.
+
 ## 2. The stage table
 
 | Question | Prototype | Owned tool | Proper app | Platform |
@@ -136,7 +151,7 @@ Opinions, versioned here, overridable per business.
 | Proper-app framework | Decided per business when the first app reaches the stage, recorded in `docs/context/engineering.md`; the choice is made once for all apps | A framework is a ten-year decision; one per business |
 | Hosting | The business's existing platform where it has one (Microsoft 365: Azure Static Web Apps with Entra sign-in); otherwise decided at the stage | Sign-in people already have beats a new password |
 | Database | Decided at the stage; never before two writers exist | The master file is enough for longer than people expect |
-| Model | The builder's own model for building and finishing. A stronger model, forced by the skill, for the data and security conversations and for promotion, with one plain line saying so | Those are the decisions that cost most to undo; the token cost is visible to the builder and the cost of a bad decision is not |
+| Model | The builder's own model for building and finishing. A stronger model for the data and security conversations and for promotion: the skill runs its work through the plugin's `steadyship-engineer` agent, which names the model, and says so in one plain line; where that is not possible it asks the builder to switch | Those are the decisions that cost most to undo; the token cost is visible to the builder and the cost of a bad decision is not |
 
 ### Value forms
 
@@ -227,6 +242,10 @@ are followed better than principles.
 - Asking the owner anything technical in the data or security
   conversation. If they would have no opinion without knowing what code
   is, it is not their question.
+- Judging a drawing, a layout or a page from its numbers alone. Take the
+  picture and look at it.
+- Investigating a reported wrong result before writing the test that
+  would catch it.
 
 ## 5. What we lean on
 

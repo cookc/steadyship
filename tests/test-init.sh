@@ -13,7 +13,7 @@ fail() { echo "FAIL: $*"; exit 1; }
 tail -1 "$OUT/init.log" | grep -q '^RESULT: PASS' || fail "init did not PASS"
 
 for f in steadyship.md README.md .gitignore .gitattributes package.json playwright.config.ts \
-         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/serve.mjs \
+         tests/smoke/app.spec.ts scripts/validate.sh scripts/smoke.sh scripts/test.sh scripts/check.sh scripts/serve.mjs scripts/look.mjs \
          lib/papaparse.min.js lib/README.md lib/LICENSE-papaparse lib/theme.css lib/steadyship.js lib/globals.d.ts \
          apps/_template/index.html apps/_template/app.js apps/_template/data.json apps/_template/README.md apps/_template/CHANGELOG.md \
          docs/context/README.md tests/_template/fixtures/README.md \

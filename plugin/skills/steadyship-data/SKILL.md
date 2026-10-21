@@ -30,6 +30,18 @@ app honours that).
 one message. Never ask anything the drive or the notes already answer; say
 what answered it.
 
+**The stronger model.** If an Agent tool is available, hand each turn of
+this skill to the plugin's `steadyship-engineer` agent (subagent type
+`steadyship:steadyship-engineer`, or `steadyship-engineer` if types are
+not prefixed): tell it the path of this skill file (the "Base directory
+for this skill" line above, plus `SKILL.md`), the repository folder, and
+which part to do (the first turn through step 4, or "after the owner
+answers" with the answers quoted in full); relay its reply verbatim as
+this turn's message. The agent cannot ask the person anything, so you
+show its questions and pass the answers back. If there is no Agent tool,
+or it fails, do the steps yourself and say in one line that the stronger
+model could not be used here.
+
 ## Steps
 
 1. **Where things are.** Confirm you are inside a Steadyship repository: a

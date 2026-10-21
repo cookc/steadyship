@@ -1,6 +1,6 @@
 ---
 name: steadyship-ask
-description: Use BEFORE making any change request in a Steadyship repository (for a prototype it only says one signpost line and builds as asked) — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the job board do" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. ALSO use on the user's answer to such a question ("the second one", "against each step", "go ahead", "just do it the simple way"): it records the decision in docs/context/decisions.md, builds as agreed and says where the data is stored. Not for questions, status, assessments, reviews or spikes.
+description: Use BEFORE making any change request in a Steadyship repository (for a prototype it only says one signpost line and builds as asked) — "add", "change", "can you make", "build", "I want the app to", "track", "record", "remember", "new app for", "make the job board do" — and ALSO on any report that an app did the wrong thing: "fix it", "it put two parts on top of each other", "the total is wrong", "it isn't right", "it broke", "make sure it can't happen again", "double counted" — anything that would modify or create an app, a data file or a workflow. Reads the business context and the app, asks the one or two questions the user doesn't know to ask (what the new thing attaches to, where its data lives, who else keeps it, whether people will rely on it, whether something they have already does it), recommends an answer, and waits before building. ALSO use on the user's answer to such a question ("the second one", "against each step", "go ahead", "just do it the simple way"): it records the decision in docs/context/decisions.md, builds as agreed and says where the data is stored. Not for questions, status, assessments, reviews or spikes.
 ---
 
 # Steadyship ask
@@ -30,6 +30,30 @@ record, no assessment file. Commit if a shell is available (`git add -A`,
 one line), then land it: `${CLAUDE_PLUGIN_ROOT}/standard/landing.md`.
 Nothing else in this skill applies. The rest of this file is for apps at
 Owned tool or above.
+
+## A wrong result is reported
+
+When the request says the app did the wrong thing (two parts on top of
+each other, a wrong total, a missing row) and the app is at Owned tool or
+above, the first act is a test, not an investigation. Read
+`docs/context/decisions.md` and `tests/<app>/` first: the decisions say
+what the app was asked to do, and the tests say what is already guarded.
+Then write, from the report's own words, the test that would fail if the
+report were true (a rule gets a Node test; a page behaviour a Playwright
+test), run it on the real inputs on the drive, and:
+
+- if it fails, that is the bug: fix it, keep the test, write the
+  changelog line, commit and land; one question at most, only if the fix
+  needs a business decision;
+- if it passes, keep it as the guard anyway, take the picture with
+  `scripts/look.mjs` on the real inputs and look at it, say plainly that
+  you could not make it fail and what you looked at, and ask for the one
+  thing that would let you: the files and settings from the run that went
+  wrong. Do not fuzz, refactor or add guards for things the test already
+  covers.
+
+The person reporting it is not technical: say what the test checks in
+their words ("a test now fails if any two parts on a sheet overlap").
 
 ## Steps
 

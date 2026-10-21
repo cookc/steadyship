@@ -1,6 +1,6 @@
 ---
 name: steadyship-finish
-description: Use when asked to "finish", "I'm done with this change", "make this part of the app", "finish the the app", "wrap this up", "merge it", "is this change good to go", or when the user says they have finished changing an app in a Steadyship repository. Reviews the change on this conversation's branch against the engineering standard and the business's data, security and shape notes, fixes what needs no decision, adds the missing test, runs the validation, writes the changelog entry and lands it on the main branch. A change to a prototype lands with one line. Not for new work, reviews of whole apps (steadyship-review), status or promotion.
+description: Use when asked to "finish", "I'm done with this change", "make this part of the app", "finish the app", "wrap this up", "merge it", "is this change good to go", or when the user says they have finished changing an app in a Steadyship repository. Reviews the change on this conversation's branch against the engineering standard and the business's data, security and shape notes, fixes what needs no decision, adds the missing test, runs the validation, writes the changelog entry and lands it on the main branch. A change to a prototype lands with one line. Not for new work, reviews of whole apps (steadyship-review), status or promotion.
 ---
 
 # Steadyship finish
@@ -73,6 +73,8 @@ line. The person is not technical; they decide, you do the engineering.
      "owns" row still true, nothing from the "not twice" list rebuilt;
    - `decisions.md`: nothing the change does contradicts a recorded
      answer;
+   - where the change answers a report of a wrong result, the test that
+     would have caught it exists and is named in the changelog;
    - the regret list.
    Sort what you found into **fix now** (needs no business decision:
    escaping, a value form, a test, a setting moved to the settings file,

@@ -1,6 +1,6 @@
 ---
 name: steadyship-promote
-description: Use when asked to "promote the the app", "make the the app something we can rely on", "turn the the app into a proper tool", "someone else is going to use the the app", "get the the app ready for the workshop/office/team", or "graduate the the app". Audits a prototype, asks the product questions the audit raises in one message, and on the answers rebuilds it unattended from the template to the engineering standard at Owned tool: same behaviour for the same inputs, data in its master per docs/context/data.md, tests that pin the prototype's outputs, a changelog entry in plain words, the stage moved. ALSO use on the user's answers to its questions. Not for prototypes nobody else will use (just build those), nor for reviews, status or one-rung changes (that is steadyship-next).
+description: Use when asked to "promote the app", "make the app something we can rely on", "turn it into a proper tool", "someone else is going to use it", "get it ready for the workshop/office/team", "graduate it", or when a change request lands on a prototype that other people now use or that holds real data. Use it even when the word promote is not said: "the whole workshop will use this from Monday" is a promotion. Audits a prototype, asks the product questions the audit raises in one message, and on the answers rebuilds it unattended from the template to the engineering standard at Owned tool: same behaviour for the same inputs, data in its master per docs/context/data.md, tests that pin the prototype's outputs, a changelog entry in plain words, the stage moved. ALSO use on the user's answers to its questions. Not for prototypes nobody else will use (just build those), nor for reviews, status or one-rung changes (that is steadyship-next).
 model: opus
 ---
 
@@ -33,6 +33,22 @@ for this conversation before answering." (The skill asks for Opus; not
 every app honours that.)
 
 **Work fast.** Make independent reads in the same turn.
+
+## The stronger model
+
+The audit and the rebuild are the decisions that cost most to undo, so
+they run on a stronger model when the environment allows. If an Agent
+tool is available, hand each turn of this skill to the plugin's
+`steadyship-engineer` agent (subagent type `steadyship:steadyship-engineer`,
+or the agent named `steadyship-engineer` if types are not prefixed): tell
+it the path of this skill file (the "Base directory for this skill" line
+above, plus `SKILL.md`), the repository folder, which part to do (the
+first turn through step 7, or "after the answers" with the user's answers
+quoted in full), and relay its reply to the builder verbatim, as this
+turn's message. The agent cannot ask the person anything, so the
+questions it drafts are shown by you and the answers go back to it. If
+there is no Agent tool, or it fails, do the steps yourself and say in one
+line that the stronger model could not be used here.
 
 ## Steps
 
@@ -86,6 +102,14 @@ every app honours that.)
      that output against the inputs;
    - what already exists that does the same job (the machine's software,
      the supplier's portal, the accounting package);
+   - **what the picture shows.** Run the prototype on the real inputs
+     through `node scripts/look.mjs <name> test-results/look-<name>.png`
+     (with `--pick "<file input selector>=<real files>"` and
+     `--click "<the button>"` as the page needs) and read the picture:
+     the shapes the drawing was read into, the layout, the produced thing.
+     Say what you saw in one line. A part drawn inside out, a notch that
+     curves the wrong way, a label on the wrong sheet, are visible in the
+     picture and invisible in the numbers;
    - the parts it needs from the template (page, module, verifier,
      script) and what the shape says, if a shape exists;
    - every bar row it fails at Owned tool.
@@ -249,10 +273,11 @@ following, in order, without asking anything.
    - `bash scripts/checks.sh <name>` and `bash scripts/validate.sh`;
    - produce the output once more from the real inputs and read it
      yourself against them, the way the bar asks: every input accounted
-     for, every number traceable, nothing the inputs do not justify; look
-     at the drawing or the file, not only the numbers;
-   - open the page under Playwright once with the real master and read
-     the first screen.
+     for, every number traceable, nothing the inputs do not justify;
+   - take the picture again with `scripts/look.mjs` on the rebuilt app
+     with the real inputs, read it, and compare it with the prototype's
+     picture from the audit: the same shapes, the same layout, the same
+     labels; say in the changelog what you looked at and what you saw.
    If no shell: say plainly that nothing was run and that the setup owner
    must run `bash scripts/validate.sh` before anyone relies on it; do not
    move the stage.

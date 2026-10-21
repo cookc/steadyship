@@ -96,7 +96,11 @@ Never change any file: this skill only reads.
      (a machine file, an invoice, a statement), produce one from the real
      inputs and read it against them yourself: every input accounted for,
      every number traceable, nothing the inputs do not justify. A
-     produced file nobody has re-read is a risk on its own. If no shell, say whether `tests/<name>/`
+     produced file nobody has re-read is a risk on its own. Then take the
+     picture: `node scripts/look.mjs <name> test-results/look-<name>.png`
+     with the real inputs (`--pick`, `--click` as the page needs), read
+     it, and say what it shows; a shape read in wrong or a layout that is
+     not what the numbers claim is visible there and nowhere else. If no shell, say whether `tests/<name>/`
      exists and what `docs/assessment/` says about the last run, and
      write "tests: not run here".
    - **Against the bar**: from the bar and the assessment's engineering
