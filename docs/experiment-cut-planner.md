@@ -533,6 +533,117 @@ drawing, say what it shows, name anything odd, before building. And the
 week-later task needs its own rule: a report of a wrong result gets a
 regression test written first, even when the report cannot be reproduced.
 
+### Run 3 results (22 Oct 2026): hack, then promote
+
+One arm, C, on Sonnet, plugin at commit dd6028f (the hack-then-promote
+build), Claude desktop on the VM with the worktree default on, fresh demo
+repository, old run folders deleted. Blind-scored from the label-free
+transcript and the final files as run T.
+
+| | Run 3 C (hack, then promote) | Run 2 Steadyship best (B1) | Run 2 plain best (A2) |
+|---|---|---|---|
+| 30 items, of 60 | 50 | 51 | 43 |
+| N1 to N5, of 10 | 9 | 10 | 8 |
+| F1 to F4 (foundations, behaviour kept), of 8 | 8 | not applicable | not applicable |
+| Time to the first usable layout | 14 min | 32 min | about 14 min |
+| Builder-attended minutes through prompt 5 | 24 | 93 | 28 |
+| Builder-attended minutes through promotion | 43 | n/a | n/a |
+| Unattended minutes (the promotion build) | 18 | n/a | n/a |
+| Questions asked before the first build | 0 | 2 | 0 |
+| Questions asked after the promotion answers | 0 | n/a | n/a |
+
+Per item and the scorer's notes: `docs/experiment-cut-planner/run3-T-scores.md`.
+Transcript: `docs/experiment-cut-planner/run3-T.md`.
+
+**What happened, in order.** Prompt 1 loaded the ask skill, which said one
+line ("This is a new app, so it's a prototype and I'll build it as asked")
+and built with no questions: 11 minutes, a page and a rules module, J-1041
+run and shown. Prompts 2 to 5 took 2 to 3 minutes each. Prompt 5 got "No,
+don't give this file to the CNC yet" with what was and was not checked.
+"finish" landed the prototype on the main branch with one line. "Set up my
+data" explored the drive and the apps, drafted a things table, asked eight
+questions in one message with a recommendation each, and on the answers
+wrote `docs/context/data.md`, recorded the answers and landed it. "Set up
+my security" did the same for `security.md`, found no secrets, and named
+three things to act on (the drive enforces no rule, the only backup is a
+USB stick in the building, passwords live in one head and a notebook).
+"Promote the cut planner" audited the prototype, wrote its assessment
+file, asked five questions in one message (build-or-buy first), and after
+the answers ran 18 minutes without asking anything: pinned the
+prototype's J-1041 result (8 sheets, 41 parts, every machine file) as
+fixtures and tests, added length, width and thickness columns to
+`Parts.csv` and filled them from the descriptions, created
+`CNC planner settings.csv` on the drive with the values that had been typed
+into the page, wrote `shape.md`, rebuilt the page to read both files, set
+the stage and owner, wrote a changelog entry that names every difference
+from the prototype and the answer that caused it (bad parts skipped not
+refused; no 3000 x 1500 sheet because `Parts.csv` has no row and it did not
+invent a price; sheet costs read from the file), and reported "byte-for-byte
+the same machine files". The week-later prompt read the nester, fuzzed
+4,450 random 3 mm jobs through it, found no overlap, noticed J-1041's
+gussets are on the 5 mm sheet, changed nothing, and asked for the failing
+run's files. "finish" then said there was nothing to finish.
+
+**What the approach bought.** The prototype stage cost what the plain arm
+cost (24 attended minutes against 28, first layout at 14 minutes against
+about 14) instead of the Steadyship arm's 93. The foundations and the
+promotion added 19 attended minutes and 18 unattended. The promoted app
+has what the run 2 Steadyship arm had (settings and sheet data on the
+drive, nothing typed into code, Node tests, re-read output, an owner, a
+changelog, decisions recorded) and two things it did not: a written map
+of the business's data and security that the owner answered for, and a
+pinned "same inputs, same outputs" test from before the rebuild.
+
+**The scorer's reading.** Strongest: output safety and the promotion
+(every machine file re-read before download; settings and plate sizes on
+the drive; three pinned J-1041 fixtures that match the prototype byte for
+byte and pass once the drawing is put back). Weakest: before the first
+build nothing was asked about who relies on it or where files go, and
+build-or-buy came up only at promotion; the week-later fix added no test,
+never read `decisions.md`, and asked for settings and a drawing that sit
+on the drive. Against run 2: items 2 to 4 (asking first) are where run 3
+gives back points, by design; items 18, 21 and 23 (settings in one place,
+a second builder could follow it, numbers handled deliberately) are where
+it gains them.
+
+**Where it fell short.**
+
+- Nobody looked at the drawing. Same as all four run 2 runs: the
+  transom's inverted arcs went unnoticed again. The audit reads code and
+  files; it still does not look at the picture.
+- The prototype path is not plain. Even with "build it as asked", Sonnet
+  built a rules module and a G-code re-reader because the template, the
+  checks and the business notes were in the repository. That is a good
+  outcome for the app and a cost for the prototype (11 minutes against the
+  plain arm's 9), and it means the "prototype is free" claim is only
+  partly true inside a Steadyship repository.
+- The 3000 x 1500 prompt produced a made-up example price on the page in
+  the prototype; promotion removed it rather than asking for the real
+  price, so the promoted app offers one sheet size per thickness until
+  someone adds a row.
+
+**Product defects found in run 3.**
+
+1. The stronger model was not used. All three conversations that the
+   skills mark `model: opus` ran on Sonnet: Claude desktop ignores the
+   skill's model field (Claude Code's documentation says it applies for
+   the turn; the desktop's behaviour is undocumented). The forcing has to
+   be done another way: a plugin agent with its own model, run from the
+   skill, is the next thing to test. The outputs were good on Sonnet
+   regardless.
+2. The check skill left `docs/spikes/RESULTS.md` uncommitted in the main
+   folder, so the landing routine refused every merge until it was
+   committed by hand. Fixed: check commits its results; landing commits
+   Steadyship's own `docs/` changes rather than refusing.
+3. The template's `.gitignore` ignores `*.dxf` everywhere, so the pinned
+   drawing fixture never entered git and the week-later conversation could
+   not run the J-1041 test. Fixed: nothing under `tests/` is ignored.
+4. The promotion rebuilt the page through throwaway patch scripts
+   (`patch-app.cjs`, `patch2.cjs`); they were not left in the tree, but
+   the approach is fragile and the skill should say to edit files directly.
+5. The desktop's "Choose folder" and "New" controls are inconsistent
+   targets for automation; not a product defect, noted for the rig.
+
 ### Run log
 
 #### Arm A (no plugin), Sonnet 5.5 Medium, Auto permissions, folder C:\Users\steadyship\boatworks-apps, started 15:27 NZ 21 Oct 2026
@@ -625,3 +736,15 @@ regression test written first, even when the report cannot be reproduced.
 - Prompt 6 "Review the cut planner." (plain Claude) 01:17 -> ~01:22: 11 findings via the desktop findings panel, nothing fixed. Matter most: missing parts don't stop the job (a layer with no shape still writes G-code, run-job.js:42); DXF warnings thrown away (a spline hole skipped silently); the clearance check can fail on cutting through another part (counts cases, check-gaps.js:28); sharp part tips can be gouged (corners sharper than ~29 degrees get a chord path that cuts into the tip; J-1041 parts don't trigger it); old .nc files stay in the output folder; the preview uses current settings not planned ones. Smaller: zero/negative sizes unvalidated, no nesting in big parts' holes, retract height ignored, dead variable, duplicated drawing/clearance code. Offered to fix the first five plus the preview bug. No master-file comparison, no bar, no second opinion. Snapshot a2-6, then "Go ahead and fix what you found."
 - "Go ahead and fix what you found." 01:24 -> ~01:35: missing parts now stop the job; skipped DXF entities count as problems; checker re-reads the G-code and fails if a cut lies over another part; sharp tips rounded; old output files cleared; preview uses planned settings; input checks; download blocked for any failing sheet; nest-inside-holes option (off); retract height used; shared renderer; tests per fix incl. a deliberately broken job; "found two more real bugs while fixing" (oversized holes silently shrunk; gap check missed parts inside others). J-1041 same 6 sheets $3,483 (its earlier $2,858 5 mm plan + $625; other runs got $3,221). Snapshot a2-7, then week-later.
 - Week-later (new conversation) 01:36 -> ~01:41: read the cut list (gussets 5 mm, qty 16; 3 mm sheets hold webs and console sides), read the G-code back from all six .nc files and tested every pair of outline paths for crossing or containment (0 conflicts, closest 15.8 mm), explains why it may LOOK like overlap (bounding boxes of diagonally tucked gussets overlap, cutter paths don't); two layers of protection already (validateLayout, verifySheet); "I haven't changed anything"; asks which file or sheet. No test added. A2 complete: 00:43 -> 01:41 (58 min).
+
+#### Run 3 log (22 Oct 2026, NZ morning; VM clock shows 21 Oct US time)
+
+- 07:03 demo set up in `steadyship-test6` (no questions); inputs copied to its drive folder; 07:09-07:12 Check this computer: all PASS.
+- 07:13:51 prompt 1 (new conversation on `demo-boatworks`, worktree `claude/cnc-cut-planner-9e9650`): ask skill, signpost line, no questions; 07:25 done (11 min): page + `logic.js`, J-1041 41 parts on 8 sheets, settings as page fields; landing refused ("the main folder has an unsaved change in docs/spikes/RESULTS.md"); widget "Have the machine settings and G-code style checked against your CNC before any cuts?" answered Not now.
+- 07:26 prompt 2, done 07:28: table per sheet, result shown in the browser pane. 07:29 prompt 3, done 07:32: minimum gap 1.5 x bit (9 mm), measured gap, test added. 07:32 prompt 4, done 07:35: "Sheets in stock" list on the page, example 700.00 price (not in `Parts.csv`), break-even stated. 07:36 prompt 5, done 07:38: "No, don't give this file to the CNC yet", checked / not checked / before cutting.
+- 07:41 `RESULTS.md` committed by hand on main (the fix now in the plugin). 07:42 "finish", done 07:44: prototype, straight in, merged, 12 rule tests pass.
+- 07:45 "Set up my data." (new conversation): 07:48 eight questions; answered from the sheet; 07:51 `data.md` written, decisions recorded, landed. Model in transcript: Sonnet.
+- 07:51 "Set up my security." (new conversation): 07:54 eight questions; answered; 07:57 `security.md` written, landed, three things to act on. Model: Sonnet.
+- 07:58 "Promote the cut planner." (new conversation): 08:01 audit done, assessment file written, five questions (build-or-buy as a widget); 08:02 answered in one message; 08:20 morning note: 18 min unattended, no questions. Model: Sonnet.
+- 08:27 week-later prompt (new conversation): 08:42 could not reproduce (450 + 4,000 fuzzed jobs), changed nothing, asked for the files; noted the J-1041 drawing is gitignored so the pinned test cannot run in the worktree. 08:43 "finish", 08:45 "Nothing to finish".
+- Snapshots: `experiment/c1-proto`, `c1-promoted` (repo, drive, four transcripts), `c1-final`. VM deallocated 08:55; auto-shutdown 10:00 UTC confirmed.
