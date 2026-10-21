@@ -19,9 +19,12 @@ the first paragraph of your first reply): the shape of a business's data is
 the one thing that cannot be cheaply changed later. Once three months of
 hours have been typed into a notes field, or two apps keep their own copy of
 the customer list, moving them is a data migration, not a code change. Ten
-minutes now saves that. This conversation uses a stronger model than usual
-because these are the decisions that cost most to undo; it costs more per
-message and happens once.
+minutes now saves that. This conversation is meant to run on a stronger
+model than usual, because these are the decisions that cost most to undo;
+it costs more per message and happens once. If the model shown at the
+bottom of the window is not Opus, say so and ask them to switch it for
+this conversation before answering (the skill asks for Opus, but not every
+app honours that).
 
 **Work fast.** Make independent reads in the same turn. Ask everything in
 one message. Never ask anything the drive or the notes already answer; say

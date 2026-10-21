@@ -25,9 +25,12 @@ Two promises, and the changelog is where you keep them:
   to the end. A decision you cannot make takes the bar's default and is
   named in the changelog.
 
-**Say the model line once**, in the first reply: "This step uses a stronger
-model than usual, because the decisions here are the expensive ones to
-undo. It costs more per message and happens once per app."
+**Say the model line once**, in the first reply: "This step is meant to
+run on a stronger model than usual, because the decisions here are the
+expensive ones to undo. It costs more per message and happens once per
+app. If the model shown at the bottom of the window is not Opus, switch it
+for this conversation before answering." (The skill asks for Opus; not
+every app honours that.)
 
 **Work fast.** Make independent reads in the same turn.
 
@@ -205,7 +208,9 @@ following, in order, without asking anything.
      say which in the changelog.
    - Commit: `<name>: pin the prototype's behaviour before promotion`.
 
-4. **Rebuild.** From `apps/_template/`, with the parts the audit chose:
+4. **Rebuild.** From `apps/_template/`, with the parts the audit chose.
+   Edit files directly with the file tools; never generate the app through
+   throwaway patch scripts, and leave no scratch file in the tree:
    - copy the template over a fresh `apps/<name>/` (the prototype is one
      commit back; do not keep a copy in the tree), and `tests/_template/`
      over `tests/<name>/` keeping the fixtures and the tests from step 3;

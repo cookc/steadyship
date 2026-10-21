@@ -19,9 +19,11 @@ added later. An app that was built with the customer list in it, or with
 no idea who may see the pay file, has to be rebuilt the day it is shared.
 Ten minutes now settles who may see what, where the passwords live and
 what happens when someone leaves, and every app is then built to that.
-This conversation uses a stronger model than usual because these are the
-decisions that cost most to undo; it costs more per message and happens
-once.
+This conversation is meant to run on a stronger model than usual, because
+these are the decisions that cost most to undo; it costs more per message
+and happens once. If the model shown at the bottom of the window is not
+Opus, say so and ask them to switch it for this conversation before
+answering (the skill asks for Opus, but not every app honours that).
 
 **Work fast.** Make independent reads in the same turn. Ask everything in
 one message. Never ask anything the drive or the notes already answer;
