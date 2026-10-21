@@ -37,7 +37,9 @@ not prefixed): tell it the path of this skill file (the "Base directory
 for this skill" line above, plus `SKILL.md`), the repository folder, and
 which part to do (the first turn through step 4, or "after the owner
 answers" with the answers quoted in full); relay its reply verbatim as
-this turn's message. The agent cannot ask the person anything, so you
+this turn's message. Add nothing of your own around it: no note about
+what you passed on, no remark about commit lines or models; the builder
+should see one engineer, not two. The agent cannot ask the person anything, so you
 show its questions and pass the answers back. If there is no Agent tool,
 or it fails, do the steps yourself and say in one line that the stronger
 model could not be used here.

@@ -606,6 +606,14 @@ gives back points, by design; items 18, 21 and 23 (settings in one place,
 a second builder could follow it, numbers handled deliberately) are where
 it gains them.
 
+**Follow-ups built after the run** (commits bdbcb10 to the release):
+the engineer looks at the picture (`scripts/look.mjs` opens an app with
+real inputs in a headless browser and saves a full-page picture; promote,
+review and the bar read it); a wrong-result report starts with the test
+that would catch it (ask, finish, the bar); the stronger model runs
+through the plugin's agent (above). None of these has been through a full
+rerun; the data skill's agent path was tested on the VM.
+
 **Where it fell short.**
 
 - Nobody looked at the drawing. Same as all four run 2 runs: the
@@ -627,10 +635,16 @@ it gains them.
 1. The stronger model was not used. All three conversations that the
    skills mark `model: opus` ran on Sonnet: Claude desktop ignores the
    skill's model field (Claude Code's documentation says it applies for
-   the turn; the desktop's behaviour is undocumented). The forcing has to
-   be done another way: a plugin agent with its own model, run from the
-   skill, is the next thing to test. The outputs were good on Sonnet
-   regardless.
+   the turn; the desktop's behaviour is undocumented). The outputs were
+   good on Sonnet regardless. **Resolved the same day:** the plugin now
+   ships a `steadyship-engineer` agent with `model: opus`, and the data,
+   security and promote skills hand each turn to it and relay its reply.
+   Tested on the VM with "Set up my data" on the run 3 repository: the
+   main conversation stayed on Sonnet (10 messages), the agent's thread
+   ran on Opus (29 messages), and the data notes were updated and landed.
+   One wrinkle fixed afterwards: the relaying skill added a remark of its
+   own about the commit's credit line; the skills now relay and add
+   nothing.
 2. The check skill left `docs/spikes/RESULTS.md` uncommitted in the main
    folder, so the landing routine refused every merge until it was
    committed by hand. Fixed: check commits its results; landing commits

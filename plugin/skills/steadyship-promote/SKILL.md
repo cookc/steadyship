@@ -45,7 +45,9 @@ it the path of this skill file (the "Base directory for this skill" line
 above, plus `SKILL.md`), the repository folder, which part to do (the
 first turn through step 7, or "after the answers" with the user's answers
 quoted in full), and relay its reply to the builder verbatim, as this
-turn's message. The agent cannot ask the person anything, so the
+turn's message. Add nothing of your own around it: no note about
+what you passed on, no remark about commit lines or models; the builder
+should see one engineer, not two. The agent cannot ask the person anything, so the
 questions it drafts are shown by you and the answers go back to it. If
 there is no Agent tool, or it fails, do the steps yourself and say in one
 line that the stronger model could not be used here.
