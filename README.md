@@ -24,27 +24,24 @@ for your setup and follow it top to bottom. New here? Start with
 | Mac | Claude desktop app | [Mac, Claude desktop](docs/quickstart/mac-claude-desktop.md) |
 | Mac or Linux | Claude Code in a terminal | [Mac or Linux, Claude Code](docs/quickstart/mac-linux-claude-code.md) |
 
-Every page has the same four steps: get the computer ready, add the plugin,
-set it up for your business (one prompt checks the setup, one lists and
-assesses your apps, one reviews an app), and, if you have no apps to hand,
-try the demo business. The last two are the same on every setup; only the
-first two differ.
+Every page has the same five steps: get the computer ready, add the plugin,
+set it up for your business, use it (the same handful of sentences on every
+setup: see your apps, review one, build, promote), and, if you have no apps
+to hand, try the demo business. Only the first two differ by setup.
 
 ## What you get
 
 - A repository of your own, self-contained: it works even without the plugin.
 - A status check: what apps you have, what each is for, what is at risk.
-- One prompt, "Check this computer": three one-minute checks of your own
-  setup (can Claude reach GitHub from here, read and write the shared
-  drive, open one of your apps?), each a plain PASS, FAIL or SKIP, recorded
-  so nobody has to wonder again. A FAIL is the problem found before
-  anything was built on it.
+- One prompt, "Check this computer": in about a minute, can it get online,
+  read the shared drive, open one of your apps? Each a plain pass or fail,
+  written down so nobody has to wonder again.
 - An assessment of each app, written into `docs/assessment/`, from prototype
   to something the business can run on.
 - Reviews, and the questions an engineer would ask before a change is built,
   with the answers recorded in `docs/context/decisions.md`.
 - Prototypes built exactly as asked. When someone else is
-  about to rely on one, "Promote the <app>" audits it, asks a few questions
+  about to rely on one, "Promote the [app name]" audits it, asks a few questions
   about the business, and rebuilds it unattended to the engineering
   standard with its behaviour pinned. Before that, two ten-minute
   conversations write down the business's data and its security, the two

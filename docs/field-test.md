@@ -83,7 +83,7 @@ They ask for the change in their own words. Their apps arrive as prototypes
 signpost line and build, with no questions. We watch whether that line
 registers. Then "Set up my data" and "Set up my security": we watch which
 of the eight questions they cannot answer, and whether the written notes
-read as theirs. Then "Promote the <app>" on the app they most want the team
+read as theirs. Then "Promote the [app name]" on the app they most want the team
 to use: whether the five questions make sense, whether they are happy to
 walk away while it runs, and whether the morning note tells them what they
 need. If the change was to an app that had already been promoted, the ask

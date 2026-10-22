@@ -71,6 +71,14 @@ h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
 .prose table { width: 100%; border-collapse: collapse; font-size: .95em; }
 .prose th, .prose td { text-align: left; padding: .5em .6em; border-bottom: 1px solid var(--line); vertical-align: top; }
 .prose th { font-weight: 650; }
+/* Alternatives (by hand, if it fails) stay folded until needed. */
+.prose details { border: 1px solid var(--line); border-radius: 12px; padding: .7rem 1rem; }
+.prose details[open] { padding-bottom: 1rem; }
+.prose summary { cursor: pointer; font-weight: 650; color: var(--link); list-style: none; }
+.prose summary::-webkit-details-marker { display: none; }
+.prose summary::before { content: '▸'; display: inline-block; width: 1.1em; transition: transform .15s; }
+.prose details[open] > summary::before { transform: rotate(90deg); }
+.prose details > summary + * { margin-top: .8em; }
 .prose blockquote { border-left: 3px solid var(--color-sea); padding-left: 1em; color: var(--muted); }
 
 /* Shiki dual theme: switch to the dark palette with the page. */
