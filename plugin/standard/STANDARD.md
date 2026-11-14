@@ -10,8 +10,12 @@ small questions a real engineer carries, written down so that:
 - assess, review and ask all judge against one list, and a reviewer from
   any vendor can be handed the same list as its brief.
 
-Every row says what is acceptable at each stage. "Prototype" means one
-person's tool. "Owned tool" means other people rely on it. "Proper app"
+Every row says what is acceptable at each stage. The stage says how an
+app is built, not who depends on it: reliance is a separate fact, written
+on the assessment's "Relied on by" line, and an app that people rely on
+while it is still built as a prototype is the case Steadyship exists
+for. "Prototype" means it is built as one
+person's tool. "Owned tool" means it is built for other people to rely on. "Proper app"
 means the business depends on it daily. "Platform" means several apps must
 stay consistent for the business to run. An app moves up a stage only when
 the evidence says it should, and the agent states the move with a reason
@@ -32,7 +36,10 @@ first promotion).
 
 - **Prototype.** Nothing is applied. A change to a prototype, or a new app,
   is built as asked, with one signpost line: say *promote the <app>* when
-  someone else is about to rely on it.
+  someone else is about to rely on it. If people already rely on it, the
+  bar is still not applied, but the engineer's questions are asked before
+  the change (at most two), the answer is recorded, and every reply says
+  it is waiting to be promoted.
 - **Promotion.** Every row at Owned tool, on a rebuild from the template
   that behaves the same as the prototype for the same inputs, except where
   an answer to a product question said otherwise.
@@ -54,7 +61,7 @@ asking and without announcing, except for one line when it adds something.
 | Theme tokens for colour, spacing and type; never a hard-coded value | Brand, dark mode and consistency across apps become a one-file change |
 | Data never enters the page as raw HTML; one escaping helper, used everywhere | The most common hole in home-made apps; a CSV cell is enough to trigger it |
 | One form per kind of value: converted on the way in, stored one way, formatted on the way out. The forms are the value table in section 3; a kind of value not in that table gets a row there before it gets a column in a file | Floats for dollars, guessing dd/mm and a timestamp with no time zone are regrets within a month, and they are only the first three |
-| Checked at every edge: a file read, a form submitted, a paste, a value from the address bar, a file written. Each edge has a written shape; whatever fails it is reported with the row and the reason, never dropped or guessed. Refusing is for what cannot be read without guessing, never for what the format commonly contains: if a format is in, its common contents are in | Silent data loss is the failure nobody notices until it matters; the edges are where it happens. A tool that refuses every real file is not safe, it is unused |
+| Checked at every edge: a file read, a form submitted, a paste, a value from the address bar, a file written. Each edge has a written shape; whatever fails it is reported with the row and the reason, never dropped or guessed. A row that fails on the way in is still the business's data: every save writes it back untouched, where it was (`Steadyship.withHeld`), and an empty number stays empty, never 0. Refusing is for what cannot be read without guessing, never for what the format commonly contains: if a format is in, its common contents are in | Silent data loss is the failure nobody notices until it matters; the edges are where it happens. A tool that refuses every real file is not safe, it is unused |
 | A rule that can be wrong lives apart from the page: in a module with no DOM, with tests that run without a browser. The page is wiring | A rule tested through the page is tested slowly and rarely; a rule in a module is tested in a second, on every change, and a second builder can read it on its own |
 | Output that leaves the app (a file for a machine, an invoice, a message, a report someone acts on) is re-read and checked against the inputs before it is offered, by code, and the engineer looks at the produced thing before calling it done | The builder will not ask "is this right?"; the file is what the business acts on, and a wrong one costs a plate, a customer or a day |
 | Errors in plain words, in the page; never swallowed, never an alert box; what the person typed is kept | A person who loses ten minutes of typing stops trusting the app |
@@ -92,7 +99,7 @@ asking and without announcing, except for one line when it adds something.
 | **Framework?** | Vanilla HTML+JS is right | Still vanilla | One framework and UI kit, Steadyship's default, when components are copied across apps or changes are frequent | Same, shared across apps |
 | **Libraries?** | None needed | A library over hand-rolled code when it is a solved problem (CSV parsing, dates, IDs), from the allow-list | Same, pinned with a lockfile | Same, shared versions |
 | **Build system?** | None | None | Arrives with the framework | Monorepo with one build |
-| **Where does data live?** | In the page, or browser storage, sample data only | One master file on the shared drive, one writer, via the serve script | A database, when two people write at once or rows pass the budget | One shared database with owned schemas and migrations |
+| **Where does data live?** | In the page, or browser storage, sample data only | One master file on the shared drive, one writer, via the serve script. The script is the writer: it locks the file while it saves, so the app can be open on two computers, and it keeps the file as it was in `steadyship-backups/` beside the master before each save (safety copies, not a backup: they sit on the same drive) | A database, when two people write at once or rows pass the budget | One shared database with owned schemas and migrations |
 | **Hosting?** | A file on a laptop | Shared drive, or the serve script on one machine | Hosted, with sign-in and backup; the business's platform if it has one | Same, released together |
 | **Sign-in?** | None | None if it stays on the shared drive; required the day it is hosted | Required; roles if anyone must be kept out of something | Single sign-on across apps |
 | **Who changed what?** | Don't care | A log line per write (who, when, what), once more than one person writes | Audit kept with the data | Same |

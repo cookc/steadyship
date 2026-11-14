@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harakeke Electrical - Van Stock</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f3; color: #222; }
+  header { background: #1f4d3a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  main { max-width: 860px; margin: 1rem auto; padding: 0 1rem; }
+  .btn { background: #2f6f54; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; background: #fff; margin: .8rem 0; }
+  td, th { border: 1px solid #cfd8d0; padding: .3rem .5rem; text-align: left; }
+  td.n, th.n { text-align: right; }
+  label { font-weight: bold; }
+  select, input, textarea { font-size: 1rem; padding: .25rem; }
+  tr.low td { background: #fdecea; }
+  td .btn { padding: .15rem .5rem; }
+</style>
+</head>
+<body>
+<header><h1>Van Stock</h1></header>
+<main>
+  <p><label for="van">Van</label> <select id="van"></select></p>
+  <table>
+    <thead><tr><th>Code</th><th>Item</th><th class="n">On hand</th><th>Unit</th><th class="n">Minimum</th><th class="n">Value</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p>Value of stock in this van: <b id="vanValue"></b></p>
+  <p>Value of stock in all vans: <b id="allValue"></b></p>
+</main>
+<script>
+  // Van stock - Brian. Quantities from my stocktake of 30 Oct, costs from Materials.csv.
+  const items = {
+    'CAB-TPS-2.5': { name: 'TPS cable 2.5mm2 twin and earth', unit: 'roll', cost: 312.00, min: 1 },
+    'CAB-TPS-1.5': { name: 'TPS cable 1.5mm2 twin and earth', unit: 'roll', cost: 218.00, min: 1 },
+    'RCD-2P-40': { name: 'RCD 2 pole 40A 30mA', unit: 'each', cost: 48.00, min: 2 },
+    'MCB-1P-16': { name: 'MCB 1 pole 16A', unit: 'each', cost: 9.80, min: 6 },
+    'MCB-1P-20': { name: 'MCB 1 pole 20A', unit: 'each', cost: 9.80, min: 6 },
+    'GPO-DBL': { name: 'Double power outlet white', unit: 'each', cost: 11.40, min: 10 },
+    'SW-1G': { name: 'Light switch 1 gang white', unit: 'each', cost: 6.90, min: 6 },
+    'EML-LED-3W': { name: 'Emergency light LED 3W', unit: 'each', cost: 62.00, min: 2 },
+    'SMK-PE-10Y': { name: 'Smoke alarm photoelectric 10 year', unit: 'each', cost: 28.50, min: 6 },
+  };
+  const stocktake = [
+    { van: 'Van 1', code: 'CAB-TPS-2.5', qty: 60 },
+    { van: 'Van 1', code: 'CAB-TPS-1.5', qty: 140 },
+    { van: 'Van 1', code: 'RCD-2P-40', qty: 3 },
+    { van: 'Van 1', code: 'MCB-1P-16', qty: 12 },
+    { van: 'Van 1', code: 'GPO-DBL', qty: 18 },
+    { van: 'Van 1', code: 'SW-1G', qty: 9 },
+    { van: 'Van 2', code: 'CAB-TPS-2.5', qty: 220 },
+    { van: 'Van 2', code: 'RCD-2P-40', qty: 2 },
+    { van: 'Van 2', code: 'MCB-1P-20', qty: 8 },
+    { van: 'Van 2', code: 'GPO-DBL', qty: 6 },
+    { van: 'Van 2', code: 'SWB-12W', qty: 2 },
+    { van: 'Van 2', code: 'SMK-PE-10Y', qty: 10 },
+    { van: 'Van 3', code: 'CAB-TPS-2.5', qty: 35 },
+    { van: 'Van 3', code: 'CAB-TPS-1.5', qty: 90 },
+    { van: 'Van 3', code: 'RCD-2P-40', qty: 1 },
+    { van: 'Van 3', code: 'MCB-1P-16', qty: 4 },
+    { van: 'Van 3', code: 'EML-LED-3W', qty: 5 },
+    { van: 'Van 3', code: 'SMK-PE-10Y', qty: 14 },
+  ];
+
+  const $ = id => document.getElementById(id);
+  const stock = JSON.parse(localStorage.getItem('he_vanstock') || 'null') || stocktake;
+  const itemOf = s => items[s.code] || { name: s.code, unit: 'each', cost: 0, min: 0 };
+  const valueOf = s => s.qty * itemOf(s).cost;
+
+  function nzd(n) {
+    return '$' + n.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  for (const v of ['Van 1', 'Van 2', 'Van 3']) $('van').add(new Option(v));
+
+  function draw() {
+    const rows = $('rows');
+    rows.innerHTML = '';
+    const mine = stock.filter(s => s.van === $('van').value);
+    for (const s of mine) {
+      const it = itemOf(s);
+      const tr = document.createElement('tr');
+      if (s.qty < it.min) tr.className = 'low';
+      tr.innerHTML = `<td>${s.code}</td><td>${it.name}</td><td class="n">${s.qty}</td><td>${it.unit}</td>` +
+        `<td class="n">${it.min}</td><td class="n">${nzd(valueOf(s))}</td><td></td>`;
+      const use = document.createElement('button');
+      use.className = 'btn';
+      use.textContent = 'Used 1';
+      use.onclick = () => { s.qty -= 1; save(); };
+      const add = document.createElement('button');
+      add.className = 'btn';
+      add.textContent = 'Added 1';
+      add.onclick = () => { s.qty += 1; save(); };
+      tr.lastChild.append(use, ' ', add);
+      rows.appendChild(tr);
+    }
+    $('vanValue').textContent = nzd(mine.reduce((t, s) => t + valueOf(s), 0));
+    $('allValue').textContent = nzd(stock.reduce((t, s) => t + valueOf(s), 0));
+  }
+
+  function save() {
+    localStorage.setItem('he_vanstock', JSON.stringify(stock));
+    draw();
+  }
+
+  $('van').onchange = draw;
+  draw();
+</script>
+</body>
+</html>

@@ -83,7 +83,8 @@ model could not be used here.
    file (name the file, never the value), apps that are open to anyone
    with the file.
 
-3. **Ask**, in one message, at most **eight** questions, each about the
+3. **Ask**, in one message, at most **eight** questions (a question is one
+   thing to answer; two under one number are two), each about the
    business, each with your recommended answer and the file or finding
    that prompted it. Pick from these, only where the exploration left a
    gap:

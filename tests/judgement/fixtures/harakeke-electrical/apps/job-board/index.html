@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harakeke Electrical - Job Board</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f3; color: #222; }
+  header { background: #1f4d3a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  main { max-width: 860px; margin: 1rem auto; padding: 0 1rem; }
+  .btn { background: #2f6f54; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; background: #fff; margin: .8rem 0; }
+  td, th { border: 1px solid #cfd8d0; padding: .3rem .5rem; text-align: left; }
+  td.n, th.n { text-align: right; }
+  label { font-weight: bold; }
+  select, input, textarea { font-size: 1rem; padding: .25rem; }
+  .today { background: #fff; margin: 1rem 0; padding: .6rem 1rem; border-left: 4px solid #2f6f54; }
+  .today h2 { margin: 0 0 .3rem; font-size: 1rem; }
+  .board { display: flex; gap: .6rem; overflow-x: auto; }
+  .col { background: #fff; min-width: 190px; border-radius: 4px; padding: .5rem; }
+  .col h2 { font-size: 1rem; margin: 0 0 .5rem; border-bottom: 2px solid #2f6f54; }
+  .card { border: 1px solid #cfd8d0; border-radius: 3px; padding: .35rem; margin-bottom: .4rem; font-size: .9rem; }
+  .card small { color: #555; display: block; }
+  .card small.access { color: #7a4b00; }
+  .card.overdue { border-color: #b3261e; background: #fdecea; }
+  textarea { width: 100%; height: 8rem; margin-top: .5rem; }
+</style>
+</head>
+<body>
+<header><h1>Job Board</h1></header>
+<main style="max-width: 1100px">
+  <div class="today"><h2>Today's jobs</h2><ul id="today"></ul></div>
+  <div class="board" id="board"></div>
+  <p><button class="btn" id="export">Export list (CSV)</button></p>
+  <textarea id="out" readonly></textarea>
+</main>
+<script>
+  // Job board - Kiri. Jobs copied from Jobs.csv on 11 Nov. Status changes are saved on this device.
+  const statuses = ['Booked', 'In progress', 'Waiting on parts', 'Done', 'Invoiced'];
+  const TODAY = '2026-11-02'; // so I could check the red overdue cards
+  const jobs = [
+    { no: 'HE-4124', customer: 'Hartley Road School', address: '41 Main Rd, Stoke', what: 'Replace hall emergency lights', who: 'Wiremu Tipene', status: 'Invoiced', date: '2026-10-27', access: 'Report to office. Caretaker has switchboard key.' },
+    { no: 'HE-4125', customer: 'Richard Hollis', address: '18 Wensley Rd, Richmond', what: 'Fault find - kitchen RCD tripping', who: 'Emma Clarke', status: 'Invoiced', date: '2026-10-28', access: '' },
+    { no: 'HE-4126', customer: 'Greg Tanner', address: '33 Champion Rd, Richmond', what: 'Install EV charger circuit', who: 'Dylan Fraser', status: 'Invoiced', date: '2026-10-29', access: '' },
+    { no: 'HE-4127', customer: 'Jetty Road Cafe', address: '14 Jetty Rd, Mapua', what: 'Replace kitchen extraction fan isolator', who: 'Sione Faleolo', status: 'Done', date: '2026-11-03', access: '' },
+    { no: 'HE-4128', customer: 'Saxton Property Management Ltd', address: 'Flat 2, 9 Croucher St, Richmond', what: 'Replace hot water cylinder element and thermostat', who: 'Emma Clarke', status: 'Invoiced', date: '2026-11-03', access: 'Keys from their office.' },
+    { no: 'HE-4129', customer: 'Lower Queen Vets', address: '96 Gladstone Rd, Richmond', what: 'Add four data and power outlets - consult room 3', who: 'Wiremu Tipene', status: 'Booked', date: '2026-11-10', access: 'Alarm 4471# - panel inside rear door' },
+    { no: 'HE-4130', customer: 'Aroha & Pete Marsh', address: '7 Hill St, Brightwater', what: 'Heat pump supply circuit', who: 'Dylan Fraser', status: 'Done', date: '2026-11-05', access: 'Key safe 2580 by back door' },
+    { no: 'HE-4131', customer: 'Hartley Road School', address: '41 Main Rd, Stoke', what: 'Classroom 6 - LED lighting upgrade', who: 'Tom Bryant', status: 'In progress', date: '2026-11-11', access: 'Report to office. Caretaker has switchboard key.' },
+    { no: 'HE-4131', customer: 'Richard Hollis', address: '18 Wensley Rd, Richmond', what: 'Garage sub-board and three outlets', who: 'Emma Clarke', status: 'Booked', date: '2026-11-18', access: '' },
+    { no: 'HE-4132', customer: 'Redwood Row Orchards Ltd', address: '480 Appleby Hwy, Appleby', what: 'Packhouse - replace coolstore contactor', who: 'Sione Faleolo', status: 'Done', date: '2026-11-06', access: 'Gate code 1962. Dogs on site.' },
+    { no: 'HE-4133', customer: 'Pokororo Lodge', address: '1290 Motueka Valley Hwy, Ngatimoti', what: 'Switchboard upgrade', who: 'Tom Bryant', status: 'In progress', date: '2026-11-09', access: '' },
+    { no: 'HE-4134', customer: 'Jetty Road Café Ltd', address: '14 Jetty Rd, Māpua', what: 'Outdoor heaters - two new circuits', who: 'Sione Faleolo', status: 'Booked', date: '2026-11-19', access: '' },
+    { no: 'HE-4135', customer: 'Hope Hall Society', address: '184 Ranzau Rd, Hope', what: 'Test and tag - annual', who: 'Jack Ngatai', status: 'Booked', date: '2026-11-17', access: 'Lockbox 7306 on meter board' },
+    { no: 'HE-4136', customer: 'Saxton Property Management Ltd', address: 'Unit 3, 212 Queen St, Richmond', what: 'Smoke alarm replacements x6', who: 'Emma Clarke', status: 'Booked', date: '2026-11-20', access: 'Keys from their office.' },
+  ];
+
+  const $ = id => document.getElementById(id);
+  const saved = JSON.parse(localStorage.getItem('he_board_status') || '{}');
+  const statusOf = j => saved[j.no] || j.status;
+  const isOpen = j => ['Booked', 'In progress', 'Waiting on parts'].includes(statusOf(j));
+
+  function draw() {
+    const today = jobs.filter(j => j.date === TODAY);
+    $('today').innerHTML = today.length
+      ? today.map(j => `<li>${j.no} ${j.customer} - ${j.what} (${j.who})</li>`).join('')
+      : '<li>No jobs today</li>';
+
+    const board = $('board');
+    board.innerHTML = '';
+    for (const s of statuses) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `<h2>${s}</h2>`;
+      for (const j of jobs.filter(j => statusOf(j) === s)) {
+        const card = document.createElement('div');
+        card.className = 'card' + (isOpen(j) && j.date < TODAY ? ' overdue' : '');
+        card.innerHTML = `<b>${j.no}</b><small>${j.customer}</small><small>${j.address}</small>` +
+          `<small>${j.what}</small><small>${j.who} - ${j.date}</small>` +
+          (j.access ? `<small class="access">Access: ${j.access}</small>` : '');
+        const sel = document.createElement('select');
+        for (const t of statuses) sel.add(new Option(t, t, false, t === s));
+        sel.onchange = () => {
+          saved[j.no] = sel.value;
+          localStorage.setItem('he_board_status', JSON.stringify(saved));
+          draw();
+        };
+        card.appendChild(sel);
+        col.appendChild(card);
+      }
+      board.appendChild(col);
+    }
+  }
+
+  $('export').onclick = () => {
+    const lines = ['job_no,customer,address,description,electrician,status,scheduled'];
+    for (const j of jobs) {
+      lines.push([j.no, j.customer, j.address, j.what, j.who, statusOf(j), j.date].join(','));
+    }
+    $('out').value = lines.join('\n');
+  };
+
+  draw();
+</script>
+</body>
+</html>

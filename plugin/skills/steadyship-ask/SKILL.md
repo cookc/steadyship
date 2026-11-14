@@ -1,6 +1,6 @@
 ---
 name: steadyship-ask
-description: Use BEFORE any change request in a Steadyship repository — "add", "change", "build", "I want the app to", "track", "record", "new app for" — and on any report that an app did the wrong thing: "fix it", "it put two parts on top of each other", "the total is wrong", "it broke", "make sure it can't happen again". For a prototype it says one signpost line and builds as asked. For a relied-on app it reads the business context, asks the one or two questions the user doesn't know to ask (what the change attaches to, where its data lives, who else keeps it), recommends an answer and waits; a wrong-result report starts with the test that would catch it. ALSO use on the user's answer to such a question ("the second one", "go ahead", "just do it the simple way"): it records the decision, builds and says where the data is. Not for questions, status, assessments, reviews or spikes.
+description: Use BEFORE any change request in a Steadyship repository — "add", "change", "build", "I want the app to", "track", "record", "new app for" — and on any report that an app did the wrong thing: "fix it", "it put two parts on top of each other", "the total is wrong", "it broke", "make sure it can't happen again". For one person's prototype it says one signpost line and builds as asked. For an app other people rely on, whatever stage it is at, it reads the business context, asks the one or two questions the user doesn't know to ask (what the change attaches to, where its data lives, who else keeps it), recommends an answer and waits; a wrong-result report starts with the test that would catch it. ALSO use on the user's answer to such a question ("the second one", "go ahead", "just do it the simple way"): it records the decision, builds and says where the data is. Not for questions, status, assessments, reviews or spikes.
 ---
 
 # Steadyship ask
@@ -17,19 +17,53 @@ Grep. No Write, no Edit, no code in the reply.
 
 **Work fast.** Make independent reads in the same turn.
 
-## Prototypes are built as asked
+## One person's prototype is built as asked
 
-Steadyship does not shape prototypes. After step 1, read
-`docs/assessment/<app>.md` for the app being changed. If it is missing, or
-its `**Stage:**` is Prototype, or the request is for a new app: say one
-line, "This is a prototype, so I'll just build it. When someone else is
-about to rely on it, say *promote the <app>* and I'll give it the care
-that needs.", then build exactly what was asked, the way an ordinary
-conversation would: no questions, no template, no bar rows, no decision
-record, no assessment file. Commit if a shell is available (`git add -A`,
-one line), then land it: `${CLAUDE_PLUGIN_ROOT}/standard/landing.md`.
-Nothing else in this skill applies. The rest of this file is for apps at
-Owned tool or above.
+Steadyship does not shape prototypes. But "prototype" says how an app is
+built, not whether anyone depends on it, and most apps a business already
+has are prototypes that people rely on. Those are where a wrong change
+costs most, so two facts are read separately, after step 1:
+
+- **Stage**: the `**Stage:**` line in `docs/assessment/<app>.md` (no file
+  means Prototype).
+- **Relied on**: yes if **any** of these holds, and say which one in your
+  reply:
+  - the assessment's `**Relied on by:**` line names anyone other than the
+    builder;
+  - the business notes (`docs/context/business/**/*`) or the app's README
+    say who uses the app in their work;
+  - the request is on behalf of other people ("the painters want", "so
+    the office can", "for the fitters") or the change records who did
+    something;
+  - the app holds or changes real business records (jobs, quotes,
+    customers, prices, hours) rather than sample data.
+  With no assessment file, this takes two reads (the app and the
+  business notes); make them, do not guess.
+
+**New app, or Prototype and not relied on:** build exactly what was
+asked, the way an ordinary conversation would: no questions, no template,
+no bar rows, no decision record, no assessment file. Commit if a shell is
+available (`git add -A`, one line), then land it:
+`${CLAUDE_PLUGIN_ROOT}/standard/landing.md`. Nothing else in this skill
+applies, except the signpost: **the last line of the reply, every time,
+is** "This is a prototype, so I just built it. When someone else is about
+to rely on it, say *promote the <app>* and I'll give it the care that
+needs." That line is the only way a builder learns the word, so a reply
+without it is unfinished.
+
+**Prototype and relied on:** the questions are asked. Do steps 2–5: read
+the context, choose at most two questions, ask, stop. Open the reply with
+one line saying why you are asking rather than building ("The painters
+already use the timer, so I'm checking one thing before I change it").
+If no question is mandatory, build as asked with the signpost line. On
+the answer, record the decision and build (the "After the user answers"
+steps 0, 1, 4 and 5), but build the change the way the app is built
+today: no template, no bar rows, no new test. The engineering waits for
+the promotion, and the reply ends with: "People rely on this and it is
+still built as a prototype: say *promote the <app>* when you want it
+made safe to rely on."
+
+**Owned tool or above:** the whole of this file applies.
 
 ## A wrong result is reported
 
@@ -271,7 +305,9 @@ the next person learns why it was built this way.
 
 ## Rules
 
-- Never build before asking when a mandatory question exists.
+- Never build before asking when a mandatory question exists and the app
+  is relied on, whatever its stage. Only a new app, or a prototype nobody
+  but its builder uses, is built without asking.
 - Never ask more than two questions. The next-rung line is an offer, not
   a third question; it never blocks the build.
 - A "not now" to the next-rung line is recorded in `decisions.md` as

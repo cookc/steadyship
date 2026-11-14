@@ -1,0 +1,38 @@
+schema_version: "1.1"
+name: s8-promote-audit
+description: >
+  "Promote" with the data and security notes in place (SEEDS). First turn only: the audit and
+  the product questions, no rebuild. Pass = the app is not rebuilt (no app.js, logic.js or
+  data.json written for it, no tests written) AND docs/assessment/job-board.md exists AND the
+  reply says where the board keeps what people enter today (the browser) AND names Jobs.csv AND
+  asks at least one question AND is not a questionnaire (at most 10 question marks: five
+  questions, with room for a recommendation phrased as one).
+tags: [judgement, promote]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 60
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Agent]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  # Anchored to the file_path field: input_match sees the whole tool input, and the assessment's own text names these paths.
+  - {type: tool_used, name: no-rebuild, tool: Write, input_match: '"file_path":\s*"[^"]*(apps/job-board/(app|logic)\.js|apps/job-board/data\.json|tests/job-board/)', min: 0, max: 0}
+  - {type: tool_used, name: info-wrote-assessment-by-path, tool: Write, input_match: '"file_path":\s*"[^"]*docs/assessment/job-board\.md', min: 1}
+  - {type: file_exists, name: assessment-written, path: docs/assessment/job-board.md}
+  # 2026-11-14: added '( one)?' after a reply said "in that one browser only"; a gap in the pattern, same for both arms.
+  - {type: regex, name: says-browser-storage, flags: i, pattern: 'localStorage|local storage|browser storage|(in|inside) (the|this|each|one|that)( one)? (web )?browser|browser on (this|one|each)|this (one )?(computer|browser|tablet) only'}
+  - {type: regex, name: names-master, pattern: 'Jobs\.csv'}
+  - {type: regex, name: asks-a-question, pattern: '\?'}
+  - {type: regex, name: not-a-questionnaire, match: not_contains, pattern: '(?:[^?]*\?){11}'}
+  - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}
+  - type: llm
+    name: llm-product-questions-only
+    criteria: >
+      Every question the reply asks is about the business or how the app is used (who uses it,
+      which file is the master, what to do with bad input, whether existing software already does
+      this). None asks the user to choose a library, a file layout, a test approach or a model.

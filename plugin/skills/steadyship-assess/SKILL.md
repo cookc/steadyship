@@ -48,7 +48,9 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    - `docs/context/engineering.md` (the facts the standard cannot know:
      time zone, browsers, platform, rows this business overrides)
    - `tests/**/*` (which apps have a test of their own)
-   - the shared drive: `<shared drive>/**/*` (spreadsheets, CSVs, notes,
+   - the shared drive: `<shared drive>/**/*` (skip `steadyship-backups/`:
+     the serve script's safety copies of a master, never a duplicate;
+     spreadsheets, CSVs, notes,
      and any sub-folders such as quotes or invoices).
    Folders under `apps/` whose name starts with `_` (`_sample`, `_template`) are Steadyship's own: skip them.
    If the business notes or shared drive are missing, say so and assess from
@@ -163,7 +165,13 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    turn, write:
    - `docs/assessment/<app-folder-name>.md` for **every** app, from
      TEMPLATE.md: Stage is `Prototype` unless the evidence says otherwise;
-     "Relied on by" from the business notes if stated, else "unknown";
+     "Relied on by" from the evidence, with its source: who the business
+     notes or the README say uses it; whether it holds real business
+     records (name one: "holds 14 live jobs that are in Jobs.csv") or only
+     sample data; "only the builder" when the evidence says so, "unknown"
+     only when there is none. Stage and reliance are separate facts: an
+     app can be a Prototype that five people rely on, and that is the
+     finding that matters most;
      Builder/Opened how/Copied into repo: from the notes or "unknown"; the
      Data table; Shared concepts with the local name and where stored;
      **Duplication spotted** as bullets in exactly this shape:
@@ -203,6 +211,10 @@ assessment files in one turn. Apps under about 400 lines: Read the whole file
    **Where each app stands**: one or two lines: the stage every app is at,
    what none of them has yet (an owner, a test of its own, data outside the
    page), and that each app's file ends with its ladder and next rung.
+   Then one line naming every app that people rely on while it is still
+   built as a prototype, most relied on first: "Relied on but still
+   prototypes: <names>. Say *promote the <name>* to make one safe to rely
+   on; until then I'll check with you before changing them." 
 
    End with: "The full picture — every row that differs, every copied
    function, every risk — is in docs/assessment/SUMMARY.md and one file

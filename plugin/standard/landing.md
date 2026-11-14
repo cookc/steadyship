@@ -9,7 +9,13 @@ commit, when a shell is available.
 1. `git branch --show-current`. If it is the main branch (`main` or
    `master`, whichever `git rev-parse --verify main` finds), nothing to do.
 2. `git worktree list --porcelain`: the first `worktree` line is the main
-   checkout. If the current folder is that checkout, nothing to do.
+   checkout. If the current folder is that checkout, the branch is checked
+   out in the main folder itself (Claude Code in a terminal does this). If
+   `git status --porcelain` is empty: `git checkout <main branch>`, then
+   `git merge --no-ff <branch> -m "<the commit's one line>"`, and go to
+   step 5; on a conflict, `git merge --abort`, `git checkout <branch>`,
+   say which files conflicted and stop. If it is not empty, say what is
+   unsaved and stop.
 3. In the main checkout, `git -C <main checkout> status --porcelain`. If
    every line it prints is under `docs/` (Steadyship's own records: check
    results, assessments, decisions), commit them there first:

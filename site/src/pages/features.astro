@@ -8,7 +8,7 @@ const groups = [
     heading: 'Hack, then promote',
     intro: 'While something is a prototype, Steadyship stays out of the way. The engineering happens when someone is about to rely on it.',
     items: [
-      ['Prototypes built as asked', 'Say what you want and it builds it, with one line at the end: when someone else is about to rely on this, say "promote it". No questions, no detours.'],
+      ['Prototypes built as asked', 'Say what you want and it builds it, with one line at the end: when someone else is about to rely on this, say "promote it". No questions, no detours. If people already rely on a prototype, it checks with you before changing it.'],
       ['Your data and your security, written down once', 'Two ten-minute conversations before the first promotion, about the business and nothing technical: which file is the master for what, who writes it, what must never be lost; who may see what, where files live, what happens when someone leaves. They run on a stronger model, because they are the decisions that are expensive to undo.'],
       ['Promote: the engineering, mostly unattended', 'It reads what you built, asks up to five questions about the business in one message, then gets on with it: the same behaviour for the same inputs, pinned by tests before anything is rebuilt; data and settings in files on the drive; an owner; a note in plain words of what changed, why, and what it looked at. The previous version is one step back.'],
       ['Finish: the gate for changes', 'Change a relied-on app yourself and say "finish". It checks the change against the standard and your notes, fixes what needs no decision, adds the missing test, writes the changelog line and makes it part of the app.'],
@@ -29,18 +29,19 @@ const groups = [
     items: [
       ['A straight verdict', 'Ask "Review the quote builder" and the first line is Yes, No or Not yet. Then the stage it is at, where it disagrees with your master spreadsheet, the biggest risks, and the one thing to do next. Every claim names the file and the row it came from.'],
       ['Security in plain words', 'It answers the questions most people don\'t think to ask: who can see this app, where what people type ends up, whether a password is sitting in a file, whether the shared drive is open to anyone with the link. It names each exposure and what closing it would take. It won\'t tell you an app is secure, only what it checked and what it couldn\'t.'],
-      ['A second reviewer, and one from another company', 'A separate, independent reviewer checks every verdict. If you want the strongest check, the brief and the change can go to a model from a different company, which won\'t share the blind spots of the one that built it. Nobody has to open a terminal or copy anything around.'],
+      ['A second reviewer', 'Where the app you use Claude in allows it, a separate, independent reviewer checks the verdict, and the reply says which reviewer ran, or that none could. Nobody has to open a terminal or copy anything around.'],
       ['Honest about its limits', 'When something is beyond what it can verify, a platform problem, say, or a security question, it says so and tells you what to ask a human engineer.'],
     ],
   },
   {
     heading: 'The path',
-    intro: 'From a prototype to something the business runs on, one step at a time, without a rebuild.',
+    intro: 'From a prototype to something the team can rely on. Today that is the first step of four: prototype to owned tool. The later two are described, and not built yet.',
     items: [
       ['The whole picture on one page', 'What apps you have, what each one is for, who relies on it, where its data lives, what it duplicates and how exposed it is, written so the owner can read it in five minutes.'],
       ['Four stages, and it tells you which', 'A prototype is one file and one person\'s tool. An owned tool has its data in one shared, backed-up place, a test and a named owner. A proper app is built on a real framework with shared parts. A platform is several apps on one database, kept consistent. An app moves up only when the evidence says it should.'],
       ['It makes the call, and you can say not yet', 'Nobody in the business has to choose a framework, a database or a host. When an app has reached the point where it should become a proper app, Steadyship says so, explains why, and offers to do it now or later. Either way the decision is written down.'],
-      ['Rigour when it\'s needed, not before', 'It only introduces a shared module, a package or a database once there is evidence of duplication or data drifting apart. Before restructuring anything it keeps a working copy and writes a test for how the app behaves today, so every step is small and can be undone.'],
+      ['Rigour when it\'s needed, not before', 'It only introduces a shared module, a package or a database once there is evidence of duplication or data drifting apart. Before rebuilding anything it writes tests for how the app behaves today, and the previous version stays one step back.'],
+      ['A way back for the data', 'A promoted app saves to one file on your shared drive. Before each save a copy of the file as it was is kept beside it, a row the app cannot read is written back untouched, and two computers saving at once cannot mix their changes.'],
     ],
   },
   {

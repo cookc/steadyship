@@ -1,0 +1,7 @@
+item,unit,price_nzd,gst,effective_from
+Labour - electrician,per hour,98.00,excl,2026-10-01
+Labour - apprentice,per hour,62.00,excl,2026-10-01
+Labour - after hours (electrician),per hour,147.00,excl,2026-10-01
+Call-out fee,per visit,115.00,incl,2026-04-01
+Materials markup,percent added to our cost,20,n/a,2026-04-01
+Trade discount (property managers),percent off the price before GST,10,n/a,2026-04-01

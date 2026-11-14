@@ -1,0 +1,31 @@
+schema_version: "1.1"
+name: s10-security
+description: >
+  The security conversation, first turn. Pass = docs/context/security.md is not written yet AND
+  the reply asks who may see what AND asks about backups or where passwords are kept AND asks
+  what happens when someone leaves AND is not a questionnaire (at most 16 question marks).
+tags: [judgement, security]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Agent]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: nothing-written-yet, tool: Write, input_match: 'docs/context/security\.md', min: 0, max: 0}
+  - {type: regex, name: asks-who-sees-what, flags: i, pattern: '(?=[\s\S]*(who (can|may|should|is allowed to) see|should ?(n.t| not) see|must not see|everyone can see|anyone (can|could) (see|open)|see (prices|quotes|pay|everything)))(?=[\s\S]*\?)'}
+  - {type: regex, name: asks-backup-or-passwords, flags: i, pattern: 'back(ed)?[- ]?ups?|restor|passwords?'}
+  - {type: regex, name: asks-when-someone-leaves, flags: i, pattern: '\b(leaves|leaving|leaver|has left|moves on|quits)\b'}
+  - {type: regex, name: not-a-questionnaire, match: not_contains, pattern: '(?:[^?]*\?){17}'}
+  - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}
+  - type: llm
+    name: llm-plain-questions-with-recommendations
+    criteria: >
+      The reply asks plain-language questions about the business (who sees what, where files and
+      passwords live, backups, leavers) and recommends an answer for most of them; it does not ask
+      the user to choose a sign-in technology, encryption or a hosting provider.

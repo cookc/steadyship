@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harakeke Electrical - Quick Quote</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f3; color: #222; }
+  header { background: #1f4d3a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  main { max-width: 860px; margin: 1rem auto; padding: 0 1rem; }
+  .btn { background: #2f6f54; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; background: #fff; margin: .8rem 0; }
+  td, th { border: 1px solid #cfd8d0; padding: .3rem .5rem; text-align: left; }
+  td.n, th.n { text-align: right; }
+  label { font-weight: bold; }
+  select, input, textarea { font-size: 1rem; padding: .25rem; }
+  input[type=number] { width: 6rem; }
+  .form p { margin: .4rem 0; }
+  .totals p { margin: .2rem 0; text-align: right; }
+  .totals .big { font-size: 1.3rem; font-weight: bold; }
+</style>
+</head>
+<body>
+<header><h1>Quick Quote</h1></header>
+<main style="max-width: 560px">
+  <div class="form">
+    <p><label for="cust">Customer</label> <input id="cust" size="28"></p>
+    <p><label for="what">Job</label> <input id="what" size="28"></p>
+    <p><label for="hours">Labour hours</label> <input id="hours" type="number" min="0" step="0.5" value="0"> at <span id="rate"></span> an hour</p>
+    <p><label for="mat">Materials (our cost)</label> <input id="mat" type="number" min="0" step="0.01" value="0"></p>
+  </div>
+  <div class="totals">
+    <p>Labour <span id="lab"></span></p>
+    <p>Materials <span id="mats"></span></p>
+    <p>Subtotal <span id="sub"></span></p>
+    <p>GST 15% <span id="gst"></span></p>
+    <p class="big">Total <span id="tot"></span></p>
+  </div>
+  <button class="btn" id="save">Save quote</button>
+  <h2>Saved quotes</h2>
+  <table><thead><tr><th>Quote</th><th>Date</th><th>Customer</th><th class="n">Total</th></tr></thead><tbody id="saved"></tbody></table>
+</main>
+<script>
+  // Hana's quick quote - for pricing a job on site
+  const HOURLY = 92;
+  const MATERIALS = 0.8; // materials: cost / 0.8
+  const GST = 0.15;
+
+  const $ = id => document.getElementById(id);
+  const num = id => +$(id).value || 0;
+  const round2 = n => Math.round(n * 100) / 100;
+
+  function nzd(n) {
+    return '$' + n.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function today() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  $('rate').textContent = nzd(HOURLY);
+
+  function calc() {
+    const labour = round2(num('hours') * HOURLY);
+    const materials = round2(num('mat') / MATERIALS);
+    const sub = round2(labour + materials);
+    const gst = round2(sub * GST);
+    const total = round2(sub + gst);
+    $('lab').textContent = nzd(labour);
+    $('mats').textContent = nzd(materials);
+    $('sub').textContent = nzd(sub);
+    $('gst').textContent = nzd(gst);
+    $('tot').textContent = nzd(total);
+    return total;
+  }
+
+  function showSaved() {
+    const quotes = JSON.parse(localStorage.getItem('he_quotes') || '[]');
+    $('saved').innerHTML = quotes.map(q =>
+      `<tr><td>${q.no}</td><td>${q.date}</td><td>${q.customer}</td><td class="n">${nzd(q.total)}</td></tr>`).join('');
+  }
+
+  $('save').onclick = () => {
+    const quotes = JSON.parse(localStorage.getItem('he_quotes') || '[]');
+    quotes.push({
+      no: 'Q-' + String(353 + quotes.length).padStart(4, '0'),
+      date: today(),
+      customer: $('cust').value,
+      what: $('what').value,
+      total: calc(),
+    });
+    localStorage.setItem('he_quotes', JSON.stringify(quotes));
+    showSaved();
+  };
+
+  document.addEventListener('input', calc);
+  calc();
+  showSaved();
+</script>
+</body>
+</html>

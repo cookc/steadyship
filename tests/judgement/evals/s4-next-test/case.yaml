@@ -29,7 +29,8 @@ graders:
     target: {source: file, path: docs/assessment/job-board.md}
     pattern: '\*\*Next rung:\*\*\s*[^\n]*(2 Own it|4 Move)'
   - {type: file_exists, name: decision-file, path: docs/context/decisions.md}
-  - {type: regex, name: offers-next-rung, flags: i, pattern: '\*\*Next[^\n]{0,200}(owner|responsible|master|move[^\n]{0,20}data)'}
+  # 2026-11-14: was '\*\*Next...' (needed bold). The bold was formatting, not substance; changed for both arms.
+  - {type: regex, name: offers-next-rung, flags: i, pattern: '\bNext\b[^\n]{0,200}(owner|responsible|master|move[^\n]{0,20}data)'}
   - type: llm
     name: llm-test-described
     criteria: >

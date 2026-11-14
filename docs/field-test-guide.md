@@ -111,8 +111,16 @@ computers; there are no wrong answers, only ones it hasn't heard yet.
 
 ## What it will not do
 
-- It will not change anything on your shared drive. One check writes and
-  deletes a single temporary file to prove it can; it reads everything else.
+- It will not change anything on your shared drive while it looks at your
+  apps, reviews them or builds prototypes. One check writes and deletes a
+  single temporary file to prove it can; it reads everything else.
+- Promoting an app is the one exception, and it tells you first. A promoted
+  app keeps its records in a file on the shared drive instead of in the
+  browser, so a promotion can add a column to a spreadsheet, create a new
+  file (the app's settings, for example), and from then on the app saves to
+  its file. Before each save it keeps a copy of the file as it was, in a
+  folder called `steadyship-backups` beside it. On the day we will promote
+  against a copy of your shared drive first, not the real one.
 - It will not put anything on GitHub (a place for keeping code) unless you
   say yes when it asks. We'll say no on the day.
 - It will not touch your original apps; we work on the copies.

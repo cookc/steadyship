@@ -1,6 +1,6 @@
 ---
 name: steadyship-promote
-description: Use when asked to "promote the app", "make the app something we can rely on", "turn it into a proper tool", "someone else is going to use it", "get it ready for the workshop/office/team", "graduate it", or when a change request lands on a prototype that other people now use or that holds real data. Use it even when the word promote is not said: "the whole workshop will use this from Monday" is a promotion. Audits a prototype, asks the product questions the audit raises in one message, and on the answers rebuilds it unattended from the template to the engineering standard at Owned tool: same behaviour for the same inputs, data in its master per docs/context/data.md, tests that pin the prototype's outputs, a changelog entry in plain words, the stage moved. ALSO use on the user's answers to its questions. Not for prototypes nobody else will use (just build those), nor for reviews, status or one-rung changes (that is steadyship-next).
+description: Use when asked to "promote the app", "make the app something we can rely on", "turn it into a proper tool", "someone else is going to use it", "get it ready for the workshop/office/team", "graduate it". Use it even when the word promote is not said: "the whole workshop will use this from Monday" is a promotion. Audits a prototype, asks the product questions the audit raises in one message, and on the answers rebuilds it unattended from the template to the engineering standard at Owned tool: same behaviour for the same inputs, data in its master per docs/context/data.md, tests that pin the prototype's outputs, a changelog entry in plain words, the stage moved. ALSO use on the user's answers to its questions. Not for prototypes nobody else will use (just build those), nor for a change to an app (that is steadyship-ask, which asks first when people rely on it), nor for reviews, status or one-rung changes (that is steadyship-next).
 model: opus
 ---
 
@@ -129,8 +129,10 @@ line that the stronger model could not be used here.
    file. If you skip this, it starts empty and the old page stays one
    version back, still openable."
 
-6. **Ask**, in one message, at most **five** questions, each with your
-   recommended answer and the evidence that prompted it (quote the file,
+6. **Ask**, in one message, at most **five** questions (a question is one
+   thing to answer: two questions under one number are two, and "who owns
+   it, who uses it, on what, and what if it is down?" is four), each with
+   your recommended answer and the evidence that prompted it (quote the file,
    line or business note). Pick the ones whose wrong answer costs most to
    undo, from:
    - **Build or buy**, first and mandatory for a tool that plans, nests,
@@ -257,7 +259,10 @@ following, in order, without asking anything.
      list, no browser feature outside the baseline, JSDoc on the data
      shapes);
    - the stage rows at Owned tool: one master file with one writer through
-     the serve script, a log line per write once more than one person
+     the serve script, every save through `Steadyship.withHeld` so a row
+     that failed the check on the way in is written back untouched (a
+     characterisation test with one such row in the master proves it is
+     still there after a save), a log line per write once more than one person
      writes, plain messages when the drive is unreachable or the file is
      open in Excel, README with who uses it and which browsers,
      `CHANGELOG.md`, version in the footer;

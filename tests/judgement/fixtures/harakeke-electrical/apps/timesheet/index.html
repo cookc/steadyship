@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harakeke Electrical - Timesheet</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f3; color: #222; }
+  header { background: #1f4d3a; color: #fff; padding: .7rem 1rem; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  main { max-width: 860px; margin: 1rem auto; padding: 0 1rem; }
+  .btn { background: #2f6f54; color: #fff; border: 0; border-radius: 4px; padding: .45rem .9rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; background: #fff; margin: .8rem 0; }
+  td, th { border: 1px solid #cfd8d0; padding: .3rem .5rem; text-align: left; }
+  td.n, th.n { text-align: right; }
+  label { font-weight: bold; }
+  select, input, textarea { font-size: 1rem; padding: .25rem; }
+  .form p { margin: .4rem 0; }
+  tr.hol td { background: #fff6d6; }
+</style>
+</head>
+<body>
+<header><h1>Timesheet</h1></header>
+<main>
+  <div class="form">
+    <p><label for="who">Name</label> <select id="who"></select></p>
+    <p><label for="date">Date</label> <input id="date" type="date"></p>
+    <p><label for="job">Job</label> <select id="job"></select></p>
+    <p><label for="hours">Hours</label> <input id="hours" size="6" placeholder="e.g. 7.5"></p>
+    <button class="btn" id="add">Add</button>
+  </div>
+
+  <h2>Week</h2>
+  <p><label for="week">Week starting (Monday)</label> <input id="week" type="date"> <span id="range"></span></p>
+  <table>
+    <thead><tr><th>Date</th><th>Name</th><th>Job</th><th class="n">Hours</th></tr></thead>
+    <tbody id="entries"></tbody>
+  </table>
+
+  <h2>Pay run summary</h2>
+  <table>
+    <thead><tr><th>Name</th><th>Bank account</th><th class="n">Ordinary</th><th class="n">Overtime (x1.5)</th><th class="n">Public holiday</th><th class="n">Total hours</th></tr></thead>
+    <tbody id="summary"></tbody>
+  </table>
+</main>
+<script>
+  // Timesheet - Kiri. Everyone adds their own hours; the summary is what I pay from.
+  const staff = [
+    { name: 'Wiremu Tipene', role: 'Electrician', bank: '99-0704-0183345-00' },
+    { name: 'Dylan Fraser', role: 'Electrician', bank: '99-0704-0221907-00' },
+    { name: 'Sione Faleolo', role: 'Electrician', bank: '99-0916-0048812-01' },
+    { name: 'Emma Clarke', role: 'Electrician', bank: '99-0704-0306671-00' },
+    { name: 'Tom Bryant', role: 'Electrician', bank: '99-1182-0097430-00' },
+    { name: 'Jack Ngatai', role: 'Apprentice', bank: '99-0916-0112258-00' },
+    { name: 'Ruby Scott', role: 'Apprentice', bank: '99-0704-0275516-02' },
+  ];
+  const jobList = ['HE-4129', 'HE-4131', 'HE-4133', 'HE-4134', 'HE-4135', 'HE-4136', 'Call-out', 'Workshop'];
+  const HOLIDAYS = ['2025-01-01', '2025-01-02', '2025-02-06', '2025-04-18', '2025-04-21', '2025-04-25',
+    '2025-06-02', '2025-06-20', '2025-10-27', '2025-12-25', '2025-12-26'];
+  const DAY_HOURS = 8; // anything over this in a day is overtime
+
+  // the first week's sheets, typed in from the paper ones so we could try it out
+  const firstWeek = [
+    { who: 'Wiremu Tipene', date: '2026-11-10', job: 'HE-4129', hours: '7:30' },
+    { who: 'Wiremu Tipene', date: '2026-11-11', job: 'HE-4129', hours: '8' },
+    { who: 'Wiremu Tipene', date: '2026-11-12', job: 'HE-4129', hours: '6.5' },
+    { who: 'Tom Bryant', date: '2026-11-09', job: 'HE-4133', hours: '8' },
+    { who: 'Tom Bryant', date: '2026-11-11', job: 'HE-4131', hours: '8' },
+    { who: 'Tom Bryant', date: '2026-11-12', job: 'HE-4133', hours: '9.5' },
+    { who: 'Sione Faleolo', date: '2026-11-09', job: 'Workshop', hours: '8' },
+    { who: 'Sione Faleolo', date: '2026-11-15', job: 'Call-out', hours: '3' },
+  ];
+
+  const $ = id => document.getElementById(id);
+  const entries = JSON.parse(localStorage.getItem('he_timesheet') || 'null') || firstWeek;
+  const hoursOf = e => parseFloat(e.hours) || 0;
+
+  function iso(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function addDays(day, n) {
+    const [y, m, d] = day.split('-').map(Number);
+    return iso(new Date(y, m - 1, d + n));
+  }
+  function mondayOf(d) {
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+    return iso(x);
+  }
+
+  for (const s of staff) $('who').add(new Option(s.name));
+  for (const j of jobList) $('job').add(new Option(j));
+  $('date').value = iso(new Date());
+  $('week').value = mondayOf(new Date());
+
+  function draw() {
+    const start = $('week').value;
+    const end = addDays(start, 6);
+    $('range').textContent = start + ' to ' + end;
+    const week = entries.filter(e => e.date >= start && e.date < end)
+      .sort((a, b) => a.date.localeCompare(b.date) || a.who.localeCompare(b.who));
+
+    $('entries').innerHTML = week.map(e =>
+      `<tr class="${HOLIDAYS.includes(e.date) ? 'hol' : ''}"><td>${e.date}</td><td>${e.who}</td><td>${e.job}</td><td class="n">${e.hours}</td></tr>`).join('');
+
+    $('summary').innerHTML = staff.map(s => {
+      const mine = week.filter(e => e.who === s.name);
+      const byDay = {};
+      let holiday = 0;
+      for (const e of mine) {
+        if (HOLIDAYS.includes(e.date)) holiday += hoursOf(e);
+        else byDay[e.date] = (byDay[e.date] || 0) + hoursOf(e);
+      }
+      let ordinary = 0, overtime = 0;
+      for (const h of Object.values(byDay)) {
+        ordinary += Math.min(h, DAY_HOURS);
+        overtime += Math.max(h - DAY_HOURS, 0);
+      }
+      const total = ordinary + overtime + holiday;
+      return `<tr><td>${s.name}</td><td>${s.bank}</td><td class="n">${ordinary}</td><td class="n">${overtime}</td>` +
+        `<td class="n">${holiday}</td><td class="n">${total}</td></tr>`;
+    }).join('');
+  }
+
+  $('add').onclick = () => {
+    if (!$('date').value || !$('hours').value) return;
+    entries.push({ who: $('who').value, date: $('date').value, job: $('job').value, hours: $('hours').value });
+    localStorage.setItem('he_timesheet', JSON.stringify(entries));
+    $('hours').value = '';
+    draw();
+  };
+  $('week').onchange = draw;
+  draw();
+</script>
+</body>
+</html>

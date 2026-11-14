@@ -30,7 +30,13 @@ mkdir -p "$SHARE"
   || { echo "scaffold: populate.sh failed" >&2; exit 1; }
 # A case may start part-way up the ladder: <case>/assessment/*.md are prior assessments.
 if [ -d "$HERE/assessment" ]; then cp "$HERE"/assessment/*.md docs/assessment/; fi
+# <case>/seed/ is laid over the repo before the commit: prior assessments, the data and
+# security notes a later step needs. run.sh fills it from the case's own seed/ folder and
+# from each folder named in its SEEDS file.
+if [ -d "$HERE/seed" ]; then ( cd "$HERE/seed" && tar cf - . ) | tar xf -; fi
 git add -A
 git -c user.name="Steadyship" -c user.email="steadyship@example.invalid" \
   commit -q -m "chore: add $BUSINESS apps, business docs"
+# <case>/setup.sh runs after the commit, in the repo: a branch with a change waiting, for example.
+if [ -f "$HERE/setup.sh" ]; then bash "$HERE/setup.sh" || { echo "scaffold: setup.sh failed" >&2; exit 1; }; fi
 [ -f "$SHARE/Jobs.csv" ] && ls apps/*/index.html >/dev/null 2>&1 || { echo "scaffold: fixture missing" >&2; exit 1; }

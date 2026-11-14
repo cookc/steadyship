@@ -1,0 +1,29 @@
+schema_version: "1.1"
+name: s7-promote-foundations
+description: >
+  "Promote" before the data and security conversations have happened. The skill must stop,
+  name both missing notes and how to start each, and change nothing. Pass = no Write/Edit under
+  apps/ or tests/ AND the reply names the data notes AND the security notes.
+tags: [judgement, promote]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Agent]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write-app, tool: Write, input_match: '(apps|tests)/', min: 0, max: 0}
+  - {type: tool_used, name: no-edit-app, tool: Edit, input_match: '(apps|tests)/', min: 0, max: 0}
+  - {type: regex, name: names-data-notes, flags: i, pattern: 'set up my data|data notes|data\.md'}
+  - {type: regex, name: names-security-notes, flags: i, pattern: 'set up my security|security notes|security\.md'}
+  - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}
+  - type: llm
+    name: llm-stops-and-explains
+    criteria: >
+      The reply says the app has not been promoted or changed yet, and explains in plain words
+      what has to happen first.

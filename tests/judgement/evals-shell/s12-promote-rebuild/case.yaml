@@ -1,0 +1,47 @@
+schema_version: "1.1"
+name: s12-promote-rebuild
+description: >
+  NEEDS A SHELL (run.sh --shell). The turn after the promote questions: history.jsonl replays a
+  real first-turn reply (results 20261114T043820Z, s8-promote-audit with arm) and the user accepts the
+  recommendations. The job board must be rebuilt at Owned tool, unattended. Pass = the app is
+  split into app.js with a data.json that names Jobs.csv AND tests of its own were written AND
+  it tried to run the tests AND a changelog exists AND the reply is straight about whether the
+  tests ran AND it asked nothing more. The sandbox's shell cannot write (no npm install, no
+  commit), so tests cannot pass here and the stage move is reported, not required.
+tags: [judgement, promote, shell]
+context:
+  scaffold_script: scaffold.sh
+  history_file: history.jsonl
+execution:
+  model: sonnet
+  max_turns: 200
+  timeout_seconds: 3000
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Agent, Bash]
+runs: 1
+graders:
+  # Written from the promote skill's stated outcome before the first run.
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: file_exists, name: app-rebuilt, path: apps/job-board/app.js}
+  - {type: file_exists, name: data-manifest, path: apps/job-board/data.json}
+  - type: regex
+    name: master-is-jobs-csv
+    target: {source: file, path: apps/job-board/data.json}
+    pattern: 'Jobs\.csv'
+  - {type: tool_used, name: wrote-own-tests, tool: Write, input_match: '"file_path":\s*"[^"]*tests/job-board/', min: 1}
+  - {type: tool_used, name: ran-tests, tool: Bash, input_match: 'scripts/test\.sh|node --test|playwright test', min: 1}
+  - {type: file_exists, name: changelog, path: apps/job-board/CHANGELOG.md}
+  # 2026-11-14, first run: the runner's sandbox gives the shell a read-only disk, so no test tool can be
+  # installed, no test can run and nothing can be committed. The skill then (rightly) does not move the
+  # stage. So here the stage move is reported, and the gating check is that the reply is straight about it.
+  - type: regex
+    name: info-stage-moved
+    target: {source: file, path: docs/assessment/job-board.md}
+    pattern: '\*\*Stage:\*\*\s*Owned tool'
+  - {type: regex, name: straight-about-tests, flags: i, pattern: "(could ?n.t|couldn.t|could not|not able to|unable to) (run|install)|nothing (was |has been )?run|not promoted yet|tests? (all )?pass(ed)?\\b"}
+  - {type: regex, name: asked-nothing-more, match: not_contains, pattern: '\?\s*$'}
+  - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}
+  - type: llm
+    name: llm-says-what-changed
+    criteria: >
+      The reply says the job board was rebuilt, where its data now lives, whether its tests
+      passed, and what changed in behaviour, in plain language.

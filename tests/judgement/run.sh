@@ -2,7 +2,12 @@
 # Judgement eval harness: assess / ask / review cases on mock businesses (s* = Demo Boatworks,
 # r* = Rimu Joinery), with and without the Steadyship plugin (claude plugin eval --ablation with-without).
 # Usage: tests/judgement/run.sh [--runs N] [--cases GLOB] [--model M] [--max-cost-usd USD]
-#                              [--arms with|both] [-j N] [--keep]   (defaults: 1, all, sonnet, 8, both, 1)
+#                              [--arms with|both] [-j N] [--keep] [--shell] [--gate]
+#                              (defaults: 1, all, sonnet, 8, both, 1)
+#   --shell also runs the cases in evals-shell/ (finish, the promote rebuild): they need Bash, and the
+#     runner only grants Bash when its OS sandbox works (Linux: bubblewrap and socat installed).
+#   --gate is the release gate: with arm only, 3 runs a case, exit 1 unless every case passes at
+#     least 2 of 3. Writes tests/judgement/GATE.md, which the release notes quote.
 #   --keep leaves each run's /tmp/claude-eval-* dir (trace and written files) for inspection.
 #   --case is an alias of --cases; --ablation with-without|none is the raw form of --arms both|with.
 # Costs money and takes minutes: NOT part of scripts/validate.sh or CI.
@@ -15,7 +20,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 J="$ROOT/tests/judgement"
-RUNS=1; CASE=""; MODEL=sonnet; MAXCOST=8; ABLATION=with-without; JOBS=1; KEEP=0; EXTRA=()
+RUNS=1; CASE=""; MODEL=sonnet; MAXCOST=8; ABLATION=with-without; JOBS=1; KEEP=0; SHELL_CASES=0; GATE=0; EXTRA=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --runs) RUNS="$2"; shift 2;;
@@ -28,6 +33,8 @@ while [ $# -gt 0 ]; do
     --max-cost-usd) MAXCOST="$2"; shift 2;;
     --ablation) ABLATION="$2"; shift 2;;
     --keep) KEEP=1; shift;;
+    --shell) SHELL_CASES=1; shift;;
+    --gate) GATE=1; RUNS=3; ABLATION=none; [ "$MAXCOST" != 8 ] || MAXCOST=25; [ "$JOBS" != 1 ] || JOBS=4; shift;;
     --) shift; EXTRA=("$@"); break;;   # anything after -- goes to claude plugin eval (e.g. --keep-temp)
     *) echo "unknown option: $1" >&2; exit 2;;
   esac
@@ -40,6 +47,14 @@ STAGE="$(mktemp -d "${TMPDIR:-/tmp}/steadyship-judgement-XXXXXX")"
 trap 'rm -rf "$STAGE"' EXIT
 ( cd "$ROOT" && tar cf - --exclude=node_modules --exclude=evals plugin ) | ( cd "$STAGE" && tar xf - )
 cp -R "$J/evals" "$STAGE/plugin/evals"
+TOOLS=(Write Edit)
+if [ "$SHELL_CASES" = 1 ]; then
+  command -v socat >/dev/null && command -v bwrap >/dev/null || {
+    echo "--shell needs the runner's sandbox: install bubblewrap and socat (sudo apt install bubblewrap socat)" >&2; exit 2; }
+  cp -R "$J"/evals-shell/*/ "$STAGE/plugin/evals/"; TOOLS+=(Bash)
+else
+  echo "Not running the $(ls -d "$J"/evals-shell/*/ 2>/dev/null | wc -l | tr -d ' ') shell case(s) in evals-shell/ (finish, promote rebuild): pass --shell."
+fi
 for c in "$STAGE"/plugin/evals/*/; do
   cp "$J/scaffold.sh" "$c/scaffold.sh"
   # A case with a FIXTURE file (a repo-relative fixture dir) gets that business staged
@@ -50,10 +65,17 @@ for c in "$STAGE"/plugin/evals/*/; do
     mkdir -p "$c/fixture"
     ( cd "$fx" && tar cf - --exclude=answer-key.md . ) | ( cd "$c/fixture" && tar xf - )
   fi
+  # A case with a SEEDS file (repo-relative folders, one a line) gets each laid into <case>/seed/.
+  if [ -f "$c/SEEDS" ]; then
+    mkdir -p "$c/seed"
+    while read -r sd; do [ -n "$sd" ] || continue
+      [ -d "$ROOT/$sd" ] || { echo "case $(basename "$c"): no seed folder $sd" >&2; exit 2; }
+      ( cd "$ROOT/$sd" && tar cf - . ) | ( cd "$c/seed" && tar xf - ); done < "$c/SEEDS"
+  fi
 done
 [ -z "$(find "$STAGE" -name 'answer-key*')" ] || { echo "answer key found in staged plugin; refusing" >&2; exit 2; }
 
-ARGS=(--scaffold --allow-tools Write Edit --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
+ARGS=(--scaffold --allow-tools "${TOOLS[@]}" --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
       --trust-plugin --no-publish --threshold 0 --max-cost-usd "$MAXCOST"
       --concurrency "$JOBS" --output-dir "$OUT" --report "$OUT/report.html" --json "$OUT/result.json"
       --keep-temp)   # temp dirs hold each run's trace; regrade-with-files.py reads them, then they are removed
@@ -67,13 +89,17 @@ rc=${PIPESTATUS[0]}
 set -e
 echo "claude plugin eval exit $rc after $(( $(date +%s) - start ))s" | tee -a "$OUT/eval.log"
 [ -f "$OUT/result.json" ] || { echo "no result.json written" >&2; exit 1; }
+# Since plugin 0.6.0 the assess reply is deliberately short and the rows live in docs/assessment/, so
+# summarise.py scores an assess case on the reply plus the files the run wrote (read from each run's
+# trace, which is why the temp dirs are kept until it has run).
 python3 "$J/summarise.py" "$OUT/result.json" | tee "$OUT/summary.md"
-# Since plugin 0.6.0 the assess reply is deliberately short and the rows live in docs/assessment/;
-# score the reply plus the files the run wrote, from each run's trace, then drop the temp dirs.
-{ echo; echo "Rows including the files each run wrote (assess replies are short by design):"; echo;
-  python3 "$J/regrade-with-files.py" "$OUT/result.json"; } | tee -a "$OUT/summary.md"
 if [ "$KEEP" = 1 ]; then echo "kept run dirs:"; grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u
 else
   grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u | while read -r d; do case "$d" in /tmp/claude-eval-*) chmod -R u+rwx "$d" 2>/dev/null; rm -rf "$d";; esac; done
 fi
 ln -sfn "$(basename "$OUT")/summary.md" "$J/results/latest.md"
+if [ "$GATE" = 1 ]; then
+  python3 "$J/gate.py" "$OUT/result.json" "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/plugin.json")" \
+    "$(git -C "$ROOT" rev-parse --short HEAD)$(git -C "$ROOT" diff --quiet HEAD -- plugin || echo '+uncommitted')" | tee "$J/GATE.md"
+  tail -1 "$J/GATE.md" | grep -q '^GATE: PASS' || exit 1
+fi
