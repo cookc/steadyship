@@ -105,7 +105,11 @@
           problems.push(`${label} is empty`);
           continue;
         }
-        if (raw === '') continue;
+        if (raw === '') {
+          // an empty number is "not known", never zero: null in memory, empty again on disk
+          if (rule.kind === 'cents' || rule.kind === 'int') out[field] = null;
+          continue;
+        }
         if (rule.pattern && !rule.pattern.test(raw)) problems.push(`${label} "${raw}" is not in the expected form`);
         if (rule.kind === 'cents') {
           const c = cents(raw);
@@ -126,6 +130,20 @@
       else good.push(out);
     });
     return { good, bad };
+  }
+
+  /**
+   * The rows to save, with every row that failed check() put back where it was in the file, exactly as it
+   * was read. Always save through this: a row the app could not understand is the business's data too, and
+   * writing the file without it would delete it.
+   * @param {Record<string, any>[]} rows  the rows the app understood, as they go on disk, in file order
+   * @param {{ line: number, row: Record<string,string> }[]} bad  the `bad` list check() gave for the rows read
+   * @returns {Record<string, any>[]}
+   */
+  function withHeld(rows, bad) {
+    const out = rows.slice();
+    for (const b of [...bad].sort((x, y) => x.line - y.line)) out.splice(Math.min(b.line - 2, out.length), 0, b.row);
+    return out;
   }
 
   // ---- Messages in the page, in plain words; never alert() ----
@@ -208,12 +226,18 @@
     if (!r.ok) throw await failure(r);
     versions.set(name, r.headers.get('ETag') || '');
   }
+  /** Takes the facts the business notes do give; a fact they do not give (null) keeps this computer's own.
+   * @param {Record<string, any>} facts */
+  function applyConfig(facts) {
+    for (const [k, v] of Object.entries(facts || {})) if (v !== null && v !== undefined && v !== '') config[k] = v;
+    return config;
+  }
   /** Facts from the business notes (time zone, currency), when served. */
   async function init() {
     if (!served) return config;
     try {
       const r = await fetch('/api/config', { cache: 'no-store' });
-      if (r.ok) Object.assign(config, await r.json());
+      if (r.ok) applyConfig(await r.json());
     } catch {
       /* keep fallbacks */
     }
@@ -269,6 +293,8 @@
     date,
     moment,
     check,
+    withHeld,
+    applyConfig,
     say,
     clear,
     readCsv,

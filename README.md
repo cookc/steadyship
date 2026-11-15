@@ -65,17 +65,22 @@ to hand, try the demo business. Only the first two differ by setup.
   renders `docs/why-steadyship.md` and `docs/quickstart/*.md` directly, so edit
   those files, not the site, to change what it says. `cd site && npm install &&
   npm run dev` to preview.
-- `tests/judgement/` is the judgement eval harness (assess/ask/review on Demo
-  Boatworks, with and without the plugin): `tests/judgement/run.sh`, results
+- `tests/judgement/` is the judgement eval harness: every skill's judgement
+  (assess, ask, review, next, data, security, promote, finish) on three mock
+  businesses, with and without the plugin: `tests/judgement/run.sh`, results
   in `docs/judgement-spike.md`. It costs money and minutes, so it is not in
-  `scripts/validate.sh` or CI.
+  `scripts/validate.sh` or CI; it is the release gate instead (below).
 - `scripts/package-plugin.sh` builds the upload zip; `scripts/setup.sh` and
   `scripts/setup-windows.ps1` are the end-user setup scripts the quick-start
   pages use;
   `scripts/demo-regenerate.sh` rebuilds the standing demo repository.
-- Releasing: bump `version` in `plugin/.claude-plugin/plugin.json`, commit,
-  then tag `vX.Y.Z` and push the tag. The `release` workflow attaches the zip
-  to a GitHub release, which the setup scripts download.
+- Releasing: bump `version` in `plugin/.claude-plugin/plugin.json`, run
+  `tests/judgement/run.sh --gate` (with the plugin, three runs a case, about
+  $25 with `--shell`; add `--shell` where the runner's sandbox works) and commit the
+  `tests/judgement/GATE.md` it writes, then tag `vX.Y.Z` and push the tag.
+  The `release` workflow refuses a tag whose `GATE.md` is missing, for
+  another version or not a pass, puts the gate record in the release notes
+  and attaches the zip, which the setup scripts download.
 - `docs/` holds `quickstart/` (one page per setup), `why-steadyship.md`
   (for end users), `proposal-v0.1.md`
   (the full concept proposal: problem, product, architecture, pilot plan),

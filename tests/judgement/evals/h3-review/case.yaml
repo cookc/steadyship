@@ -1,0 +1,45 @@
+schema_version: "1.1"
+name: h3-review
+description: >
+  "Rely on it?" for Harakeke Electrical's job-board (third business, HELD
+  OUT; fixture: see FIXTURE). The fixture, its answer key and these graders
+  were written without reading the Steadyship skills; the graders are frozen
+  as written. Pass = read-jobs-csv (it opened the shared drive's Jobs.csv)
+  AND >= 5 of the 6 risk-* graders (fixture answer-key section 7).
+  stale-jobs-named (HE-4129, HE-4133), missing-job-named (HE-4137/HE-4138)
+  and conflicted-copy-named are reported, not gating.
+tags: [judgement, review, harakeke, held-out]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Guard: the agent must not read the staged cases (they spell out the answers).
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  # The master file. 'Jobs\.csv' does not match the conflicted copy's file name.
+  - {type: tool_used, name: read-jobs-csv, tool: Read, input_match: 'Jobs\.csv', min: 1}
+  - {type: regex, name: stale-jobs-named, pattern: '^(?=[\s\S]*HE-4129)(?=[\s\S]*HE-4133)'}
+  - {type: regex, name: missing-job-named, pattern: 'HE-413[78]'}
+  - {type: regex, name: conflicted-copy-named, flags: i, pattern: 'conflict'}
+  # 1 (c7): status changes live in one browser / device
+  - {type: regex, name: risk-1-browser-storage, flags: i, pattern: 'local ?storage|(in|inside|on) (the|each|your|one|that|whichever|a single|their) (own )?(web )?(browser|device|phone)|browser storage|per (machine|computer|device|browser|screen|phone)|own (device|computer|machine|browser|phone)|each (phone|device|browser|computer) (has|keeps|sees|shows|will)|(only|just) on (that|the|one) (device|computer|phone|screen|TV|browser)'}
+  # 2 (d01/d02): the board is a hand copy of Jobs.csv that is already out of step
+  - {type: regex, name: risk-2-stale-copy, flags: i, pattern: '(cop(y|ied)|stale|out of date|hard-?coded|typed in|out of sync|out of step|disagree|(don.t|doesn.t|do not|does not) match|wrong status|behind|snapshot|frozen)[^\n]{0,200}(spreadsheet|jobs\.csv|csv)|(spreadsheet|jobs\.csv|csv)[^\n]{0,200}(cop(y|ied)|stale|out of date|hard-?coded|out of sync|out of step|disagree|(don.t|doesn.t|do not|does not) match|wrong status|behind|snapshot)'}
+  # 3 (d03): HE-4131 is two jobs, and the board keys status by job number
+  - {type: regex, name: risk-3-duplicate-job-number, flags: i, pattern: 'HE-4131[^\n]{0,300}(twice|two|duplicat|both|same (job )?number|shared?|re-?used)|(duplicat|twice|same (job )?number|two (different |separate )?jobs|re-?used)[^\n]{0,300}HE-4131'}
+  # 4 (d05): "today" is fixed at 2026-11-02, so Today's jobs and the red overdue cards are wrong
+  - {type: regex, name: risk-4-today-hard-coded, flags: i, pattern: '2026-11-02|\b2(nd)? (of )?Nov(ember)?\b|\bNov(ember)? 2(nd)?\b(?!\d)|(overdue|\btoday\b|today.s|current date)[^\n]{0,200}(hard-?coded|fixed (date|day|value|at|to|on)|frozen|stuck|typed in|baked|never (changes|moves|updates)|for testing|test(ing)? (date|value)|left (in|over)|wired[- ]in|doesn.t (change|move|update))|(hard-?coded|frozen|stuck|baked|fixed|wired[- ]in)[^\n]{0,200}(\btoday\b|overdue|current date)|hard-?coded (date|day)\b'}
+  # 5 (d07): customers' alarm / key safe / gate / lockbox codes are printed on every card
+  - {type: regex, name: risk-5-access-codes-on-show, flags: i, pattern: '\b(alarm|key ?safe|lock ?box|gate|access|entry|security|door)[ -]?(codes?|details|notes|pins?|numbers?|info(rmation)?)\b|\b(4471|2580|1962|7306)\b'}
+  # 6 (d06): the CSV export does not quote fields, and every address has a comma
+  - {type: regex, name: risk-6-export-commas, flags: i, pattern: '\bcommas?\b[^\n]{0,300}(address|quot|column|split|shift|break|broke|field|escap|export)|(address|quot|column|escap|field|export)[^\n]{0,300}\bcommas?\b'}
+  - type: llm
+    name: llm-verdict-and-next-step
+    criteria: >
+      The reply gives a clear yes or no (or "not yet") answer to whether the
+      office and the electricians can rely on the job board instead of the
+      Jobs spreadsheet, and recommends at least one concrete next step.

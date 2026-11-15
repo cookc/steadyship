@@ -32,6 +32,20 @@ echo "-- CI Playwright pin matches the template lockfile"
 PIN="$(sed -n 's/.*playwright@\([0-9][0-9.]*\) install.*/\1/p' .github/workflows/validate.yml | head -1)"
 LOCK="$(grep -A1 -m1 '"node_modules/@playwright/test"' plugin/templates/package-lock.json | sed -n 's/.*"version": *"\([^"]*\)".*/\1/p')"
 [ -n "$PIN" ] && [ "$PIN" = "$LOCK" ] || { echo "CI pins playwright@$PIN but the template lockfile has $LOCK"; exit 1; }
+echo "-- judgement cases parse"
+python3 - <<'PY'
+import glob, re, sys, yaml
+for f in sorted(glob.glob("tests/judgement/evals*/*/case.yaml")):
+    d = yaml.safe_load(open(f, encoding="utf-8"))
+    names = [g["name"] for g in d["graders"]]
+    assert "no-peek" in names, f"{f}: no no-peek grader"
+    assert len(names) == len(set(names)), f"{f}: duplicate grader name"
+    for g in d["graders"]:
+        if g.get("type") == "regex":
+            re.compile(g["pattern"])
+PY
+echo "-- the template's rule tests (Node)"
+if command -v node >/dev/null 2>&1; then node --test plugin/templates/tests/_template/*.test.mjs >/dev/null || { node --test plugin/templates/tests/_template/*.test.mjs | tail -30; exit 1; }; else echo "skipped (no node)"; fi
 echo "-- the serve script"
 tests/test-serve.sh
 echo "-- generate a customer repo and test it"

@@ -8,8 +8,8 @@ const brings = [
   {
     title: 'Asks what you don\'t know to ask',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>',
-    body: 'By the time you ask for a change it has already read your business notes, your other apps and your spreadsheets. If there is a question that would be expensive to get wrong, it asks it, suggests an answer, and builds once you decide. Usually that is one question. It is never a questionnaire.',
-    example: 'You say "Make the job board track hours." It asks whether hours go against the whole job or each step, and points out that Hours.csv on the shared drive already has some of them.',
+    body: 'By the time you ask for a change to an app people rely on, it has already read your business notes, your other apps and your spreadsheets. If there is a question that would be expensive to get wrong, it asks it, suggests an answer, and builds once you decide. For a change that is one question, two at most. Something only you will use is just built.',
+    example: 'The workshop uses the job board. You say "Make the job board track hours." It asks whether hours go against the whole job or each step, and points out that Hours.csv on the shared drive already has some of them.',
   },
   {
     title: 'Judges what you can\'t judge',
@@ -31,9 +31,9 @@ const features = [
   { title: 'Gives a straight verdict', body: 'Yes, No or Not yet on whether the team can rely on an app, with the evidence. A second, independent reviewer checks the first one\'s work.' },
   { title: 'Finds the same thing kept twice', body: 'It reads every app and every spreadsheet, and shows you where the same price, job or customer is kept in two places and already disagrees.' },
   { title: 'Checks the ground first', body: 'Before anything is built, it checks that it can reach GitHub, read and write the shared drive, and open one of your apps. It takes a minute, and the result is recorded.' },
-  { title: 'A path forward, not a rebuild', body: 'Every app is at one of four stages, from prototype to platform. It tells you which, and moves an app one step at a time, with you deciding at each step.' },
+  { title: 'A path forward', body: 'Every app is at one of four stages, from prototype to platform. It tells you which. Say "promote it" and it rebuilds a prototype into something the team can rely on, behaving the same for the same inputs, with a note of what changed.' },
   { title: 'Apps that stay in step', body: 'A shared glossary that someone in the business owns, and every app reading the same spreadsheets instead of keeping its own copy.' },
-  { title: 'A second opinion from another vendor', body: 'If you want the strongest check, the review can go to a model from a different company, which won\'t share the blind spots of the one that built it.' },
+  { title: 'A way back', body: 'Before a promoted app saves to its file on your shared drive, a copy of the file as it was is kept beside it. A row the app cannot read is never dropped.' },
   { title: 'Everything stays yours', body: 'Ordinary files in a private folder the business owns. If you remove Steadyship tomorrow, everything it wrote is still there and still useful.' },
 ];
 

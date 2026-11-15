@@ -39,14 +39,17 @@ Steadyship is an add-on for Claude that behaves like an engineer sitting in
 the conversation with you. We built it to do the three things a good
 engineer does for people who are not engineers.
 
-**It asks what you don't know to ask.** When you ask for a change, it has
-already read your business notes, your other apps and your spreadsheets. If
-there is a question that would be expensive to get wrong, it asks it before
-building. Should this attach to the whole job, or to each step inside it?
+**It asks what you don't know to ask.** When you ask for a change to an
+app other people rely on, it has already read your business notes, your
+other apps and your spreadsheets. If there is a question that would be
+expensive to get wrong, it asks it before building. Should this attach to the whole job, or to each step inside it?
 Where should this live so the rest of the team can see it? Isn't this
 already kept in the price list on the shared drive? It suggests an answer,
-you decide, and it builds. Usually that is one question. It is never a
-questionnaire.
+you decide, and it builds. For a change that is one question, two at
+most. The longer conversations come three times in an app's life and are
+each a single message of questions with a suggested answer to every one:
+your data and your security (up to eight questions each, once for the
+whole business) and the promotion of an app (up to five).
 
 **It judges what you can't judge.** Ask it to review an app and the first
 line is Yes, No or Not yet: can the team rely on this? Then it tells you
@@ -55,19 +58,20 @@ also answers the security questions most people don't think to ask: who can
 see this, where what people type ends up, whether a password is sitting in
 a file, whether the shared drive is open to anyone with the link. Every
 claim says what it checked, and anything it couldn't verify is marked that
-way rather than waved through. A second, independent reviewer checks the
-first one's work. If you want the strongest check, that second review can
-come from a model made by a different company, which won't share the blind
-spots of the one that built the app.
+way rather than waved through. Where the app you use Claude in allows it,
+a second, independent reviewer checks the first one's work, and the reply
+says which reviewer ran, or that none could.
 
 **It brings engineering when it's needed, not before.** While an app is
 one person's experiment, it is left alone. Once other people start relying
 on it, Steadyship gives it the things software needs to be relied on: its
 data in one shared, backed-up place that only one thing writes to; a home
 that isn't someone's laptop; a check that it still works; a named owner;
-and a record of why decisions were made. This happens step by step, with a
-review at each step, rather than as a rebuild. Each addition comes with a
-sentence on why it is worth having, and more if you ask.
+and a record of why decisions were made. This happens when you say
+"promote it": Steadyship rebuilds the app to that standard in one go, with
+tests that pin what the prototype did, so it behaves the same for the same
+inputs, and a note of everything that changed and why. Each addition
+comes with a sentence on why it is worth having, and more if you ask.
 
 ## The path
 
@@ -79,6 +83,10 @@ Every app is at one of four stages, and Steadyship says which.
 | Owned tool | Shared, backed-up data with one writer; a test; a named owner | two apps touch the same information |
 | Proper app | A real framework, shared parts, data checked on the way in | the business depends on it daily |
 | Platform | Several apps on one database, kept in step | they must stay consistent for the business to run |
+
+Today Steadyship takes an app from Prototype to Owned tool. The two later
+stages are in the table so you can see where the path goes; Steadyship
+tells you when an app has reached them, and does not yet build them.
 
 Nobody in the business has to choose a framework, a database or a host.
 When an app has reached the point where it should move on, Steadyship says
@@ -123,9 +131,11 @@ few habits.
 - **No terminal, and no Git to learn.** The folder is a repository
   underneath, but nobody in the business has to know that. Steadyship
   commits from a state you have approved.
-- **It doesn't get in the way of experiments.** While something is a
-  prototype, build as you do today. Steadyship builds what you ask and says
-  one line: when someone else is about to rely on it, say "promote it".
+- **It doesn't get in the way of experiments.** While something is one
+  person's prototype, build as you do today. Steadyship builds what you ask
+  and says one line: when someone else is about to rely on it, say "promote
+  it". If people already rely on a prototype, it checks with you before
+  changing it, and keeps reminding you it is waiting to be promoted.
   That is when the engineering happens, mostly while you are doing
   something else: it audits what you built, asks a few questions
   about the business, and rebuilds it to the standard with the same
@@ -139,7 +149,8 @@ few habits.
 
 ## What it looks like day to day
 
-You say: "Make the job board track hours."
+The workshop already uses the job board. You say: "Make the job board
+track hours."
 
 Steadyship says: "Your build guide lists three steps under Assembly and says
 time is booked per step. Should hours be recorded against the whole job, or
@@ -152,10 +163,17 @@ where the hours are now stored and what that means.
 Later you say: "Review the job board." It replies with a verdict, the
 evidence, and the two things that would move it from Prototype to Yes.
 
+For something only you will use ("make me a quick page that finds
+duplicate part numbers"), it asks nothing and builds it.
+
 ## What you keep
 
 - **A folder of your own.** Ordinary files, readable by anyone, in a
   private repository the business owns. Nothing is stored anywhere else.
+- **A way back.** Once an app saves to a file on your shared drive, a copy
+  of that file as it was is kept beside it (in `steadyship-backups`) before
+  every save: one from the start of each day for sixty days, and one from
+  just before the last change.
 - **It works without Steadyship.** Remove the add-on tomorrow and everything
   it wrote is still there and still useful. You are never worse off for
   having used it.

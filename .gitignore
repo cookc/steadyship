@@ -7,3 +7,6 @@ tests/judgement/results/
 dist/
 .vercel
 .env*
+
+# Python caches
+__pycache__/

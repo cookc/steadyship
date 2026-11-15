@@ -17,6 +17,15 @@ jobs:
           ver="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' plugin/.claude-plugin/plugin.json)"
           [ "v$ver" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME does not match plugin version $ver"; exit 1; }
           echo "VER=$ver" >> "$GITHUB_ENV"
+      - name: The judgement evals must have passed for this version
+        # The evals cost money and need a Claude sign-in, so they run on the maintainer's machine:
+        # tests/judgement/run.sh --gate writes tests/judgement/GATE.md, which is committed before tagging.
+        run: |
+          f=tests/judgement/GATE.md
+          [ -f "$f" ] || { echo "no $f: run tests/judgement/run.sh --gate and commit it before tagging"; exit 1; }
+          head -1 "$f" | grep -qx "# Judgement gate for plugin $VER" || { echo "$f is for another version ($(head -1 "$f")): rerun the gate for $VER"; exit 1; }
+          tail -1 "$f" | grep -q '^GATE: PASS' || { echo "the judgement gate did not pass:"; cat "$f"; exit 1; }
+          { echo "Plugin zip for Claude desktop's Customize -> Plugins -> Add -> Upload plugin, for when the marketplace install fails. Normal installs use the marketplace: cookc/steadyship."; echo; cat "$f"; } > release-notes.md
       - name: Build the plugin zip
         run: |
           scripts/package-plugin.sh dist
@@ -27,4 +36,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" dist/steadyship-plugin.zip "dist/steadyship-plugin-$VER.zip" \
             --title "Steadyship plugin $VER" \
-            --notes "Plugin zip for Claude desktop's Customize -> Plugins -> Add -> Upload plugin, for when the marketplace install fails. Normal installs use the marketplace: cookc/steadyship."
+            --notes-file release-notes.md

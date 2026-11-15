@@ -51,7 +51,9 @@ Never change any file: this skill only reads.
      stage/status list, the glossary's rules for how each identifier is
      written, which file is the master for what, who uses which app);
    - `docs/assessment/<name>.md` and `docs/assessment/SUMMARY.md` if present;
-   - Glob the shared drive: `<shared drive>/**/*`;
+   - Glob the shared drive: `<shared drive>/**/*` (skip `steadyship-backups/`:
+     the serve script's safety copies of a master, not a second copy of
+     the data);
    - Glob `scripts/test.sh` and `tests/**/*`.
 
 3. **Open the master files.** From the shared-drive listing, Read **every**

@@ -9,7 +9,9 @@ you don't know, write "unknown" — that is a finding.
      Proper app = the business depends on it daily: hosted, sign-in, backup, tests on every change.
      Platform = several apps that must stay consistent for the business to run. -->
 
-**Relied on by:** <who uses it, how often; "only the builder" is a valid answer>
+**Relied on by:** <who uses it, how often, and how you know; "only the builder" is a valid answer>
+<!-- Separate from Stage. An app people rely on while it is still a Prototype is asked about before
+     it is changed, and is the first candidate for "promote the <app>". -->
 
 **Owner:** <the person responsible for it; "unknown" until someone agrees>
 

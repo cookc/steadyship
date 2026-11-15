@@ -15,8 +15,9 @@ const FIELDS = Object.keys(SHAPE);
 /** The master file, named in data.json next to this file. */
 const MASTER = 'Example.csv';
 
-/** @type {{ rows: Record<string, any>[], fields: string[], live: boolean }} */
-const state = { rows: [], fields: FIELDS, live: false };
+/** `held` is the rows in the file that failed the check: not shown, but written back untouched on every save.
+ * @type {{ rows: Record<string, any>[], held: { line: number, row: Record<string,string> }[], fields: string[], live: boolean }} */
+const state = { rows: [], held: [], fields: FIELDS, live: false };
 
 /** Sample rows for a double-click open; never business data. */
 const SAMPLE = [
@@ -57,15 +58,17 @@ async function load() {
     const { fields, rows } = await S.readCsv(MASTER);
     const { good, bad } = S.check(rows, SHAPE);
     state.rows = good;
+    state.held = bad;
     state.fields = fields.length ? fields : FIELDS;
     state.live = true;
     for (const b of bad)
       S.say(
-        `${MASTER} line ${b.line}: ${b.problems.join('; ')}. The row is shown nowhere until it is fixed in the file.`,
+        `${MASTER} line ${b.line}: ${b.problems.join('; ')}. The row is not shown here until it is fixed in the file; it stays in the file as it is.`,
       );
   } catch (e) {
     S.say(e instanceof Error ? e.message : String(e));
     state.rows = [];
+    state.held = [];
     state.live = false;
   }
   render();
@@ -92,7 +95,11 @@ async function add(/** @type {SubmitEvent} */ ev) {
       await S.writeCsv(
         MASTER,
         state.fields,
-        next.map((r) => ({ ...r, amount: r.amount == null ? '' : (r.amount / 100).toFixed(2) })),
+        // withHeld: the rows that failed the check go back where they were, or this save would delete them
+        S.withHeld(
+          next.map((r) => ({ ...r, amount: r.amount == null ? '' : (r.amount / 100).toFixed(2) })),
+          state.held,
+        ),
       );
     } catch (e) {
       S.say(e instanceof Error ? e.message : String(e));

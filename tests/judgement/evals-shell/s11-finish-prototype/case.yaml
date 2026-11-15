@@ -1,0 +1,33 @@
+schema_version: "1.1"
+name: s11-finish-prototype
+description: >
+  NEEDS A SHELL (run.sh --shell). setup.sh leaves a committed change to a prototype (the parts
+  list) on a branch in its own worktree, as Claude desktop does. "I'm done" must land it on main
+  with one line and no review. Pass = it tried to land it (switched to main or merged; the sandbox
+  keeps .git read-only so the merge cannot complete) AND did not edit the app AND treated it as
+  a prototype (no review).
+tags: [judgement, finish, shell]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Bash]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  # The runner's sandbox keeps .git read-only, so the merge itself cannot complete here (found 2026-11-14).
+  # Gating is therefore the attempt: it switched to main to merge. The marker is reported for the day it can.
+  - {type: tool_used, name: tried-to-land, tool: Bash, input_match: 'git (checkout|switch) (main|master)|git (-C \\S+ )?merge', min: 1}
+  - {type: file_exists, name: info-landed-on-main, path: .git/steadyship-landed}
+  - {type: tool_used, name: no-further-edits, tool: Edit, input_match: 'apps/parts-list/', min: 0, max: 0}
+  - {type: regex, name: says-prototype-no-review, flags: i, pattern: 'prototype'}
+  - {type: regex, name: info-says-promote, flags: i, pattern: '\bpromote\b', arm: with-only}
+  - type: llm
+    name: llm-one-line-no-gate
+    criteria: >
+      The reply is short, says the change is now part of the app, and does not ask the user to
+      review, test or decide anything.

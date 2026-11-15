@@ -1,0 +1,28 @@
+schema_version: "1.1"
+name: s2d-ask-owned
+description: >
+  A change to an app at Owned tool (seed/docs/assessment/job-board.md says so, with the workshop
+  relying on it). The board keeps what people enter in the browser and holds a typed-in copy of
+  Jobs.csv, so "where does the note live" is mandatory. Pass = no Write/Edit AND the reply asks
+  where the notes are kept (this computer's browser vs a shared place), with a question mark.
+tags: [judgement, ask]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: no-write, tool: Write, min: 0, max: 0}
+  - {type: tool_used, name: no-edit, tool: Edit, min: 0, max: 0}
+  - {type: regex, name: asks-where-notes-live, flags: i, pattern: '(?=[\s\S]*(Jobs\.csv|shared drive|shared file|spreadsheet|localStorage|local storage|(this|one|each|that) (one )?(computer|browser|tablet|laptop|machine)|in the browser))(?=[\s\S]*\?)'}
+  - type: llm
+    name: llm-asks-before-building
+    criteria: >
+      The reply asks the user at least one clarifying question before building anything, and it
+      does not claim to have added or changed any code or files.

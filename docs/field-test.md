@@ -78,16 +78,28 @@ account and note that the real-drive results are missing.
 
 ## Part B, the real change, then a promotion (30 min)
 
-They ask for the change in their own words. Their apps arrive as prototypes
-(no assessment file says otherwise), so the ask skill should say its one
-signpost line and build, with no questions. We watch whether that line
-registers. Then "Set up my data" and "Set up my security": we watch which
+They ask for the change in their own words. Their apps arrive built as
+prototypes, but people already rely on them, so the ask skill should say why
+it is checking first, ask its one or two questions, record the answer and
+build, ending with the line that the app is waiting to be promoted. We watch
+whether the questions make sense and whether that line registers. Then ask
+for something throwaway ("a quick page just for me that ..."): that one
+should be built with no questions and end with the signpost line. Then "Set up my data" and "Set up my security": we watch which
 of the eight questions they cannot answer, and whether the written notes
 read as theirs. Then "Promote the [app name]" on the app they most want the team
 to use: whether the five questions make sense, whether they are happy to
 walk away while it runs, and whether the morning note tells them what they
-need. If the change was to an app that had already been promoted, the ask
-skill asks its one or two questions first; we watch those the same way.
+need.
+
+**Promote against a copy of the shared drive, never the real one, on the
+day.** A promoted app saves to its master file, and a promotion can add a
+column or a settings file. Copy the drive folder to the desktop, point
+`Shared drive:` in `steadyship.md` at the copy before "Promote", and put it
+back afterwards. The promoted app has not yet been run on a real Windows
+network drive by two people at once; that is a finding to collect, not a
+risk to take with their records. After the rebuild, open the promoted app on
+two computers pointed at the same copy, save from both, and look in
+`steadyship-backups` beside the master.
 
 ## Part C, debrief (20 min)
 
@@ -112,7 +124,10 @@ Ask, and write the answers down verbatim:
 | A5 check: tests (their app) | | | |
 | A6 assessment | | | |
 | A7 review | | | |
-| B real change | | | |
+| B real change (relied-on app: asked first?) | | | |
+| B throwaway page (built with no questions? signpost seen?) | | | |
+| B promote, on a copy of the drive | | | |
+| B two computers saving to the copy | | | |
 
 Collect at the end: `docs/spikes/RESULTS.md`, `docs/assessment/`,
 `docs/context/decisions.md` and `steadyship.md` from the business repository,
@@ -149,3 +164,11 @@ Anything short of this is not a failure of the test, it is the finding.
 Write `docs/field-test-findings-<date>.md` within 24 hours: the observation
 table, the verbatim debrief, and a triage list of product fixes with the one
 that would have saved the most minutes first.
+
+Then cut. For each skill, write one line in the findings: used unprompted,
+used when prompted and valued, used and not valued, or never reached.
+Anything in the last two columns after a second session is removed from the
+plugin, not improved. The candidates going in, because nothing but our own
+tests has exercised them: the ladder's single rungs (`steadyship-next`), the
+Proper app and Platform columns of the bar, and the second-opinion step of
+review. Nothing new is built until this file exists.

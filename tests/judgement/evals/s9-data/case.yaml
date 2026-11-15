@@ -1,0 +1,33 @@
+schema_version: "1.1"
+name: s9-data
+description: >
+  The data conversation, first turn. Pass = docs/context/data.md is not written yet AND the
+  reply asks which file is the master where the same thing is kept twice (Jobs.csv against an
+  app's copy) AND asks what must never be lost or whether it is backed up AND raises personal
+  data (Customers.csv holds contact names and phone numbers) AND is not a questionnaire (at
+  most 16 question marks: eight questions, with room for a recommendation phrased as one).
+tags: [judgement, data]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill, Agent]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: nothing-written-yet, tool: Write, input_match: 'docs/context/data\.md', min: 0, max: 0}
+  - {type: regex, name: asks-which-master, flags: i, pattern: '(?=[\s\S]*Jobs\.csv)(?=[\s\S]*\b(master|one true|real one|source of truth|authoritative|the right one|which (one|file|list|copy))\b)(?=[\s\S]*\?)'}
+  - {type: regex, name: asks-loss-or-backup, flags: i, pattern: 'back(ed)?[- ]?up|never be lost|restor|(drive|laptop|computer|disk) (died|dies|failed|fails|was lost|is lost|broke)'}
+  - {type: regex, name: raises-personal-data, flags: i, pattern: 'personal|privacy|phone numbers?|contact (details|names?)|about people'}
+  - {type: regex, name: asks-a-question, pattern: '\?'}
+  - {type: regex, name: not-a-questionnaire, match: not_contains, pattern: '(?:[^?]*\?){17}'}
+  - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}
+  - type: llm
+    name: llm-business-questions-with-recommendations
+    criteria: >
+      The reply asks questions about the business's information (not about technology), and gives
+      a recommended answer for most of them.

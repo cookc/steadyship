@@ -114,7 +114,7 @@ git init -q --bare "$OUT/bare.git"
 if [ "${STEADYSHIP_TEST_SMOKE:-0}" = "1" ]; then
   echo "-- generated repo smoke: running (npm ci + scripts/validate.sh)"
   ( cd "$DIR" && npm ci --no-audit --no-fund >/dev/null && scripts/validate.sh > "$OUT/validate.log" 2>&1 && tail -1 "$OUT/validate.log" | grep -q '^OK$' ) || { tail -25 "$OUT/validate.log"; fail "generated validate.sh"; }
-  ( cd "$DIR" && export HOME="$OUT/home5" && scripts/check.sh --shared-drive "$OUT" --app _sample | tail -1 | grep -q '^RESULT: PASS$' ) || fail "check.sh with the sample app"
+  ( cd "$DIR" && export HOME="$OUT/home5" && scripts/check.sh --shared-drive "$OUT" --app _sample > "$OUT/check3.log" 2>&1; tail -1 "$OUT/check3.log" | grep -q '^RESULT: PASS$' ) || { tail -20 "$OUT/check3.log"; fail "check.sh with the sample app"; }
   grep -q '^| tests | PASS | [0-9-]* | _sample opened without errors' "$DIR/docs/spikes/RESULTS.md" || fail "check.sh should record the tests row"
   echo "-- generated repo smoke: PASS"
   "$ROOT/plugin/demo/populate.sh" "$DIR" "$OUT/share" | tail -1 | grep -q '^RESULT: PASS' || fail "fixture populate"

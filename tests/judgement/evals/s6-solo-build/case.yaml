@@ -1,0 +1,31 @@
+schema_version: "1.1"
+name: s6-solo-build
+description: >
+  The hack-then-promote promise, as a guard: a new app that only its builder will use is built
+  as asked, with no questions, no decision record and no assessment file. Pass = an app file
+  was written AND nothing was written to decisions.md or docs/assessment/ AND, with the
+  plugin, the reply carries the signpost (the word "promote"). info-no-question-mark is reported.
+  Plain Claude should pass this too: the case fails when the plugin adds friction.
+tags: [judgement, build]
+context:
+  scaffold_script: scaffold.sh   # copied in from tests/judgement/scaffold.sh by run.sh
+execution:
+  model: sonnet
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Write, Edit, Skill]
+runs: 1
+graders:
+  # Graders were written from the skill's stated behaviour and the fixture, before any run, and are
+  # not widened after reading a reply (see tests/judgement/README.md, "Changing a grader").
+  - {type: tool_used, name: no-peek, tool: Read, input_match: '/evals/|answer-key', min: 0, max: 0}
+  - {type: tool_used, name: built-app, tool: Write, input_match: '\.html', min: 1}   # anywhere: plain Claude writes to the repo root
+  - {type: tool_used, name: no-decision-record, tool: Write, input_match: 'decisions\.md', min: 0, max: 0}
+  - {type: tool_used, name: no-assessment-file, tool: Write, input_match: 'docs/assessment/', min: 0, max: 0}
+  - {type: regex, name: says-promote, flags: i, pattern: '\bpromote\b', arm: with-only}   # the signpost: gating, with arm only
+  - {type: regex, name: info-no-question-mark, match: not_contains, pattern: '\?'}
+  - type: llm
+    name: llm-built-without-questions
+    criteria: >
+      The reply says the page was built and does not make the user answer any question before it
+      can be used.

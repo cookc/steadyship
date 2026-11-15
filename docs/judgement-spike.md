@@ -422,3 +422,136 @@ files. The file-inclusive number is the one to track for assess; the
 reply-only number is the one to watch for "did the short reply keep the
 three things that matter" (prices, the job list, what a dead laptop loses
 all appeared in the 0.6.0 reply).
+
+## 0.7.0 as shipped, and after the review (14 Nov 2026)
+
+0.7.0 (hack, then promote) shipped on 22 Oct with no run of this suite. A run
+of the suite as it stood, on 0.7.0 as shipped (sonnet, one run a case, both
+arms, $4.73): **with the plugin 3 of 12 cases passed; without it, 1 of 12.**
+Review still passed 3/3. Every ask case failed by design: an app with no
+assessment file counted as a prototype and was built as asked. Both next
+cases failed because next now needs the data and security notes first, and
+the cases did not provide them. Assess scored 12–15/29 on the reply and
+29/29 with its files, and the summary still printed "fail". Nothing covered
+promote, finish, data or security.
+
+What changed, all on 14 Nov:
+
+- **The ask skill** reads reliance separately from stage. A prototype other
+  people rely on gets the questions; only a new app or a prototype nobody
+  but its builder uses is built without asking, and its reply must end with
+  the signpost line.
+- **The suite**: assess passes on reply plus files; new cases for a solo
+  build, an Owned-tool ask, promote (two), data, security and finish (shell);
+  next cases get the notes they need; a third, held-out business.
+- **Held out.** Harakeke Electrical was written by an agent that was told
+  not to read the skills, the bar or this file. 19 of its 29 findings are
+  defect classes in neither earlier key. Its graders were frozen before any
+  run.
+
+Result on the changed plugin (sonnet, one run a case, both arms, about $10
+across the runs below; results folders `20261114T04*`):
+
+| Case | With the plugin | Without |
+|---|---|---|
+| s1-assess | PASS, 29/29 incl. files (14 in the reply) | fail, 23/29 |
+| r1-assess | PASS, 29/29 (10 in the reply) | fail, 19/29 |
+| **h1-assess (held out)** | **PASS, 29/29 (15 in the reply)** | fail, 21/29 |
+| s3-review | PASS, 6/6, Jobs.csv read | fail, 5/6, not read |
+| s3-review-second-opinion | **fail, 4/6** (backup and stale copy missing from the reply) | fail, 4/6 |
+| r3-review | PASS, 6/6 | fail, 4/6, not read |
+| **h3-review (held out)** | **PASS, 6/6, Jobs.csv read** | fail, 5/6, not read |
+| s2-ask, s2b-ask, s2c-ask, r2-ask | PASS ×4: asked, built nothing | fail ×4 (three built; one asked something else) |
+| s2d-ask-owned | PASS | fail (built) |
+| s2-ask-answered | PASS: decision recorded, app changed | fail: no decision record |
+| s6-solo-build | PASS: built, no questions, signpost | PASS (first run failed on a grader that assumed `apps/`) |
+| s4-next-test | PASS on the rerun (see graders below) | fail |
+| s5-next-own | PASS | fail |
+| s7-promote-foundations | PASS | PASS |
+| s8-promote-audit | fail ×3, a different single miss each run (see below) | fail ×2 |
+| s9-data | PASS | fail (personal data not raised) |
+| s10-security | PASS | PASS |
+| s11-finish-prototype (shell) | PASS: no review, tried to land | fail: asked what to do |
+| s12-promote-rebuild (shell) | fail on the first grading (stage not moved); rebuilt in 9 min, $2.23, said plainly that no test could run | not run |
+
+With the plugin: 17 of 19 cases run passed. Without: 3 of 19.
+
+How to read it:
+
+- **One run a case.** The 0.4.0 variance work above says single runs flip.
+  The gate (three runs, two must pass) is the number to trust; it has not
+  been run yet.
+- **The held-out result is the strongest line here**: on a business and
+  defect classes the skill author never saw, with frozen graders, assess
+  found 29 of 29 and review 6 of 6, against 21 and 5 for plain Claude, which
+  again never opened the master file.
+- **s7 and s10 do not separate the arms.** Plain Claude also passes them, so
+  they guard against regressions and prove nothing about the plugin's value.
+- **s8-promote-audit is not passing.** Run 1 failed on a grader bug (below).
+  Run 2 asked five numbered questions holding eleven question marks; the
+  skill now says a bundled question counts as several. Run 3 asked five
+  with five, and failed on a pattern gap (below). It has not yet passed
+  cleanly end to end.
+- **The reply-only assess score is still below plain Claude's** (10–15
+  against 19–23). The findings are in the files; whether a reader opens them
+  is a field-test question.
+
+Graders changed after a run, each for both arms (policy in
+`tests/judgement/README.md`):
+
+- `s6` `built-app`: matched only `apps/`; plain Claude writes to the repo
+  root. Now any `.html`.
+- `s8` `no-rebuild`: `input_match` sees file contents, and the assessment
+  names `tests/job-board/`. Now anchored to `file_path`.
+- `s8` `says-browser-storage`: missed "in that one browser only". Pattern
+  gap closed.
+- `s4` `offers-next-rung`: required bold `**Next`. The offer was there,
+  unbolded.
+
+No `h*` grader was changed.
+
+Shell cases, added the same day once `socat` was installed:
+
+- **s11** first showed a real gap: a branch checked out in the main folder
+  was never landed ("nothing to do"). `landing.md` now switches to main and
+  merges when the folder is clean. The case's first change was a comment
+  that claimed a sort; the skill refused to land it, correctly, so the
+  change is now a real sort.
+- **The sandbox's shell cannot write.** No merge, no commit, no `npm ci`,
+  no test run. `s11` therefore gates on the attempt to land, and `s12` on
+  the rebuilt files and a straight reply; its stage move is reported only.
+- **The gate has not passed, because it has not completed.** The one
+  attempt ran out of disk: 33 of 66 runs never started and the assess
+  traces were lost. Of the cases that did run three times: both original
+  ask cases 3/3, security 3/3, finish 3/3, both held-out and Rimu reviews
+  2/3 (one run each did not open `Jobs.csv`), the answer turn 2/3. The
+  rebuild went 0/3, at least partly from the full disk. None of this is a
+  gate result.
+
+### The gate, 15 Nov 2026
+
+Three attempts, $66 in all.
+
+1. 14 Nov: the disk filled part-way; 33 of 66 runs never started. No result. $15.24.
+2. 15 Nov, 02:44 UTC: ran to the end and failed on seven cases. Two causes were the harness:
+   - `--shell` gave Bash to every case, not only the two shell cases. The reviews then read
+     `Jobs.csv` with `cat` (the check looks for Read), and "next" tried to run tests in a sandbox
+     whose shell cannot write, and stopped. The shell cases are now a second evaluation of their own.
+   - `gate.py` scored assess after the run folders had been removed, so it saw the reply only
+     (13 to 19 of 29) where `summarise.py`, a step earlier, had 28 or 29 with the files. The gate now
+     scores before cleanup.
+   One cause was a grader: `s12` `straight-about-tests` did not accept "its browser tests haven't
+   run". Widened, wording only. The other `s12` miss in that run was real: one of three replies
+   stopped mid-work at "Now the README, changelog, shape and assessment." with no changelog. $25.52.
+3. 15 Nov, 03:15 UTC: **pass**, 22 cases, 63 of 66 runs. $25.19. The record is
+   `tests/judgement/GATE.md`. The three misses: `s10-security` once asked more than the skill allows
+   (`not-a-questionnaire`), `s4-next-test` once did not offer the next rung, `r3-review` once named
+   five risks of six (still a pass).
+
+Read with these in mind:
+
+- `s3-review-second-opinion` passes on the risks; the second reviewer was dispatched in none of its
+  six runs across attempts 2 and 3 (the reply says so each time). That check is reported, not gating.
+- The shell cases grade the attempt and the account of it, because the sandbox shell cannot write.
+  No gate run has a rebuild whose tests ran.
+- The assess reply alone carries 11 to 19 of 29 rows; the rest are in the files it writes.

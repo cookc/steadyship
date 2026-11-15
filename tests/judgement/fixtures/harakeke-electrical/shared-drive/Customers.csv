@@ -1,0 +1,13 @@
+customer_id,customer,contact,phone,email,address,access_notes
+C-104,Hartley Road School,Office,03 555 0112,office@hartleyroadschool.example.nz,"41 Main Rd, Stoke",Report to office. Caretaker has switchboard key.
+C-107,Richard Hollis,Richard Hollis,027 555 0138,r.hollis@example.nz,"18 Wensley Rd, Richmond",
+C-109,Aroha & Pete Marsh,Aroha Marsh,275550161,marsh.family@example.nz,"7 Hill St, Brightwater",Key safe 2580 by back door
+C-112,Saxton Property Management Ltd,Leanne,03 555 0127,maintenance@saxtonpm.example.nz,"Unit 3, 212 Queen St, Richmond",Keys from their office.
+C-115,Lower Queen Vets,Practice manager,03 555 0190,admin@lowerqueenvets.example.nz,"96 Gladstone Rd, Richmond",Alarm 4471# - panel inside rear door
+C-118,Jetty Road Cafe,Jules,03 555 0143,jules@jettyroadcafe.example.nz,"14 Jetty Rd, Mapua",
+C-120,Redwood Row Orchards Ltd,Grant Sims,021 555 0176,grant@redwoodroworchards.example.nz,"480 Appleby Hwy, Appleby",Gate code 1962. Dogs on site.
+C-122,Pokororo Lodge,Karen,35550148,stay@pokororolodge.example.nz,"1290 Motueka Valley Hwy, Ngatimoti",
+C-125,Greg Tanner,Greg Tanner,022 555 0159,greg.tanner@example.nz,"33 Champion Rd, Richmond",
+C-128,Hope Hall Society,Bookings,03 555 0181,hall@hopehallsociety.example.nz,"184 Ranzau Rd, Hope",Lockbox 7306 on meter board
+C-131,Jetty Road Café Ltd,Jules Brennan,021 555 0104,accounts@jettyroadcafe.example.nz,"14 Jetty Rd, Māpua",
+C-133,Sarah Whitcombe,Sarah Whitcombe,027 555 0115,s.whitcombe@example.nz,"52 Salisbury Rd, Richmond",

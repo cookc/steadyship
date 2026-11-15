@@ -80,7 +80,8 @@ model could not be used here.
    several values in free text, and anything that looks personal (names
    with phone numbers, pay, addresses, health).
 
-3. **Ask**, in one message, at most **eight** questions, each about the
+3. **Ask**, in one message, at most **eight** questions (a question is one
+   thing to answer; two under one number are two), each about the
    business, each with your recommended answer and the file or app that
    prompted it. Pick from these, only where the exploration left a gap:
    - **Which is the master?** Where two files or an app and a file hold
