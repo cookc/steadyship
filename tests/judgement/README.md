@@ -94,12 +94,15 @@ has only run 3 of `docs/experiment-cut-planner.md` behind it.
 - **Shell cases** live in `evals-shell/` and run only with `run.sh --shell`.
   The runner grants Bash only when its OS sandbox works, which on Linux needs
   `bubblewrap` and `socat`. `s12` takes about ten minutes and $2 a run.
+  They are evaluated on their own, after the others, and the two results are
+  merged: the runner's tool grant covers every case in a run, and a case
+  written without a shell behaves differently when given one.
 - **The gate.** `run.sh --gate` runs every case three times with the plugin
   and writes `GATE.md` here: a case passes at two of three. Commit `GATE.md`
   before tagging; the release workflow refuses a tag without a passing one
   for that version and quotes it in the release notes. It needs a few GB of
-  free disk: the first attempt (14 Nov 2026) filled a nearly full disk
-  part-way, 33 of 66 runs never started, and no `GATE.md` was written.
+  free disk and costs about $25. History of attempts is in
+  `docs/judgement-spike.md`.
 
 ## Changing a grader
 

@@ -527,3 +527,31 @@ Shell cases, added the same day once `socat` was installed:
   2/3 (one run each did not open `Jobs.csv`), the answer turn 2/3. The
   rebuild went 0/3, at least partly from the full disk. None of this is a
   gate result.
+
+### The gate, 15 Nov 2026
+
+Three attempts, $66 in all.
+
+1. 14 Nov: the disk filled part-way; 33 of 66 runs never started. No result. $15.24.
+2. 15 Nov, 02:44 UTC: ran to the end and failed on seven cases. Two causes were the harness:
+   - `--shell` gave Bash to every case, not only the two shell cases. The reviews then read
+     `Jobs.csv` with `cat` (the check looks for Read), and "next" tried to run tests in a sandbox
+     whose shell cannot write, and stopped. The shell cases are now a second evaluation of their own.
+   - `gate.py` scored assess after the run folders had been removed, so it saw the reply only
+     (13 to 19 of 29) where `summarise.py`, a step earlier, had 28 or 29 with the files. The gate now
+     scores before cleanup.
+   One cause was a grader: `s12` `straight-about-tests` did not accept "its browser tests haven't
+   run". Widened, wording only. The other `s12` miss in that run was real: one of three replies
+   stopped mid-work at "Now the README, changelog, shape and assessment." with no changelog. $25.52.
+3. 15 Nov, 03:15 UTC: **pass**, 22 cases, 63 of 66 runs. $25.19. The record is
+   `tests/judgement/GATE.md`. The three misses: `s10-security` once asked more than the skill allows
+   (`not-a-questionnaire`), `s4-next-test` once did not offer the next rung, `r3-review` once named
+   five risks of six (still a pass).
+
+Read with these in mind:
+
+- `s3-review-second-opinion` passes on the risks; the second reviewer was dispatched in none of its
+  six runs across attempts 2 and 3 (the reply says so each time). That check is reported, not gating.
+- The shell cases grade the attempt and the account of it, because the sandbox shell cannot write.
+  No gate run has a rebuild whose tests ran.
+- The assess reply alone carries 11 to 19 of 29 rows; the rest are in the files it writes.

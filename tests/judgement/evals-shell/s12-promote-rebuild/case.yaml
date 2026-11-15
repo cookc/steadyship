@@ -37,7 +37,9 @@ graders:
     name: info-stage-moved
     target: {source: file, path: docs/assessment/job-board.md}
     pattern: '\*\*Stage:\*\*\s*Owned tool'
-  - {type: regex, name: straight-about-tests, flags: i, pattern: "(could ?n.t|couldn.t|could not|not able to|unable to) (run|install)|nothing (was |has been )?run|not promoted yet|tests? (all )?pass(ed)?\\b"}
+  # 2026-11-15: widened to "haven't run" / "not run" after a gate run said "its browser tests haven't
+  # run" and was marked as not straight. Wording only; a reply silent about the tests still fails.
+  - {type: regex, name: straight-about-tests, flags: i, pattern: "(could ?n.t|couldn.t|could not|not able to|unable to) (run|install)|(haven.t|hasn.t|have not|has not|were not|was not|weren.t|wasn.t|not) (been )?run\\b|nothing (was |has been )?run|not promoted yet|tests? (all )?pass(ed)?\\b"}
   - {type: regex, name: asked-nothing-more, match: not_contains, pattern: '\?\s*$'}
   - {type: tool_used, name: used-skill, tool: Skill, min: 1, arm: with-only}
   - type: llm

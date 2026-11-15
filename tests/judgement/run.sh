@@ -47,15 +47,20 @@ STAGE="$(mktemp -d "${TMPDIR:-/tmp}/steadyship-judgement-XXXXXX")"
 trap 'rm -rf "$STAGE"' EXIT
 ( cd "$ROOT" && tar cf - --exclude=node_modules --exclude=evals plugin ) | ( cd "$STAGE" && tar xf - )
 cp -R "$J/evals" "$STAGE/plugin/evals"
-TOOLS=(Write Edit)
+# The shell cases run as a second evaluation of their own: --allow-tools applies to every case in a
+# run, and a case written without a shell behaves differently when handed one (the reviews read
+# Jobs.csv with cat, "next" tries to run tests the sandbox cannot run). Found by the first gate run.
 if [ "$SHELL_CASES" = 1 ]; then
   command -v socat >/dev/null && command -v bwrap >/dev/null || {
     echo "--shell needs the runner's sandbox: install bubblewrap and socat (sudo apt install bubblewrap socat)" >&2; exit 2; }
-  cp -R "$J"/evals-shell/*/ "$STAGE/plugin/evals/"; TOOLS+=(Bash)
+  mkdir -p "$STAGE/shell"
+  ( cd "$ROOT" && tar cf - --exclude=node_modules --exclude=evals plugin ) | ( cd "$STAGE/shell" && tar xf - )
+  mkdir -p "$STAGE/shell/plugin/evals"; cp -R "$J"/evals-shell/*/ "$STAGE/shell/plugin/evals/"
 else
   echo "Not running the $(ls -d "$J"/evals-shell/*/ 2>/dev/null | wc -l | tr -d ' ') shell case(s) in evals-shell/ (finish, promote rebuild): pass --shell."
 fi
-for c in "$STAGE"/plugin/evals/*/; do
+for c in "$STAGE"/plugin/evals/*/ "$STAGE"/shell/plugin/evals/*/; do
+  [ -d "$c" ] || continue
   cp "$J/scaffold.sh" "$c/scaffold.sh"
   # A case with a FIXTURE file (a repo-relative fixture dir) gets that business staged
   # into <case>/fixture/, minus its answer key; otherwise scaffold.sh uses plugin/demo.
@@ -75,31 +80,47 @@ for c in "$STAGE"/plugin/evals/*/; do
 done
 [ -z "$(find "$STAGE" -name 'answer-key*')" ] || { echo "answer key found in staged plugin; refusing" >&2; exit 2; }
 
-ARGS=(--scaffold --allow-tools "${TOOLS[@]}" --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
-      --trust-plugin --no-publish --threshold 0 --max-cost-usd "$MAXCOST"
-      --concurrency "$JOBS" --output-dir "$OUT" --report "$OUT/report.html" --json "$OUT/result.json"
+# evaluate <staged plugin> <output dir> <max cost> <tool>...
+evaluate() {
+  local plugin="$1" out="$2" cost="$3"; shift 3
+  local args=(--scaffold --allow-tools "$@" --model "$MODEL" --runs "$RUNS" --ablation "$ABLATION"
+      --trust-plugin --no-publish --threshold 0 --max-cost-usd "$cost"
+      --concurrency "$JOBS" --output-dir "$out" --report "$out/report.html" --json "$out/result.json"
       --keep-temp)   # temp dirs hold each run's trace; regrade-with-files.py reads them, then they are removed
-[ -z "$CASE" ] || ARGS+=(--case "$CASE")
-[ ${#EXTRA[@]} -eq 0 ] || ARGS+=("${EXTRA[@]}")
-echo "Staged plugin: $STAGE/plugin  ->  results: $OUT"
-start=$(date +%s)
-set +e
-claude plugin eval "$STAGE/plugin" "${ARGS[@]}" 2>&1 | tee "$OUT/eval.log"
-rc=${PIPESTATUS[0]}
-set -e
-echo "claude plugin eval exit $rc after $(( $(date +%s) - start ))s" | tee -a "$OUT/eval.log"
+  [ -z "$CASE" ] || args+=(--case "$CASE")
+  [ ${#EXTRA[@]} -eq 0 ] || args+=("${EXTRA[@]}")
+  mkdir -p "$out"
+  echo "Staged plugin: $plugin  ->  results: $out"
+  local start rc; start=$(date +%s)
+  set +e
+  claude plugin eval "$plugin" "${args[@]}" 2>&1 | tee -a "$OUT/eval.log"
+  rc=${PIPESTATUS[0]}
+  set -e
+  echo "claude plugin eval exit $rc after $(( $(date +%s) - start ))s" | tee -a "$OUT/eval.log"
+}
+evaluate "$STAGE/plugin" "$OUT" "$MAXCOST" Write Edit
+if [ "$SHELL_CASES" = 1 ]; then
+  # What the first evaluation spent comes off the ceiling for the second; then the two results are merged.
+  left="$(python3 -c 'import json,sys
+try: spent = json.load(open(sys.argv[1])).get("costUsd", 0)
+except OSError: spent = 0
+print(max(1, round(float(sys.argv[2]) - spent, 2)))' "$OUT/result.json" "$MAXCOST")"
+  evaluate "$STAGE/shell/plugin" "$OUT/shell" "$left" Write Edit Bash
+  python3 "$J/merge-results.py" "$OUT/result.json" "$OUT/shell/result.json"
+fi
 [ -f "$OUT/result.json" ] || { echo "no result.json written" >&2; exit 1; }
 # Since plugin 0.6.0 the assess reply is deliberately short and the rows live in docs/assessment/, so
 # summarise.py scores an assess case on the reply plus the files the run wrote (read from each run's
 # trace, which is why the temp dirs are kept until it has run).
 python3 "$J/summarise.py" "$OUT/result.json" | tee "$OUT/summary.md"
+# The gate scores from the same traces, so it runs before they are removed.
+if [ "$GATE" = 1 ]; then
+  python3 "$J/gate.py" "$OUT/result.json" "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/plugin.json")" \
+    "$(git -C "$ROOT" rev-parse --short HEAD)$(git -C "$ROOT" diff --quiet HEAD -- plugin || echo '+uncommitted')" | tee "$J/GATE.md"
+fi
 if [ "$KEEP" = 1 ]; then echo "kept run dirs:"; grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u
 else
   grep -o '"tracePath": *"[^"]*"' "$OUT/result.json" | sed 's/.*: *"//; s/"$//' | sed 's#/out/trace.jsonl$##' | sort -u | while read -r d; do case "$d" in /tmp/claude-eval-*) chmod -R u+rwx "$d" 2>/dev/null; rm -rf "$d";; esac; done
 fi
 ln -sfn "$(basename "$OUT")/summary.md" "$J/results/latest.md"
-if [ "$GATE" = 1 ]; then
-  python3 "$J/gate.py" "$OUT/result.json" "$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "$ROOT/plugin/.claude-plugin/plugin.json")" \
-    "$(git -C "$ROOT" rev-parse --short HEAD)$(git -C "$ROOT" diff --quiet HEAD -- plugin || echo '+uncommitted')" | tee "$J/GATE.md"
-  tail -1 "$J/GATE.md" | grep -q '^GATE: PASS' || exit 1
-fi
+[ "$GATE" != 1 ] || tail -1 "$J/GATE.md" | grep -q '^GATE: PASS' || exit 1
