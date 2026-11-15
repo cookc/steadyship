@@ -76,7 +76,7 @@ to hand, try the demo business. Only the first two differ by setup.
   `scripts/demo-regenerate.sh` rebuilds the standing demo repository.
 - Releasing: bump `version` in `plugin/.claude-plugin/plugin.json`, run
   `tests/judgement/run.sh --gate` (with the plugin, three runs a case, about
-  $18; add `--shell` where the runner's sandbox works) and commit the
+  $25 with `--shell`; add `--shell` where the runner's sandbox works) and commit the
   `tests/judgement/GATE.md` it writes, then tag `vX.Y.Z` and push the tag.
   The `release` workflow refuses a tag whose `GATE.md` is missing, for
   another version or not a pass, puts the gate record in the release notes

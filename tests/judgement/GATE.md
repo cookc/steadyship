@@ -1,7 +1,9 @@
-# Judgement gate for plugin 0.7.0
+# Judgement gate for plugin 0.7.1
 
 Commit 1f2c6b9. Run 2026-11-15T03:15:22.548Z, Claude Code 2.1.325, model sonnet, with the plugin, cost $25.19.
 Shell cases (finish, promote rebuild): included.
+
+The run was made on commit 1f2c6b9, when the plugin still carried the number 0.7.0. 0.7.1 is the same plugin: the only file under `plugin/` changed since is the version number in `plugin.json`. The heading was changed by hand to match.
 
 | Case | Passed | Result of each run |
 |---|---|---|
